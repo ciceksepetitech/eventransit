@@ -1,0 +1,92 @@
+{
+  "version": 3,
+  "targets": {
+    "net5.0": {
+      "EventTransit.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/EventTransit.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EventTransit.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "EventTransit.Core/1.0.0": {
+      "type": "project",
+      "path": "../EventTransit.Core/EventTransit.Core.csproj",
+      "msbuildProject": "../EventTransit.Core/EventTransit.Core.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net5.0": [
+      "EventTransit.Core >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "/Users/ozge.gunay/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj",
+      "projectName": "EventTransit.Data",
+      "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj",
+      "packagesPath": "/Users/ozge.gunay/.nuget/packages/",
+      "outputPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/obj/",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+      ],
+      "configFilePaths": [
+        "/Users/ozge.gunay/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net5.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "projectReferences": {
+            "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj": {
+              "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net5.0": {
+        "targetAlias": "net5.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

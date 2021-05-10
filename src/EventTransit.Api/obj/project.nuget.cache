@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "dgSpecHash": "sc7rc8//qwyqE9wdDpDKBjJ0ZwJGb4eskEGCzYUr50rbXJbX2+LbB2+QI77JoNISVSIQcBSKWWv4FXffi/E/tA==",
+  "success": true,
+  "projectFilePath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Api/EventTransit.Api.csproj",
+  "expectedPackageFiles": [
+    "/Users/ozge.gunay/.nuget/packages/fluentvalidation/10.1.0/fluentvalidation.10.1.0.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/fluentvalidation.aspnetcore/10.1.0/fluentvalidation.aspnetcore.10.1.0.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/fluentvalidation.dependencyinjectionextensions/10.1.0/fluentvalidation.dependencyinjectionextensions.10.1.0.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/2.1.0/microsoft.extensions.dependencyinjection.abstractions.2.1.0.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/rabbitmq.client/6.2.1/rabbitmq.client.6.2.1.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/swashbuckle.aspnetcore.swagger/5.6.3/swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/swashbuckle.aspnetcore.swaggergen/5.6.3/swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/swashbuckle.aspnetcore.swaggerui/5.6.3/swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/system.threading.channels/4.7.1/system.threading.channels.4.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}

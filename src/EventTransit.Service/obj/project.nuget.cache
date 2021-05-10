@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "CATetxmW6LRZ7PjSkvVLxnZ38WNhVGjoBR7eFXU1zKIkmk5zYjNNQITimTLLS6uEL2bvH3JUsYR7IVFbQJyobw==",
+  "success": true,
+  "projectFilePath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Service/EventTransit.Service.csproj",
+  "expectedPackageFiles": [
+    "/Users/ozge.gunay/.nuget/packages/rabbitmq.client/6.2.1/rabbitmq.client.6.2.1.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
+    "/Users/ozge.gunay/.nuget/packages/system.threading.channels/4.7.1/system.threading.channels.4.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}
