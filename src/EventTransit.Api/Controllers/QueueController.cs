@@ -2,7 +2,7 @@
 using EventTransit.Api.Models;
 using EventTransit.Api.Validators;
 using EventTransit.Core.Abstractions.Service;
-using EventTransit.Core.Domain;
+using EventTransit.Core.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTransit.Api.Controllers
@@ -12,7 +12,6 @@ namespace EventTransit.Api.Controllers
     public class QueueController : ControllerBase
     {
         private readonly IQueueService _queueService;
-        
 
         public QueueController(IQueueService queueService)
         {
@@ -29,7 +28,7 @@ namespace EventTransit.Api.Controllers
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
-            var response = await _queueService.PublishAsync(new QueueRequestDto
+            var response = _queueService.Publish(new QueueRequestDto
                 {
                     Name = name,
                     Payload = payload

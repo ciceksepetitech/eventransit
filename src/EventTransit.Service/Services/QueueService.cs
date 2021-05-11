@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using EventTransit.Core.Abstractions.Common;
 using EventTransit.Core.Abstractions.Service;
-using EventTransit.Core.Domain;
+using EventTransit.Core.Dto;
 
 namespace EventTransit.Service.Services
 {
@@ -14,9 +14,9 @@ namespace EventTransit.Service.Services
             _eventPublisher = eventPublisher;
         }
 
-        public async Task<bool> PublishAsync(QueueRequestDto requestDto)
+        public bool Publish(QueueRequestDto requestDto)
         {
-            await _eventPublisher.PublishAsync(requestDto.Name, requestDto.Payload);
+            _eventPublisher.Publish(requestDto.Name, requestDto.Payload);
             return true;
         }
     }

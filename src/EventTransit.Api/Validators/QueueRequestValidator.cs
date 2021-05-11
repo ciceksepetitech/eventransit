@@ -9,7 +9,7 @@ namespace EventTransit.Api.Validators
         public QueueRequestValidator()
         {
             RuleFor(x => x.Name)
-                .Must(string.IsNullOrWhiteSpace)
+                .Must(x => !string.IsNullOrEmpty(x))
                 .WithMessage(string.Format(ValidationConstants.IsRequired, "Name"));
         }
     }

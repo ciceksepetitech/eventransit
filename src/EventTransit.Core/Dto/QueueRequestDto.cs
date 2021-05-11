@@ -1,4 +1,4 @@
-namespace EventTransit.Core.Domain
+namespace EventTransit.Core.Dto
 {
     public class QueueRequestDto
     {

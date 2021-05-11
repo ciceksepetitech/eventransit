@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "ZLsRshUcTXL38SrsOf0vju7ReKHZOhmuq9pZgPFLwnBlJleokJ+kBG++JsmUUP3WgCElVdVQEsD/WhXrrEAOfA==",
+  "dgSpecHash": "WWJxnDzxEY10Kh6XSjCuoRr1TGB5JVxXJdDRMMA0Glf9tbdUOGglG6elHK2QdBg18onpeQed+Q+iBftH5o6FFQ==",
   "success": true,
-  "projectFilePath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj",
+  "expectedPackageFiles": [
+    "/Users/mennan.kose/.nuget/packages/mongodb.bson/2.12.3/mongodb.bson.2.12.3.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -1,12 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "y+ytmk98sog7y65Q/qXDLe+wvx+5FZLwA5TWmAFtxpGJVw+AKZF5lcJzv7uSsvcg6GApHhlSX99C3qUOXlk2EQ==",
+  "dgSpecHash": "ynzklUlYNnlBnlGNbz+H/VCvvtAojZYCiDDr7w70VD6BSIz0dZfpNvEhw3cCxWJC+ico5sZ01jnJteYfWfw2Ig==",
   "success": true,
-  "projectFilePath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj",
+  "projectFilePath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj",
   "expectedPackageFiles": [
-    "/Users/ozge.gunay/.nuget/packages/rabbitmq.client/6.2.1/rabbitmq.client.6.2.1.nupkg.sha512",
-    "/Users/ozge.gunay/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
-    "/Users/ozge.gunay/.nuget/packages/system.threading.channels/4.7.1/system.threading.channels.4.7.1.nupkg.sha512"
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.dependencyinjection/6.0.0-preview.3.21201.4/microsoft.extensions.dependencyinjection.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/6.0.0-preview.3.21201.4/microsoft.extensions.dependencyinjection.abstractions.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.logging/6.0.0-preview.3.21201.4/microsoft.extensions.logging.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.logging.abstractions/6.0.0-preview.3.21201.4/microsoft.extensions.logging.abstractions.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.options/6.0.0-preview.3.21201.4/microsoft.extensions.options.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.primitives/6.0.0-preview.3.21201.4/microsoft.extensions.primitives.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/mongodb.bson/2.12.3/mongodb.bson.2.12.3.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/rabbitmq.client/6.2.1/rabbitmq.client.6.2.1.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.diagnostics.diagnosticsource/6.0.0-preview.3.21201.4/system.diagnostics.diagnosticsource.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0-preview.3.21201.4/system.runtime.compilerservices.unsafe.6.0.0-preview.3.21201.4.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.threading.channels/4.7.1/system.threading.channels.4.7.1.nupkg.sha512"
   ],
   "logs": []
 }

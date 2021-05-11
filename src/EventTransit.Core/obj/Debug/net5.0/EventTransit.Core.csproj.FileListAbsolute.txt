@@ -1,0 +1,12 @@
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/bin/Debug/net5.0/EventTransit.Core.deps.json
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/bin/Debug/net5.0/EventTransit.Core.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/bin/Debug/net5.0/ref/EventTransit.Core.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/bin/Debug/net5.0/EventTransit.Core.pdb
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.csprojAssemblyReference.cache
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.AssemblyInfoInputs.cache
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.AssemblyInfo.cs
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.csproj.CoreCompileInputs.cache
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/ref/EventTransit.Core.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/Debug/net5.0/EventTransit.Core.pdb

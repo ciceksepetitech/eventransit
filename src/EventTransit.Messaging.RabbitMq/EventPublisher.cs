@@ -1,36 +1,27 @@
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 using EventTransit.Core.Abstractions.Common;
-using RabbitMQ.Client;
+using EventTransit.Messaging.RabbitMq.Abstractions;
 
 namespace EventTransit.Messaging.RabbitMq
 {
     public class EventPublisher : IEventPublisher
     {
-        
-        public async Task PublishAsync(string name, dynamic payload)
+        private readonly IRabbitMqConnectionFactory _connection;
+
+        public EventPublisher(IRabbitMqConnectionFactory connection)
         {
-            //TODO: Refactor this
-            //TODO: Service name can be given as a parameter for declaring queue names
-            var factory = new ConnectionFactory
-            {
-                HostName = "rabbitmq", Port = 5672, UserName = "guest", Password = "guest"
-            };
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
-            channel.ExchangeDeclare(name, ExchangeType.Direct, true, false,
-                null);
-            channel.QueueDeclare(queue: "cargo",
-                false,
-                false,
-                false,
-                null);
-            channel.QueueBind("cargo", name, name);
-            
-            var body = Encoding.UTF8.GetBytes(payload.Serialize());
+            _connection = connection;
+        }
+        
+        public void Publish(string name, dynamic payload)
+        {
+            using var channel = _connection.ProducerConnection.CreateModel();
+
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
-            
+
             // Publish.
             channel.BasicPublish(name, name, false, properties, body);
         }

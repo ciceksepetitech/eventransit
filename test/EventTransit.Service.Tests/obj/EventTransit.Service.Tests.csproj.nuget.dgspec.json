@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj": {}
+    "/Users/mennan.kose/Desktop/Projects/eventransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj": {}
   },
   "projects": {
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj": {
+    "/Users/mennan.kose/Desktop/Projects/eventransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ozge.gunay/Documents/eventbus/EventTransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj",
+        "projectUniqueName": "/Users/mennan.kose/Desktop/Projects/eventransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj",
         "projectName": "EventTransit.Service.Tests",
-        "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj",
-        "packagesPath": "/Users/ozge.gunay/.nuget/packages/",
-        "outputPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/test/EventTransit.Service.Tests/obj/",
+        "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/test/EventTransit.Service.Tests/EventTransit.Service.Tests.csproj",
+        "packagesPath": "/Users/mennan.kose/.nuget/packages/",
+        "outputPath": "/Users/mennan.kose/Desktop/Projects/eventransit/test/EventTransit.Service.Tests/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "/Users/ozge.gunay/.nuget/NuGet/NuGet.Config"
+          "/Users/mennan.kose/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -55,7 +52,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
         }
       }
     }

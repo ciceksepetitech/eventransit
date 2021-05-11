@@ -1,8 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "QsLMTJPL68Z7YdPEHq+S/QRWYRfHspUIpDdyyFqKvAf/PgvL9qySlQiT2alakwUlztpCdgLedwfNzUP0vLgQ6w==",
+  "dgSpecHash": "2Y0rpW9cySyieYyseoFzlfsZtI0hY/HhbI9cjtGcFzl/z4vohWsmkQ43gDjWQmTGK34BKMwOsjU98zPLFLv9pA==",
   "success": true,
-  "projectFilePath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/EventTransit.Data.csproj",
+  "expectedPackageFiles": [
+    "/Users/mennan.kose/.nuget/packages/dnsclient/1.4.0/dnsclient.1.4.0.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.dependencyinjection/5.0.1/microsoft.extensions.dependencyinjection.5.0.1.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/5.0.0/microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/microsoft.netcore.platforms/2.1.2/microsoft.netcore.platforms.2.1.2.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/mongodb.bson/2.12.3/mongodb.bson.2.12.3.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/mongodb.driver/2.12.3/mongodb.driver.2.12.3.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/mongodb.driver.core/2.12.3/mongodb.driver.core.2.12.3.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/mongodb.libmongocrypt/1.2.1/mongodb.libmongocrypt.1.2.1.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/sharpcompress/0.23.0/sharpcompress.0.23.0.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.buffers/4.5.1/system.buffers.4.5.1.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
+    "/Users/mennan.kose/.nuget/packages/system.text.encoding.codepages/4.5.1/system.text.encoding.codepages.4.5.1.nupkg.sha512"
+  ],
   "logs": []
 }

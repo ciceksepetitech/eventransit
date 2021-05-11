@@ -4,6 +4,6 @@ namespace EventTransit.Core.Abstractions.Common
 {
     public interface IEventPublisher
     {
-        Task PublishAsync(string name, dynamic payload);    
+        void Publish(string name, dynamic payload);    
     }
 }

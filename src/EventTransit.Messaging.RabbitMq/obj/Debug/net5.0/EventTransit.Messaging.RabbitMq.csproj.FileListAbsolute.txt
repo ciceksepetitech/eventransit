@@ -1,0 +1,15 @@
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/bin/Debug/net5.0/EventTransit.Messaging.RabbitMq.deps.json
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/bin/Debug/net5.0/EventTransit.Messaging.RabbitMq.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/bin/Debug/net5.0/ref/EventTransit.Messaging.RabbitMq.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/bin/Debug/net5.0/EventTransit.Messaging.RabbitMq.pdb
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/bin/Debug/net5.0/EventTransit.Core.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/bin/Debug/net5.0/EventTransit.Core.pdb
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.csprojAssemblyReference.cache
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.AssemblyInfoInputs.cache
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.AssemblyInfo.cs
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.csproj.CoreCompileInputs.cache
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.csproj.CopyComplete
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/ref/EventTransit.Messaging.RabbitMq.dll
+/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/Debug/net5.0/EventTransit.Messaging.RabbitMq.pdb

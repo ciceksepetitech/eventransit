@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Service/EventTransit.Service.csproj": {}
+    "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Service/EventTransit.Service.csproj": {}
   },
   "projects": {
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj": {
+    "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj",
+        "projectUniqueName": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj",
         "projectName": "EventTransit.Core",
-        "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj",
-        "packagesPath": "/Users/ozge.gunay/.nuget/packages/",
-        "outputPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/obj/",
+        "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj",
+        "packagesPath": "/Users/mennan.kose/.nuget/packages/",
+        "outputPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "/Users/ozge.gunay/.nuget/NuGet/NuGet.Config"
+          "/Users/mennan.kose/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -40,6 +37,12 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
+          "dependencies": {
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.12.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -55,24 +58,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj": {
+    "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/EventTransit.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj",
+        "projectUniqueName": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/EventTransit.Data.csproj",
         "projectName": "EventTransit.Data",
-        "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj",
-        "packagesPath": "/Users/ozge.gunay/.nuget/packages/",
-        "outputPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/obj/",
+        "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/EventTransit.Data.csproj",
+        "packagesPath": "/Users/mennan.kose/.nuget/packages/",
+        "outputPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "/Users/ozge.gunay/.nuget/NuGet/NuGet.Config"
+          "/Users/mennan.kose/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -84,67 +84,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj": {
-                "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj"
-              }
-            }
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        }
-      },
-      "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
-        }
-      }
-    },
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj",
-        "projectName": "EventTransit.Messaging.RabbitMq",
-        "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj",
-        "packagesPath": "/Users/ozge.gunay/.nuget/packages/",
-        "outputPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/obj/",
-        "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
-        "configFilePaths": [
-          "/Users/ozge.gunay/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net5.0"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
-            "projectReferences": {
-              "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj": {
-                "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Core/EventTransit.Core.csproj"
+              "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj": {
+                "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj"
               }
             }
           }
@@ -159,6 +100,76 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.12.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj",
+        "projectName": "EventTransit.Messaging.RabbitMq",
+        "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj",
+        "packagesPath": "/Users/mennan.kose/.nuget/packages/",
+        "outputPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/mennan.kose/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj": {
+                "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Core/EventTransit.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[6.0.0-preview.3.21201.4, )"
+            },
             "RabbitMQ.Client": {
               "target": "Package",
               "version": "[6.2.1, )"
@@ -179,24 +190,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Service/EventTransit.Service.csproj": {
+    "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Service/EventTransit.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Service/EventTransit.Service.csproj",
+        "projectUniqueName": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Service/EventTransit.Service.csproj",
         "projectName": "EventTransit.Service",
-        "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Service/EventTransit.Service.csproj",
-        "packagesPath": "/Users/ozge.gunay/.nuget/packages/",
-        "outputPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Service/obj/",
+        "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Service/EventTransit.Service.csproj",
+        "packagesPath": "/Users/mennan.kose/.nuget/packages/",
+        "outputPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Service/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "/Users/ozge.gunay/.nuget/NuGet/NuGet.Config"
+          "/Users/mennan.kose/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -208,11 +216,11 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj": {
-                "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Data/EventTransit.Data.csproj"
+              "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/EventTransit.Data.csproj": {
+                "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Data/EventTransit.Data.csproj"
               },
-              "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj": {
-                "projectPath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj"
+              "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj": {
+                "projectPath": "/Users/mennan.kose/Desktop/Projects/eventransit/src/EventTransit.Messaging.RabbitMq/EventTransit.Messaging.RabbitMq.csproj"
               }
             }
           }
@@ -241,7 +249,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
         }
       }
     }

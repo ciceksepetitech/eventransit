@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "f3KxNoIBVWo3wWxOcHH/387VBsnPwlsT42wwqf+uBlKUJGAbcAz6tlXoqcrAsAnbN+ry7qsyBzbK7FW955T9mg==",
+  "dgSpecHash": "FMj98Anbj+Pns3kvo/TcgZEkE4Y3M71MWY7UqYDyD7mKZp+VhdgOiGRRuh3JO4aLR44jr/XGOq7BDrY1fdMslg==",
   "success": true,
-  "projectFilePath": "/Users/ozge.gunay/Documents/eventbus/EventTransit/test/EventTransit.Api.Tests/EventTransit.Api.Tests.csproj",
+  "projectFilePath": "/Users/mennan.kose/Desktop/Projects/eventransit/test/EventTransit.Api.Tests/EventTransit.Api.Tests.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
