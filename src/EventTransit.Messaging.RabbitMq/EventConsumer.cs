@@ -5,6 +5,7 @@ using System.Text;
 using EventTransit.Core.Abstractions.Common;
 using EventTransit.Core.Abstractions.Data;
 using EventTransit.Core.Abstractions.QueueProcess;
+using EventTransit.Core.Dto;
 using EventTransit.Core.Enums;
 using EventTransit.Messaging.RabbitMq.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -17,17 +18,20 @@ namespace EventTransit.Messaging.RabbitMq
     {
         private readonly IModel _channel;
         private readonly List<string> _queues;
-        private readonly IQueueProcessResolver _queueProcessResolver;
+        private readonly IHttpProcessor _httpProcessor;
+        private readonly IEventLog _eventLog;
         private readonly ILogger<EventConsumer> _logger;
 
         public EventConsumer(
             IRabbitMqConnectionFactory connection,
-            IQueueProcessResolver queueProcessResolver,
+            IHttpProcessor httpProcessor,
             IEventsMongoRepository eventsRepository,
+            IEventLog eventLog,
             ILogger<EventConsumer> logger)
         {
             _logger = logger;
-            _queueProcessResolver = queueProcessResolver;
+            _eventLog = eventLog;
+            _httpProcessor = httpProcessor;
             _channel = connection.ConsumerConnection.CreateModel();
 
             var events = eventsRepository.GetEvents().Result;
@@ -45,34 +49,24 @@ namespace EventTransit.Messaging.RabbitMq
             foreach (var queue in _queues)
             {
                 // TODO Refactor here
-                _channel.QueueDeclare(queue: queue,
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
+                _channel.QueueDeclare(queue, false, false, false, null);
                 _channel.QueueBind(queue, "order_created", queue);
-
-                _channel.BasicConsume(queue,
-                    autoAck: false,
-                    consumer: consumer);
+                _channel.BasicConsume(queue, false, consumer);
             }
         }
 
         private void ReceiveMessage(object sender, BasicDeliverEventArgs ea)
         {
+            var messageBody = ea.Body;
+            var message = Encoding.UTF8.GetString(messageBody.ToArray());
+            var eventName = ea.Exchange;
+            var serviceName = ea.RoutingKey;
+            
             try
             {
-                var messageBody = ea.Body;
-                var message = Encoding.UTF8.GetString(messageBody.ToArray());
-                var eventName = ea.Exchange;
-                var serviceName = ea.RoutingKey;
-
-                var queueProcess = _queueProcessResolver.Resolve(QueueProcessType.HttpRequest);
-                var result = queueProcess.Process(eventName, serviceName, message);
+                _httpProcessor.ProcessAsync(eventName, serviceName, message).GetAwaiter().GetResult();
 
                 _channel.BasicAck(ea.DeliveryTag, false);
-
-                // TODO Log success info to RabbitMq
             }
             catch (Exception e)
             {
@@ -80,7 +74,20 @@ namespace EventTransit.Messaging.RabbitMq
 
                 _channel.BasicNack(ea.DeliveryTag, false, false);
 
-                // TODO Log Exceptions to RabbitMq
+                _eventLog.Log(new EventLogDto
+                {
+                    EventName = eventName,
+                    ServiceName = serviceName,
+                    LogType = LogType.Fail,
+                    Details = new EventDetailDto
+                    {
+                        Request = new HttpRequestDto
+                        {
+                            Body = message
+                        },
+                        Message = e.Message
+                    }
+                });
             }
         }
     }

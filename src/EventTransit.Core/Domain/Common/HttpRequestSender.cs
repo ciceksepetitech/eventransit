@@ -21,7 +21,7 @@ namespace EventTransit.Core.Domain.Common
             var requestMessage = new HttpRequestMessage();
             var httpClient = _clientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(request.Url);
-            
+
             if (request.Timeout > 0) httpClient.Timeout = TimeSpan.FromSeconds(request.Timeout);
 
             if (request.Headers != null)
