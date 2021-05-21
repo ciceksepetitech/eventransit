@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using EventTransit.Core.Abstractions.Common;
 using EventTransit.Core.Abstractions.Data;
 using EventTransit.Core.Abstractions.QueueProcess;
@@ -36,13 +37,13 @@ namespace EventTransit.Messaging.RabbitMq
 
         public void Consume()
         {
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += ReceiveMessage;
+            var consumer = new AsyncEventingBasicConsumer(_channel);
+            consumer.Received += ReceiveMessageAsync;
 
             BindQueues(consumer);
         }
 
-        private void ReceiveMessage(object sender, BasicDeliverEventArgs ea)
+        private async Task ReceiveMessageAsync(object sender, BasicDeliverEventArgs ea)
         {
             var messageBody = ea.Body;
             var message = Encoding.UTF8.GetString(messageBody.ToArray());
@@ -51,7 +52,7 @@ namespace EventTransit.Messaging.RabbitMq
 
             try
             {
-                _httpProcessor.ProcessAsync(eventName, serviceName, message).GetAwaiter().GetResult();
+                await _httpProcessor.ProcessAsync(eventName, serviceName, message);
                 _channel.BasicAck(ea.DeliveryTag, false);
             }
             catch (Exception e)
@@ -60,7 +61,7 @@ namespace EventTransit.Messaging.RabbitMq
 
                 _channel.BasicNack(ea.DeliveryTag, false, false);
 
-                _eventLog.Log(new EventLogDto
+                await _eventLog.LogAsync(new EventLogDto
                 {
                     EventName = eventName,
                     ServiceName = serviceName,
@@ -77,7 +78,7 @@ namespace EventTransit.Messaging.RabbitMq
             }
         }
         
-        private void BindQueues(EventingBasicConsumer consumer)
+        private void BindQueues(AsyncEventingBasicConsumer consumer)
         {
             var events = _eventsRepository.GetEvents().Result;
 

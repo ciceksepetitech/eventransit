@@ -14,7 +14,7 @@ namespace EventTransit.Core.Domain.Common
             _logsRepository = logsRepository;
         }
 
-        public async Task Log(EventLogDto details)
+        public async Task LogAsync(EventLogDto details)
         {
             var data = new LogsDto
             {

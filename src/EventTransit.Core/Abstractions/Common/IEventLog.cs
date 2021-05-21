@@ -5,6 +5,6 @@ namespace EventTransit.Core.Abstractions.Common
 {
     public interface IEventLog
     {
-        Task Log(EventLogDto details);
+        Task LogAsync(EventLogDto details);
     }
 }

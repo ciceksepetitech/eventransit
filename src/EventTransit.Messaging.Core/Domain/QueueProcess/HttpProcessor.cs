@@ -53,7 +53,7 @@ namespace EventTransit.Messaging.Core.Domain.QueueProcess
                     }
                 };
 
-                await _eventLog.Log(logData);
+                await _eventLog.LogAsync(logData);
             }
         }
     }
