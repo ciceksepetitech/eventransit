@@ -49,7 +49,7 @@ namespace EventTransit.Messaging.Core.Domain.QueueProcess
                     Details = new EventDetailDto
                     {
                         Request = request,
-                        Response = string.IsNullOrEmpty(result.Response) ? null : JsonSerializer.Deserialize<object>(result.Response)
+                        Response = result.Response
                     }
                 };
 

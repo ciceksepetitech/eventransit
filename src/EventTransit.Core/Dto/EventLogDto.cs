@@ -13,7 +13,7 @@ namespace EventTransit.Core.Dto
     public class EventDetailDto
     {
         public HttpRequestDto Request { get; set; }
-        public object Response { get; set; }
+        public string Response { get; set; }
         public string Message { get; set; }
     }
 }
