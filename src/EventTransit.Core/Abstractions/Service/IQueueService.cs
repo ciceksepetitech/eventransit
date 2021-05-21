@@ -5,6 +5,6 @@ namespace EventTransit.Core.Abstractions.Service
 {
     public interface IQueueService
     {
-        bool Publish(QueueRequestDto requestDto);
+        Task<bool> PublishAsync(QueueRequestDto requestDto);
     }
 }

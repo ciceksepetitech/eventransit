@@ -14,9 +14,9 @@ namespace EventTransit.Service.Services
             _eventPublisher = eventPublisher;
         }
 
-        public bool Publish(QueueRequestDto requestDto)
+        public async Task<bool> PublishAsync(QueueRequestDto requestDto)
         {
-            _eventPublisher.Publish(requestDto.Name, requestDto.Payload);
+            await _eventPublisher.PublishAsync(requestDto.Name, requestDto.Payload);
             return true;
         }
     }

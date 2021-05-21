@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using EventTransit.Core.Abstractions.Data;
-using EventTransit.Core.Entities;
 using EventTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
 
@@ -8,9 +7,9 @@ namespace EventTransit.Messaging.RabbitMq.Domain
 {
     public class RabbitMqDeclaration : IRabbitMqDeclaration
     {
-        private readonly IMongoRepository<Events> _eventsRepository;
+        private readonly IEventsMongoRepository _eventsRepository;
 
-        public RabbitMqDeclaration(IMongoRepository<Events> eventsRepository)
+        public RabbitMqDeclaration(IEventsMongoRepository eventsRepository)
         {
             _eventsRepository = eventsRepository;
         }
@@ -29,7 +28,7 @@ namespace EventTransit.Messaging.RabbitMq.Domain
                         false,
                         false,
                         null);
-                    channel.QueueBind(service.Name, @event.Name, @event.Name);
+                    channel.QueueBind(service.Name, @event.Name, service.Name);
                 }
             }
         }

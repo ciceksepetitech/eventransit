@@ -1,21 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using EventTransit.Core.Abstractions.Service;
 using EventTransit.Data.Helpers;
 using EventTransit.Messaging.RabbitMq.Helpers;
+using EventTransit.Service.Helpers;
 using EventTransit.Service.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace EventTransit.Api
@@ -33,7 +27,9 @@ namespace EventTransit.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDatabase();
+            services.AddHttpClient();
             services.AddRabbitMq();
+            services.AddMessaging();
 
             services.AddScoped<IQueueService, QueueService>();
             services.AddHostedService<ConsumerService>();

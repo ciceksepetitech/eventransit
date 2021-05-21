@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EventTransit.Data\EventTransit.Data.csproj" />
+      <ProjectReference Include="..\EventTransit.Messaging.Core\EventTransit.Messaging.Core.csproj" />
       <ProjectReference Include="..\EventTransit.Messaging.RabbitMq\EventTransit.Messaging.RabbitMq.csproj" />
     </ItemGroup>
 

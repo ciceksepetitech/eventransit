@@ -15,16 +15,13 @@ namespace EventTransit.Service.Services
             _serviceScope = serviceScope;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = _serviceScope.CreateScope();
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
-                eventConsumer.Consume();
-                
-                await Task.Delay(500, stoppingToken);
-            }
+            var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
+            eventConsumer.Consume();
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTransit.Api.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTransit.Api", "src/EventTransit.Api\EventTransit.Api.csproj", "{E0CB0208-C03D-4860-8B38-8E060B4B8433}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTransit.Messaging.Core", "src\EventTransit.Messaging.Core\EventTransit.Messaging.Core.csproj", "{A35F49C0-CCD7-422B-8D56-DFD0C7BD379B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,7 @@ Global
 		{0F195D84-9C30-4837-BCB4-D0D90A813EED} = {72BBACCC-2F0D-439F-B39C-D95880B01E45}
 		{6932DAE9-5986-4515-9364-79952BA81DB2} = {72BBACCC-2F0D-439F-B39C-D95880B01E45}
 		{E0CB0208-C03D-4860-8B38-8E060B4B8433} = {C9DE5015-7164-484A-A8AB-40FF137FA192}
+		{A35F49C0-CCD7-422B-8D56-DFD0C7BD379B} = {C9DE5015-7164-484A-A8AB-40FF137FA192}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E5BFCB8D-3F4A-4369-82ED-8A786E7B65C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -61,5 +64,9 @@ Global
 		{E0CB0208-C03D-4860-8B38-8E060B4B8433}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0CB0208-C03D-4860-8B38-8E060B4B8433}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0CB0208-C03D-4860-8B38-8E060B4B8433}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A35F49C0-CCD7-422B-8D56-DFD0C7BD379B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A35F49C0-CCD7-422B-8D56-DFD0C7BD379B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A35F49C0-CCD7-422B-8D56-DFD0C7BD379B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A35F49C0-CCD7-422B-8D56-DFD0C7BD379B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,6 @@
 using System;
 using EventTransit.Messaging.RabbitMq.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
@@ -34,9 +35,12 @@ namespace EventTransit.Messaging.RabbitMq.Domain
             }
         }
 
-        public RabbitMqConnectionFactory(IConnectionFactory connectionFactory,
+        public RabbitMqConnectionFactory(IServiceScopeFactory scopeFactory,
             ILogger<RabbitMqConnectionFactory> logger)
         {
+            using var scope = scopeFactory.CreateScope();
+            var connectionFactory = scope.ServiceProvider.GetRequiredService<IConnectionFactory>();
+            
             _producerConnection = new Lazy<IConnection>(connectionFactory.CreateConnection);
             _consumerConnection = new Lazy<IConnection>(connectionFactory.CreateConnection);
             _logger = logger;

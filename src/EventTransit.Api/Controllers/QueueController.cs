@@ -28,7 +28,7 @@ namespace EventTransit.Api.Controllers
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
-            var response = _queueService.Publish(new QueueRequestDto
+            var response = await _queueService.PublishAsync(new QueueRequestDto
                 {
                     Name = name,
                     Payload = payload

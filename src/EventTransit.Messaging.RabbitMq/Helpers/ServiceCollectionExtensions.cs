@@ -14,7 +14,7 @@ namespace EventTransit.Messaging.RabbitMq.Helpers
         {
             services.AddScoped<IEventConsumer, EventConsumer>();
             services.AddScoped<IEventPublisher, EventPublisher>();
-            services.AddScoped<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+            services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
             services.AddScoped<IRabbitMqDeclaration, RabbitMqDeclaration>();
             services.AddScoped(typeof(IConnectionFactory), provider =>
             {
