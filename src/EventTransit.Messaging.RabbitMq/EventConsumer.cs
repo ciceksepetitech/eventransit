@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using EventTransit.Core.Abstractions.Common;
 using EventTransit.Core.Abstractions.Data;
@@ -16,10 +14,10 @@ namespace EventTransit.Messaging.RabbitMq
 {
     public class EventConsumer : IEventConsumer
     {
-        private readonly IModel _channel;
-        private readonly List<string> _queues;
         private readonly IHttpProcessor _httpProcessor;
+        private readonly IEventsMongoRepository _eventsRepository;
         private readonly IEventLog _eventLog;
+        private readonly IModel _channel;
         private readonly ILogger<EventConsumer> _logger;
 
         public EventConsumer(
@@ -29,30 +27,19 @@ namespace EventTransit.Messaging.RabbitMq
             IEventLog eventLog,
             ILogger<EventConsumer> logger)
         {
-            _logger = logger;
-            _eventLog = eventLog;
             _httpProcessor = httpProcessor;
+            _eventsRepository = eventsRepository;
+            _eventLog = eventLog;
+            _logger = logger;
             _channel = connection.ConsumerConnection.CreateModel();
-
-            var events = eventsRepository.GetEvents().Result;
-
-            // TODO Fix fetch queue name
-            _queues = events.SelectMany(x => x.Services.Select(y => y.Name)).ToList();
         }
 
         public void Consume()
         {
             var consumer = new EventingBasicConsumer(_channel);
-
             consumer.Received += ReceiveMessage;
 
-            foreach (var queue in _queues)
-            {
-                // TODO Refactor here
-                _channel.QueueDeclare(queue, false, false, false, null);
-                _channel.QueueBind(queue, "order_created", queue);
-                _channel.BasicConsume(queue, false, consumer);
-            }
+            BindQueues(consumer);
         }
 
         private void ReceiveMessage(object sender, BasicDeliverEventArgs ea)
@@ -61,11 +48,10 @@ namespace EventTransit.Messaging.RabbitMq
             var message = Encoding.UTF8.GetString(messageBody.ToArray());
             var eventName = ea.Exchange;
             var serviceName = ea.RoutingKey;
-            
+
             try
             {
                 _httpProcessor.ProcessAsync(eventName, serviceName, message).GetAwaiter().GetResult();
-
                 _channel.BasicAck(ea.DeliveryTag, false);
             }
             catch (Exception e)
@@ -88,6 +74,22 @@ namespace EventTransit.Messaging.RabbitMq
                         Message = e.Message
                     }
                 });
+            }
+        }
+        
+        private void BindQueues(EventingBasicConsumer consumer)
+        {
+            var events = _eventsRepository.GetEvents().Result;
+
+            foreach (var @event in events)
+            {
+                var eventName = @event.Name;
+                foreach (var service in @event.Services)
+                {
+                    var serviceName = service.Name;
+                    _channel.QueueBind(serviceName, eventName, serviceName);
+                    _channel.BasicConsume(serviceName, false, consumer);
+                }
             }
         }
     }
