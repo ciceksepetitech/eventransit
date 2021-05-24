@@ -1,46 +1,53 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EvenTransit.Core.Abstractions.Common;
-using EvenTransit.Core.Abstractions.Data;
+using EvenTransit.Core.Abstractions.Data.DataServices;
+using EvenTransit.Core.Constants;
+using EvenTransit.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
+using RabbitMQ.Client;
 
 namespace EvenTransit.Messaging.RabbitMq
 {
     public class EventPublisher : IEventPublisher
     {
-        private readonly IRabbitMqConnectionFactory _connection;
-        private readonly IEventsMongoRepository _eventsRepository;
+        private readonly IModel _channel;
+        private readonly IBasicProperties _properties;
+        private readonly IEventsDataService _eventsDataService;
 
-        public EventPublisher(IRabbitMqConnectionFactory connection, IEventsMongoRepository eventsRepository)
+        public EventPublisher(IRabbitMqConnectionFactory connection, IEventsDataService eventsDataService)
         {
-            _connection = connection;
-            _eventsRepository = eventsRepository;
+            _eventsDataService = eventsDataService;
+
+            _channel = connection.ProducerConnection.CreateModel();
+            _properties = _channel.CreateBasicProperties();
+            _properties.Persistent = true;
         }
-        
+
         public async Task PublishAsync(string name, dynamic payload)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
-
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
-            var properties = channel.CreateBasicProperties();
-            properties.Persistent = true;
-
             var queues = await GetQueues(name);
 
             foreach (var queue in queues)
             {
-                channel.BasicPublish(name, queue, false, properties, body);
+                _channel.BasicPublish(name, queue, false, _properties, body);
             }
+        }
+
+        public void RegisterNewServiceAsync(NewServiceDto data)
+        {
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
+
+            _channel.BasicPublish(RabbitMqConstants.NewServiceQueue, RabbitMqConstants.NewServiceQueue, false,
+                _properties, body);
         }
 
         private async Task<List<string>> GetQueues(string eventName)
         {
-            // TODO Cache queues
-            var queues = await _eventsRepository.GetEvent(eventName);
-            return queues.Services.Select(x => x.Name).ToList();
+            return await _eventsDataService.GetQueueNamesByEventAsync(eventName);
         }
     }
 }

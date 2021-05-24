@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using EvenTransit.Core.Abstractions.Data;
+using EvenTransit.Core.Constants;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
 
@@ -31,6 +32,10 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                     channel.QueueBind(service.Name, @event.Name, service.Name);
                 }
             }
+
+            channel.ExchangeDeclare(RabbitMqConstants.NewServiceQueue, ExchangeType.Direct, true, false, null);
+            channel.QueueDeclare(RabbitMqConstants.NewServiceQueue, false, false, false, null);
+            channel.QueueBind(RabbitMqConstants.NewServiceQueue, RabbitMqConstants.NewServiceQueue, string.Empty);
         }
     }
 }

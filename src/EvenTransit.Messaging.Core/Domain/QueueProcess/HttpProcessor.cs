@@ -47,7 +47,7 @@ namespace EvenTransit.Messaging.Core.Domain.QueueProcess
                     Details = new EventDetailDto
                     {
                         Request = request,
-                        Response = result.Response
+                        Response = result
                     }
                 };
 

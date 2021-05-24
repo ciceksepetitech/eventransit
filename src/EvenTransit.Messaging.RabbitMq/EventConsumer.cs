@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using EvenTransit.Core.Abstractions.Common;
 using EvenTransit.Core.Abstractions.Data;
 using EvenTransit.Core.Abstractions.QueueProcess;
+using EvenTransit.Core.Constants;
 using EvenTransit.Core.Dto;
+using EvenTransit.Core.Entities;
 using EvenTransit.Core.Enums;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -20,6 +24,8 @@ namespace EvenTransit.Messaging.RabbitMq
         private readonly IEventLog _eventLog;
         private readonly IModel _channel;
         private readonly ILogger<EventConsumer> _logger;
+        private AsyncEventingBasicConsumer _eventConsumer;
+        private EventingBasicConsumer _newServiceConsumer;
 
         public EventConsumer(
             IRabbitMqConnectionFactory connection,
@@ -35,15 +41,18 @@ namespace EvenTransit.Messaging.RabbitMq
             _channel = connection.ConsumerConnection.CreateModel();
         }
 
-        public void Consume()
+        public async Task ConsumeAsync()
         {
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-            consumer.Received += ReceiveMessageAsync;
-
-            BindQueues(consumer);
+            _eventConsumer = new AsyncEventingBasicConsumer(_channel);
+            _newServiceConsumer = new EventingBasicConsumer(_channel);
+            
+            _eventConsumer.Received += OnReceiveMessageAsync;
+            _newServiceConsumer.Received += OnNewServiceCreatedAsync;
+            
+            await BindQueues();
         }
 
-        private async Task ReceiveMessageAsync(object sender, BasicDeliverEventArgs ea)
+        private async Task OnReceiveMessageAsync(object sender, BasicDeliverEventArgs ea)
         {
             var messageBody = ea.Body;
             var message = Encoding.UTF8.GetString(messageBody.ToArray());
@@ -77,10 +86,41 @@ namespace EvenTransit.Messaging.RabbitMq
                 });
             }
         }
-        
-        private void BindQueues(AsyncEventingBasicConsumer consumer)
+
+        private void OnNewServiceCreatedAsync(object sender, BasicDeliverEventArgs ea)
         {
-            var events = _eventsRepository.GetEvents().Result;
+            var messageBody = ea.Body;
+            var message = Encoding.UTF8.GetString(messageBody.ToArray());
+
+            if (string.IsNullOrEmpty(message)) return;
+
+            var serviceInfo = JsonSerializer.Deserialize<NewServiceDto>(message);
+
+            if (serviceInfo == null) return;
+            
+            var eventName = serviceInfo.EventName;
+            var serviceName = serviceInfo.ServiceName;
+            
+            try
+            {
+                _channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
+                _channel.QueueDeclare(serviceName, false, false, false, null);
+                _channel.QueueBind(serviceName, eventName, string.Empty);
+                _channel.BasicConsume(serviceName, false, _eventConsumer);
+                
+                _channel.BasicAck(ea.DeliveryTag, false);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("New service creation fail!", e);
+
+                _channel.BasicNack(ea.DeliveryTag, false, false);
+            }
+        }
+        
+        private async Task BindQueues()
+        {
+            var events = await _eventsRepository.GetEvents();
 
             foreach (var @event in events)
             {
@@ -89,9 +129,12 @@ namespace EvenTransit.Messaging.RabbitMq
                 {
                     var serviceName = service.Name;
                     _channel.QueueBind(serviceName, eventName, serviceName);
-                    _channel.BasicConsume(serviceName, false, consumer);
+                    _channel.BasicConsume(serviceName, false, _eventConsumer);
                 }
             }
+            
+            _channel.QueueBind(RabbitMqConstants.NewServiceQueue, RabbitMqConstants.NewServiceQueue, string.Empty);
+            _channel.BasicConsume(RabbitMqConstants.NewServiceQueue, false, _newServiceConsumer);
         }
     }
 }

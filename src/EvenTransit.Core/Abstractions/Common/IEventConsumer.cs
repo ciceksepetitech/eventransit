@@ -4,6 +4,6 @@ namespace EvenTransit.Core.Abstractions.Common
 {
     public interface IEventConsumer
     {
-        void Consume();
+        Task ConsumeAsync();
     }
 }

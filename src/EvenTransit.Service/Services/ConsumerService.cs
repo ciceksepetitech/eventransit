@@ -15,13 +15,12 @@ namespace EvenTransit.Service.Services
             _serviceScope = serviceScope;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = _serviceScope.CreateScope();
             var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
-            eventConsumer.Consume();
-
-            return Task.CompletedTask;
+            
+            await eventConsumer.ConsumeAsync();
         }
     }
 }

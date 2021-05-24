@@ -13,6 +13,7 @@ namespace EvenTransit.Service.Helpers
             services.AddScoped<IEventLog, EventLog>();
             services.AddScoped<IHttpRequestSender, HttpRequestSender>();
             services.AddScoped<IHttpProcessor, HttpProcessor>();
+            services.AddScoped<ICacheService, CacheService>();
 
             return services;
         }

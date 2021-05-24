@@ -13,7 +13,7 @@ namespace EvenTransit.Core.Dto
     public class EventDetailDto
     {
         public HttpRequestDto Request { get; set; }
-        public string Response { get; set; }
+        public HttpResponseDto Response { get; set; }
         public string Message { get; set; }
     }
 }
