@@ -7,9 +7,9 @@ namespace EvenTransit.Core.Domain.Common
 {
     public class EventLog : IEventLog
     {
-        private readonly ILogsMongoRepository _logsRepository;
+        private readonly ILogsRepository _logsRepository;
 
-        public EventLog(ILogsMongoRepository logsRepository)
+        public EventLog(ILogsRepository logsRepository)
         {
             _logsRepository = logsRepository;
         }

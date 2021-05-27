@@ -29,6 +29,7 @@ namespace EvenTransit.Api
             services.AddDatabase();
             services.AddHttpClient();
             services.AddRabbitMq();
+            services.AddCaching();
             services.AddMessaging();
 
             services.AddScoped<IQueueService, QueueService>();

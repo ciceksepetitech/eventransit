@@ -6,7 +6,7 @@ using EvenTransit.Core.Entities;
 
 namespace EvenTransit.Data.Repositories
 {
-    public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsMongoRepository
+    public class LogsRepository : BaseMongoRepository<Logs>, ILogsRepository
     {
         public async Task InsertLog(LogsDto model)
         {

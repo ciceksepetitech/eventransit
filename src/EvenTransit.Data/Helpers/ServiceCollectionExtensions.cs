@@ -10,8 +10,8 @@ namespace EvenTransit.Data.Helpers
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            services.AddScoped<IEventsMongoRepository, EventsMongoRepository>();
-            services.AddScoped<ILogsMongoRepository, LogsMongoRepository>();
+            services.AddScoped<IEventsRepository, EventsMongoRepository>();
+            services.AddScoped<ILogsRepository, LogsRepository>();
             services.AddScoped<IEventsDataService, EventsDataService>();
             
             return services;

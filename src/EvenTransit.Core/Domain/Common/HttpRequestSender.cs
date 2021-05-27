@@ -28,7 +28,7 @@ namespace EvenTransit.Core.Domain.Common
             {
                 foreach (var header in request.Headers)
                 {
-                    requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value.ToString());
                 }
             }
 

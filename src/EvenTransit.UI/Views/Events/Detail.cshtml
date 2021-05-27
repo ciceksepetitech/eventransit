@@ -1,0 +1,46 @@
+@model EvenTransit.Core.Dto.Service.EventDto
+@{
+    ViewData["Title"] = Model.Name;
+    var index = 1;
+}
+
+<h2 class="pb-2 border-bottom">@Model.Name Details</h2>
+<table class="table table-hover table-bordered table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" style="width: 4%;">#</th>
+        <th>Service Name</th>
+        <th>Url</th>
+        <th>Method</th>
+        <th>Timeout</th>
+        <th>Headers</th>
+    </tr>
+    </thead>
+    @if (Model.Services != null)
+    {
+        <tbody>
+        @foreach (var service in Model.Services)
+        {
+            <tr>
+                <td class="text-center">@index</td>
+                <td>@service.Name</td>
+                <td><kbd>@service.Url</kbd></td>
+                <td>@service.Method</td>
+                <td>@service.Timeout seconds</td>
+                <td>
+                    @if (service.Headers != null)
+                    {
+                        foreach (var header in service.Headers)
+                        {
+                            @header.Key<text> - </text>
+                            @header.Value<br/>
+                        }
+                    }
+                </td>
+            </tr>
+
+            index++;
+        }
+        </tbody>
+    }
+</table>

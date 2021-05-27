@@ -5,15 +5,17 @@ using EvenTransit.Core.Abstractions.Common;
 using EvenTransit.Core.Abstractions.Data;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Core.Constants;
+using EvenTransit.Core.Entities;
 
 namespace EvenTransit.Data.DataServices
 {
     public class EventsDataService : IEventsDataService
     {
-        private readonly IEventsMongoRepository _eventsRepository;
+        private const int CacheExpireTime = 60;
+        private readonly IEventsRepository _eventsRepository;
         private readonly ICacheService _cacheService;
 
-        public EventsDataService(IEventsMongoRepository eventsRepository, ICacheService cacheService)
+        public EventsDataService(IEventsRepository eventsRepository, ICacheService cacheService)
         {
             _eventsRepository = eventsRepository;
             _cacheService = cacheService;
@@ -22,18 +24,29 @@ namespace EvenTransit.Data.DataServices
         public async Task<List<string>> GetQueueNamesByEventAsync(string eventName)
         {
             var key = string.Format(CacheConstants.QueuesByEventKey, eventName);
-            var queueNames =
-                await _cacheService.GetAsync<List<string>>(key);
-
-            if (queueNames == null)
+            var queueNames = await _cacheService.GetAsync(key, CacheExpireTime, async () =>
             {
-                var queues = await _eventsRepository.GetEvent(eventName);
-                queueNames = queues.Services.Select(x => x.Name).ToList();
+                var queues = await _eventsRepository.GetEventAsync(x => x.Name == eventName);
+                var data = queues.Services.Select(x => x.Name).ToList();
 
-                await _cacheService.SetAsync(key, queueNames);
-            }
+                return data;
+            });
 
             return queueNames;
+        }
+
+        public async Task<List<Event>> GetEventsAsync()
+        {
+            var key = CacheConstants.EventsKey;
+            var events = await _cacheService.GetAsync(key, CacheExpireTime,
+                async () => await _eventsRepository.GetEventsAsync());
+
+            return events;
+        }
+
+        public async Task<Event> GetEventAsync(string id)
+        {
+            return await _eventsRepository.GetEventAsync(x => x._id == id);
         }
     }
 }

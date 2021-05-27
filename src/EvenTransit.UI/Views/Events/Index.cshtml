@@ -1,0 +1,28 @@
+@model List<EvenTransit.Core.Dto.Service.EventDto>
+@{
+    ViewData["Title"] = "Events";
+    var index = 1;
+}
+
+<h2 class="pb-2 border-bottom">Events</h2>
+<table class="table table-hover table-bordered table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" style="width: 4%">#</th>
+        <th>Event Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var @event in Model)
+    {
+        <tr>
+            <td class="text-center">@index</td>
+            <td>
+                @Html.ActionLink(@event.Name, "Detail", new {id = @event.Id}, new {@class = "link-secondary"})
+            </td>
+        </tr>
+
+        index++;
+    }
+    </tbody>
+</table>

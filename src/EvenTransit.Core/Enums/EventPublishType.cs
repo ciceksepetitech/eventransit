@@ -1,4 +1,4 @@
-namespace EvenTransit.Core.Constants
+namespace EvenTransit.Core.Enums
 {
     public enum EventPublishType
     {

@@ -29,7 +29,8 @@
         "RABBITMQ_USERNAME": "guest",
         "RABBITMQ_PASSWORD": "guest",
         "MONGO_HOST": "mongodb://localhost:27017",
-        "MONGO_DATABASE": "EvenTransit"
+        "MONGO_DATABASE": "EvenTransit",
+        "REDIS_CS": "localhost"
       }
     }
   }

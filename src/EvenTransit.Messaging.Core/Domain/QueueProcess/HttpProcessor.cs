@@ -9,13 +9,13 @@ namespace EvenTransit.Messaging.Core.Domain.QueueProcess
 {
     public class HttpProcessor : IHttpProcessor
     {
-        private readonly IEventsMongoRepository _eventsRepository;
+        private readonly IEventsRepository _eventsRepository;
         private readonly IHttpRequestSender _httpRequestSender;
         private readonly IEventLog _eventLog;
 
         public HttpProcessor(
             IHttpRequestSender httpRequestSender, 
-            IEventsMongoRepository eventsRepository, 
+            IEventsRepository eventsRepository, 
             IEventLog eventLog)
         {
             _httpRequestSender = httpRequestSender;
@@ -25,7 +25,7 @@ namespace EvenTransit.Messaging.Core.Domain.QueueProcess
 
         public async Task ProcessAsync(string eventName, string serviceName, string message)
         {
-            var services = await _eventsRepository.GetServicesByEvent(eventName, serviceName);
+            var services = await _eventsRepository.GetServicesByEventAsync(eventName, serviceName);
             foreach (var service in services)
             {
                 var request = new HttpRequestDto

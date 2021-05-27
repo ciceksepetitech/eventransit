@@ -8,16 +8,16 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
 {
     public class RabbitMqDeclaration : IRabbitMqDeclaration
     {
-        private readonly IEventsMongoRepository _eventsRepository;
+        private readonly IEventsRepository _eventsRepository;
 
-        public RabbitMqDeclaration(IEventsMongoRepository eventsRepository)
+        public RabbitMqDeclaration(IEventsRepository eventsRepository)
         {
             _eventsRepository = eventsRepository;
         }
 
         public async Task DeclareQueuesAsync(IModel channel)
         {
-            var events = await _eventsRepository.GetEvents();
+            var events = await _eventsRepository.GetEventsAsync();
             foreach (var @event in events)
             {
                 channel.ExchangeDeclare(@event.Name, ExchangeType.Direct, true, false, null);

@@ -26,13 +26,19 @@ namespace EvenTransit.Core.Domain.Common
             await _db.StringSetAsync(key, body, expireTime);
         }
 
-        public async Task<T> GetAsync<T>(string key, T defaultValue = default)
+        public async Task<T> GetAsync<T>(string key, int expireMinutes, Func<Task<T>> acquire)
         {
             var data = await _db.StringGetAsync(key);
-            if (string.IsNullOrEmpty(data)) return defaultValue;
+            if (string.IsNullOrEmpty(data))
+            {
+                var functionResult = await acquire();
+                await SetAsync(key, functionResult, expireMinutes);
+
+                return functionResult;
+            }
 
             var body = JsonSerializer.Deserialize<T>(data);
-            return body ?? defaultValue;
+            return body ?? default;
         }
 
         public async Task DeleteAsync(string key)

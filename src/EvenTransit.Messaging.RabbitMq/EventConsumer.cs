@@ -20,7 +20,7 @@ namespace EvenTransit.Messaging.RabbitMq
     public class EventConsumer : IEventConsumer
     {
         private readonly IHttpProcessor _httpProcessor;
-        private readonly IEventsMongoRepository _eventsRepository;
+        private readonly IEventsRepository _eventsRepository;
         private readonly IEventLog _eventLog;
         private readonly IModel _channel;
         private readonly ILogger<EventConsumer> _logger;
@@ -30,7 +30,7 @@ namespace EvenTransit.Messaging.RabbitMq
         public EventConsumer(
             IRabbitMqConnectionFactory connection,
             IHttpProcessor httpProcessor,
-            IEventsMongoRepository eventsRepository,
+            IEventsRepository eventsRepository,
             IEventLog eventLog,
             ILogger<EventConsumer> logger)
         {
@@ -120,7 +120,7 @@ namespace EvenTransit.Messaging.RabbitMq
         
         private async Task BindQueues()
         {
-            var events = await _eventsRepository.GetEvents();
+            var events = await _eventsRepository.GetEventsAsync();
 
             foreach (var @event in events)
             {
