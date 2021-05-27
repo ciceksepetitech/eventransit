@@ -1,4 +1,4 @@
-@model List<EvenTransit.Core.Dto.Service.EventDto>
+@model List<EvenTransit.Core.Dto.UI.EventDto>
 @{
     ViewData["Title"] = "Events";
     var index = 1;
@@ -8,7 +8,7 @@
 <table class="table table-hover table-bordered table-striped">
     <thead>
     <tr>
-        <th class="text-center" style="width: 4%">#</th>
+        <th class="text-center index-column">#</th>
         <th>Event Name</th>
     </tr>
     </thead>

@@ -1,14 +1,26 @@
-@model EvenTransit.Core.Dto.Service.EventDto
+@model EvenTransit.Core.Dto.UI.EventDto
 @{
     ViewData["Title"] = Model.Name;
-    var index = 1;
 }
 
-<h2 class="pb-2 border-bottom">@Model.Name Details</h2>
+<div class="container pb-2 mb-2 border-bottom">
+    <div class="row">
+        <div class="col">
+            <h2 class="mb-0">
+                <code>@Model.Name</code> Services
+            </h2>
+        </div>
+        <div class="col">
+            <button class="btn btn-sm btn-success float-end" data-bs-toggle="modal" data-bs-target="#newServiceModal">
+                <i class="fa fa-plus-circle"></i> Add New Service
+            </button>
+        </div>
+    </div>
+</div>
 <table class="table table-hover table-bordered table-striped">
     <thead>
     <tr>
-        <th class="text-center" style="width: 4%;">#</th>
+        <th class="text-center index-column">#</th>
         <th>Service Name</th>
         <th>Url</th>
         <th>Method</th>
@@ -22,25 +34,94 @@
         @foreach (var service in Model.Services)
         {
             <tr>
-                <td class="text-center">@index</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#newServiceModal" title="Edit">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
                 <td>@service.Name</td>
-                <td><kbd>@service.Url</kbd></td>
+                <td>
+                    <kbd>@service.Url</kbd>
+                </td>
                 <td>@service.Method</td>
-                <td>@service.Timeout seconds</td>
+                <td>@service.Timeout second(s)</td>
                 <td>
                     @if (service.Headers != null)
                     {
                         foreach (var header in service.Headers)
                         {
-                            @header.Key<text> - </text>
-                            @header.Value<br/>
+                            <code class="d-block">@header.Key - @header.Value</code>
                         }
                     }
                 </td>
             </tr>
-
-            index++;
         }
         </tbody>
     }
 </table>
+
+<div class="modal fade" id="newServiceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add New Service to <code>@Model.Name</code></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="EventName" class="form-label">Event Name</label>
+                    <input type="text" class="form-control" id="EventName" value="@Model.Name" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label for="ServiceName" class="form-label">Service Name</label>
+                    <input type="text" class="form-control" id="ServiceName">
+                </div>
+                <div class="mb-3">
+                    <label for="Url" class="form-label">Url</label>
+                    <input type="text" class="form-control" id="Url">
+                </div>
+                <div class="mb-3">
+                    <label for="Method" class="form-label">Method</label>
+                    <select class="form-control" id="Method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="PATCH">PATCH</option>
+                        <option value="DELETE">DELETE</option>
+                        <option value="HEAD">HEAD</option>
+                        <option value="OPTIONS">OPTIONS</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="Timeout" class="form-label">Timeout</label>
+                    <input type="number" class="form-control" id="Timeout" min="0">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Headers</label>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-check-circle"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
