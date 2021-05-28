@@ -48,5 +48,15 @@ namespace EvenTransit.Data.DataServices
         {
             return await _eventsRepository.GetEventAsync(x => x._id == id);
         }
+
+        public async Task AddServiceToEvent(string eventId, Service serviceData)
+        {
+            await _eventsRepository.AddServiceToEvent(eventId, serviceData);
+        }
+        
+        public async Task UpdateServiceOnEvent(string eventId, Service serviceData)
+        {
+            await _eventsRepository.UpdateServiceOnEvent(eventId, serviceData);
+        }
     }
 }

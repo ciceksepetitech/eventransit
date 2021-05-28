@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Core.Abstractions.Data.DataServices;
@@ -28,6 +29,34 @@ namespace EvenTransit.Service.Services
         {
             var eventDetails = await _eventDataService.GetEventAsync(id);
             return _mapper.Map<EventDto>(eventDetails);
+        }
+
+        public async Task SaveService(SaveServiceDto model)
+        {
+            var eventDetails = await _eventDataService.GetEventAsync(model.EventId);
+
+            if (eventDetails == null) return;
+
+            // TODO Automapper
+            var serviceData = new Core.Entities.Service
+            {
+                Name = model.ServiceName,
+                Url = model.Url,
+                Method = model.Method,
+                Timeout = model.Timeout,
+                Headers = model.Headers
+            };
+
+            var service = eventDetails.Services.FirstOrDefault(x => x.Name == model.ServiceName);
+
+            if (service == null)
+            {
+                await _eventDataService.AddServiceToEvent(model.EventId, serviceData);
+            }
+            else
+            {
+                await _eventDataService.UpdateServiceOnEvent(model.EventId, serviceData);
+            }
         }
     }
 }

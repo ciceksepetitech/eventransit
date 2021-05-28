@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Core.Abstractions.Service;
-using EvenTransit.Core.Dto.UI;
+using EvenTransit.Core.Dto.Service;
+using EvenTransit.UI.Models;
 using Microsoft.AspNetCore.Mvc;
+using EventDto = EvenTransit.Core.Dto.UI.EventDto;
 
 namespace EvenTransit.UI.Controllers
 {
@@ -35,6 +37,15 @@ namespace EvenTransit.UI.Controllers
             var data = _mapper.Map<EventDto>(eventDetails);
             
             return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveService([FromBody]SaveServiceModel model)
+        {
+            var data = _mapper.Map<SaveServiceDto>(model);
+            await _eventService.SaveService(data);
+            
+            return Json(new {success = true});
         }
     }
 }

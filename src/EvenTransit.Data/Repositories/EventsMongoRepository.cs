@@ -30,5 +30,27 @@ namespace EvenTransit.Data.Repositories
             
             return @event.Services.Where(x => x.Name == serviceName).ToList();
         }
+
+        public async Task AddServiceToEvent(string eventId, Service serviceData)
+        {
+            // TODO Refactor
+            var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
+            @event.Services.Add(serviceData);
+            
+            await Collection.ReplaceOneAsync(x => x._id == eventId, @event);
+        }
+
+        public async Task UpdateServiceOnEvent(string eventId, Service serviceData)
+        {
+            // TODO Refactor
+            var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
+            var filter = Builders<Event>.Filter.Eq(x => x._id, eventId)
+                         & Builders<Event>.Filter.ElemMatch(x => x.Services, Builders<Service>.Filter.Eq(x => x.Name, serviceData.Name));
+
+            var serviceIndex = @event.Services.FindIndex(x => x.Name == serviceData.Name);
+            @event.Services[serviceIndex] = serviceData;
+            
+            await Collection.ReplaceOneAsync(filter, @event);
+        }
     }
 }
