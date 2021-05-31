@@ -23,7 +23,7 @@ namespace EvenTransit.UI
             services.AddCaching();
             services.AddDatabase();
             services.AddServices();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
