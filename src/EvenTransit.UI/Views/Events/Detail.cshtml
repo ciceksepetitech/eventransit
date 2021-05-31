@@ -24,7 +24,7 @@
         <th>Service Name</th>
         <th>Url</th>
         <th>Method</th>
-        <th>Timeout</th>
+        <th>Timeout <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Seconds"></i></th>
         <th>Headers</th>
     </tr>
     </thead>
@@ -44,7 +44,7 @@
                     <kbd>@service.Url</kbd>
                 </td>
                 <td>@service.Method</td>
-                <td>@service.Timeout second(s)</td>
+                <td class="text-center">@service.Timeout</td>
                 <td>
                     @if (service.Headers != null)
                     {
@@ -59,6 +59,8 @@
         </tbody>
     }
 </table>
+
+<!-- TODO Move to partial view -->
 
 <form id="save-service">
     <div class="modal fade" id="newServiceModal" tabindex="-1" aria-hidden="true">
@@ -104,7 +106,7 @@
                             <thead>
                             <tr>
                                 <th class="index-column text-center">
-                                    <button type="button" class="btn btn-sm btn-success">
+                                    <button type="button" class="btn btn-sm btn-success" id="add-header">
                                         <i class="fa fa-plus"></i>
                                     </button>
                                 </th>
@@ -112,21 +114,7 @@
                                 <th class="align-middle">Value</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control form-control-sm"/>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control form-control-sm"/>
-                                </td>
-                            </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
