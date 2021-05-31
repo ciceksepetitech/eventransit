@@ -58,5 +58,13 @@ namespace EvenTransit.Data.DataServices
         {
             await _eventsRepository.UpdateServiceOnEvent(eventId, serviceData);
         }
+
+        public async Task<Service> GetServiceDetails(string eventId, string serviceName)
+        {
+            var eventDetails = await _eventsRepository.GetEventAsync(x => x._id == eventId);
+            var serviceDetails = eventDetails?.Services?.FirstOrDefault(x => x.Name == serviceName);
+
+            return serviceDetails;
+        }
     }
 }

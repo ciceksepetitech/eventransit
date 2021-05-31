@@ -1,3 +1,4 @@
+@using Microsoft.Extensions.Internal
 @model EvenTransit.Core.Dto.UI.EventDto
 @{
     ViewData["Title"] = Model.Name;
@@ -35,7 +36,7 @@
         {
             <tr>
                 <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#newServiceModal" title="Edit">
+                    <button type="button" class="btn btn-sm btn-warning" title="Edit" onclick="editService('@Model.Id', '@service.Name')">
                         <i class="fa fa-edit"></i>
                     </button>
                 </td>

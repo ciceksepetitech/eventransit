@@ -39,6 +39,15 @@ namespace EvenTransit.UI.Controllers
             return View(data);
         }
 
+        [Route("Events/GetServiceDetails/{eventId}/{serviceName}")]
+        public async Task<IActionResult> GetServiceDetails(string eventId, string serviceName)
+        {
+            var serviceData = await _eventService.GetServiceDetails(eventId, serviceName);
+            var data = _mapper.Map<ServiceModel>(serviceData);
+            
+            return Json(data);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaveService([FromBody]SaveServiceModel model)
         {
