@@ -1,7 +1,7 @@
-@using Microsoft.Extensions.Internal
 @model EvenTransit.Core.Dto.UI.EventDto
 @{
     ViewData["Title"] = Model.Name;
+    var index = 1;
 }
 
 <div class="container pb-2 mb-2 border-bottom">
@@ -21,12 +21,13 @@
 <table class="table table-hover table-bordered table-striped">
     <thead>
     <tr>
-        <th class="text-center index-column">#</th>
+        <th class="index-column">#</th>
         <th>Service Name</th>
         <th>Url</th>
         <th>Method</th>
         <th>Timeout <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Seconds"></i></th>
         <th>Headers</th>
+        <th>Actions</th>
     </tr>
     </thead>
     @if (Model.Services != null)
@@ -35,11 +36,8 @@
         @foreach (var service in Model.Services)
         {
             <tr>
-                <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-warning" title="Edit" onclick="editService('@Model.Id', '@service.Name')">
-                        <i class="fa fa-edit"></i>
-                    </button>
-                </td>
+
+                <td>@index</td>
                 <td>@service.Name</td>
                 <td>
                     <kbd>@service.Url</kbd>
@@ -55,78 +53,23 @@
                         }
                     }
                 </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-warning" title="Edit" onclick="editService('@Model.Id', '@service.Name')">
+                        <i class="fa fa-edit fa-fw"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" title="Delete" onclick="deleteService('@Model.Id', '@service.Name')">
+                        <i class="fa fa-times fa-fw"></i>
+                    </button>
+                </td>
             </tr>
+
+            index++;
         }
         </tbody>
     }
 </table>
 
-<!-- TODO Move to partial view -->
-
-<form id="save-service">
-    <div class="modal fade" id="newServiceModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add New Service to <code>@Model.Name</code></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="EventName" class="form-label">Event Name</label>
-                        <input type="text" class="form-control" id="EventName" value="@Model.Name" disabled="disabled">
-                        <input type="hidden" name="EventId" value="@Model.Id">
-                    </div>
-                    <div class="mb-3">
-                        <label for="ServiceName" class="form-label">Service Name</label>
-                        <input type="text" class="form-control" id="ServiceName" name="ServiceName">
-                    </div>
-                    <div class="mb-3">
-                        <label for="Url" class="form-label">Url</label>
-                        <input type="text" class="form-control" id="Url" name="Url">
-                    </div>
-                    <div class="mb-3">
-                        <label for="Method" class="form-label">Method</label>
-                        <select class="form-control" id="Method" name="Method">
-                            <option value="GET">GET</option>
-                            <option value="POST">POST</option>
-                            <option value="PUT">PUT</option>
-                            <option value="PATCH">PATCH</option>
-                            <option value="DELETE">DELETE</option>
-                            <option value="HEAD">HEAD</option>
-                            <option value="OPTIONS">OPTIONS</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="Timeout" class="form-label">Timeout</label>
-                        <input type="number" class="form-control" id="Timeout" name="Timeout" min="0">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Headers</label>
-                        <table class="table table-bordered table-hover" id="headers">
-                            <thead>
-                            <tr>
-                                <th class="index-column text-center">
-                                    <button type="button" class="btn btn-sm btn-success" id="add-header">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
-                                </th>
-                                <th class="align-middle">Key</th>
-                                <th class="align-middle">Value</th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-sm btn-primary" id="save"><i class="fa fa-check-circle"></i> Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
+@await Html.PartialAsync("Partials/_SaveService")
 
 @section Scripts
 {

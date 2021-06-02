@@ -39,6 +39,11 @@ namespace EvenTransit.UI.Controllers
             return View(data);
         }
 
+        public async Task<IActionResult> Delete()
+        {
+            return Json(new {success = true});
+        }
+
         [Route("Events/GetServiceDetails/{eventId}/{serviceName}")]
         public async Task<IActionResult> GetServiceDetails(string eventId, string serviceName)
         {
