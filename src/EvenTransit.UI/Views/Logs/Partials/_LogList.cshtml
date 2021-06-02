@@ -1,0 +1,36 @@
+@model EvenTransit.UI.Models.Logs.LogsViewModel
+@{
+    var index = 1;
+}
+
+<table class="table table-hover table-bordered table-striped mt-3">
+    <thead>
+    <tr>
+        <th class="index-column">#</th>
+        <th>EventName</th>
+        <th>ServiceName</th>
+        <th>LogType</th>
+    </tr>
+    </thead>
+    @* @if (Model.LogList != null) *@
+    @* { *@
+    @*     <tbody> *@
+    @*     @foreach (var service in Model.LogList) *@
+    @*     { *@
+    @*         <tr> *@
+    @*             <td>1</td> *@
+    @*             <td>order_created</td> *@
+    @*             <td>cargo</td> *@
+    @*             <td>Success</td> *@
+    @*         </tr> *@
+    @*         index++; *@
+    @*     } *@
+    @*     </tbody> *@
+    @* } *@
+    <tr>
+        <td>1</td>
+        <td>order_created</td>
+        <td>cargo</td>
+        <td>Success</td>
+    </tr>
+</table>

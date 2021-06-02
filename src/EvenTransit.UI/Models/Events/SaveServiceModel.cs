@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace EvenTransit.UI.Models
+namespace EvenTransit.UI.Models.Events
 {
     public class SaveServiceModel
     {
