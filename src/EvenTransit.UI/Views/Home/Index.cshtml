@@ -2,7 +2,59 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <canvas id="jobStatistics" height="600"></canvas>
+    </div>
+  </div>
 </div>
+@section Scripts
+{
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+
+  <script>
+    var ctx = document.getElementById('jobStatistics').getContext('2d');
+    
+    const labels = ["01:00", "02:00", "03:00", "04:00", "05:00"];
+    
+    const data = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Succeeded',
+          data: [10, 20, 15, 40, 50],
+          borderColor: "rgb(25, 135, 84)",
+          backgroundColor: "rgb(25, 135, 84, 0.5)",
+        },
+        {
+          label: 'Failed',
+          data: [1, 5, 30, 2, 15],
+          borderColor: "rgb(245, 71, 72)",
+          backgroundColor: "rgba(245, 71, 72, 0.5)",
+        }
+      ]
+    };
+    
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Job Statistics'
+          }
+        }
+      },
+    };
+    
+    var myChart = new Chart(ctx, config);
+   
+    </script>
+}
