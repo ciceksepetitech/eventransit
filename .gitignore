@@ -389,3 +389,6 @@ FodyWeavers.xsd
 
 # MacOS
 .DS_Store
+
+# Project specific
+!Logs/
