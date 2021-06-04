@@ -42,7 +42,6 @@ namespace EvenTransit.Service.Services
             {
                 Name = model.ServiceName,
                 Url = model.Url,
-                Method = model.Method,
                 Timeout = model.Timeout,
                 Headers = model.Headers
             };

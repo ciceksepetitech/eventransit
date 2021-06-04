@@ -28,11 +28,11 @@ namespace EvenTransit.Core.Domain.Common
             {
                 foreach (var header in request.Headers)
                 {
-                    requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value.ToString());
+                    requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
 
-            requestMessage.Method = new HttpMethod(request.Method);
+            requestMessage.Method = HttpMethod.Post;
 
             var content = new StringContent(request.Body, Encoding.UTF8);
             requestMessage.Content = content;

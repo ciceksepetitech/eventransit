@@ -7,7 +7,6 @@ namespace EvenTransit.Core.Entities
     {
         public string Name { get; set; }
         public string Url { get; set; }
-        public string Method { get; set; }
         public int Timeout { get; set; }
         
         [BsonElement]
