@@ -14,10 +14,10 @@ namespace EvenTransit.Service.Services
             _eventPublisher = eventPublisher;
         }
 
-        public async Task<bool> PublishAsync(QueueRequestDto requestDto)
+        public Task<bool> PublishAsync(QueueRequestDto requestDto)
         {
-            await _eventPublisher.PublishAsync(requestDto.Name, requestDto.Payload);
-            return true;
+            _eventPublisher.Publish(requestDto.Name, requestDto.Payload);
+            return Task.FromResult(true);
         }
     }
 }

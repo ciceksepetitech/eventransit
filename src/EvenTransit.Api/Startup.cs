@@ -2,6 +2,7 @@ using System.Reflection;
 using EvenTransit.Core.Abstractions.Service;
 using EvenTransit.Data.Helpers;
 using EvenTransit.Messaging.RabbitMq.Helpers;
+using EvenTransit.Service.BackgroundServices;
 using EvenTransit.Service.Helpers;
 using EvenTransit.Service.Services;
 using FluentValidation.AspNetCore;
@@ -33,7 +34,8 @@ namespace EvenTransit.Api
             services.AddMessaging();
 
             services.AddScoped<IQueueService, QueueService>();
-            services.AddHostedService<ConsumerService>();
+            services.AddHostedService<QueueDeclarationService>();
+            services.AddHostedService<ConsumerBinderService>();
             
             services.AddControllers().AddFluentValidation(opt =>
             {
@@ -55,7 +57,7 @@ namespace EvenTransit.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvenTransit.Api v1"));
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();

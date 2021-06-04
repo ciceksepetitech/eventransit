@@ -10,7 +10,8 @@ namespace EvenTransit.Core.Abstractions.Data
     {
         Task<List<Event>> GetEventsAsync();
         Task<Event> GetEventAsync(Expression<Func<Event, bool>> predicate);
-        Task<List<Entities.Service>> GetServicesByEventAsync(string eventName, string serviceName);
+        Entities.Service GetServiceByEvent(string eventName, string serviceName);
+        Task<Entities.Service> GetServiceByEventAsync(string eventName, string serviceName);
         Task AddServiceToEvent(string eventId, Entities.Service serviceData);
         Task UpdateServiceOnEvent(string eventId, Entities.Service serviceData);
     }

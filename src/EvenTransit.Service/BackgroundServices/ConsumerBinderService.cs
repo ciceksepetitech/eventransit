@@ -4,13 +4,13 @@ using EvenTransit.Core.Abstractions.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace EvenTransit.Service.Services
+namespace EvenTransit.Service.BackgroundServices
 {
-    public class ConsumerService : BackgroundService
+    public class ConsumerBinderService : BackgroundService
     {
         private readonly IServiceScopeFactory _serviceScope;
 
-        public ConsumerService(IServiceScopeFactory serviceScope)
+        public ConsumerBinderService(IServiceScopeFactory serviceScope)
         {
             _serviceScope = serviceScope;
         }

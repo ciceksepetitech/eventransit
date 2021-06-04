@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using EvenTransit.Core.Abstractions.Common;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Core.Constants;
@@ -26,28 +24,18 @@ namespace EvenTransit.Messaging.RabbitMq
             _properties.Persistent = true;
         }
 
-        public async Task PublishAsync(string name, dynamic payload)
+        public void Publish(string eventName, dynamic payload)
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
-            var queues = await GetQueues(name);
-
-            foreach (var queue in queues)
-            {
-                _channel.BasicPublish(name, queue, false, _properties, body);
-            }
+            _channel.BasicPublish(eventName, eventName, false, _properties, body);
         }
 
-        public void RegisterNewServiceAsync(NewServiceDto data)
+        public void RegisterNewService(NewServiceDto data)
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
             _channel.BasicPublish(RabbitMqConstants.NewServiceQueue, RabbitMqConstants.NewServiceQueue, false,
                 _properties, body);
-        }
-
-        private async Task<List<string>> GetQueues(string eventName)
-        {
-            return await _eventsDataService.GetQueueNamesByEventAsync(eventName);
         }
     }
 }

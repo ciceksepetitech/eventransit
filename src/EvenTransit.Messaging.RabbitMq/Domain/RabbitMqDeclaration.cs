@@ -29,7 +29,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                         false,
                         false,
                         null);
-                    channel.QueueBind(service.Name, @event.Name, service.Name);
+                    channel.QueueBind(service.Name, @event.Name, @event.Name);
                 }
             }
 

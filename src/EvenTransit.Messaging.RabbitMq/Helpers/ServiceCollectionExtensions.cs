@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using EvenTransit.Core.Abstractions.Common;
 using EvenTransit.Core.Constants;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
@@ -12,6 +13,9 @@ namespace EvenTransit.Messaging.RabbitMq.Helpers
     {
         public static IServiceCollection AddRabbitMq(this IServiceCollection services)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            
+            // TODO Check lifetime
             services.AddScoped<IEventConsumer, EventConsumer>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
@@ -29,19 +33,7 @@ namespace EvenTransit.Messaging.RabbitMq.Helpers
                 return connectionFactory;
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            BindRabbitMqExchanges(serviceProvider);
-
             return services;
-        }
-
-        private static void BindRabbitMqExchanges(IServiceProvider serviceProvider)
-        {
-            var rabbitMqConnection = serviceProvider.GetRequiredService<IRabbitMqConnectionFactory>();
-            var rabbitMqDeclaration = serviceProvider.GetRequiredService<IRabbitMqDeclaration>();
-
-            using var channel = rabbitMqConnection.ProducerConnection.CreateModel();
-            rabbitMqDeclaration.DeclareQueuesAsync(channel).GetAwaiter().GetResult();
         }
     }
 }

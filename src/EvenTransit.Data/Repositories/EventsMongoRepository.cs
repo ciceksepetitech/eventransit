@@ -23,12 +23,19 @@ namespace EvenTransit.Data.Repositories
             return await result.FirstOrDefaultAsync();
         }
 
-        public async Task<List<Service>> GetServicesByEventAsync(string eventName, string serviceName)
+        public Service GetServiceByEvent(string eventName, string serviceName)
+        {
+            var @event = Collection.Find(x => x.Name == eventName).FirstOrDefault();
+            
+            return @event.Services.FirstOrDefault(x => x.Name == serviceName);
+        }
+        
+        public async Task<Service> GetServiceByEventAsync(string eventName, string serviceName)
         {
             var result = await Collection.FindAsync(x => x.Name == eventName);
             var @event = await result.FirstOrDefaultAsync();
             
-            return @event.Services.Where(x => x.Name == serviceName).ToList();
+            return @event.Services.FirstOrDefault(x => x.Name == serviceName);
         }
 
         public async Task AddServiceToEvent(string eventId, Service serviceData)
