@@ -26,7 +26,7 @@ namespace EvenTransit.Messaging.Core.Domain.QueueProcess
             var request = new HttpRequestDto
             {
                 Url = service.Url,
-                Method = service.Method,
+                Timeout = service.Timeout,
                 Body = message,
                 Headers = service.Headers
             };
