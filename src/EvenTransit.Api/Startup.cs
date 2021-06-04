@@ -1,5 +1,6 @@
 using System.Reflection;
 using EvenTransit.Core.Abstractions.Service;
+using EvenTransit.Core.Helpers;
 using EvenTransit.Data.Helpers;
 using EvenTransit.Messaging.RabbitMq.Helpers;
 using EvenTransit.Service.BackgroundServices;
@@ -27,6 +28,7 @@ namespace EvenTransit.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCoreServices();
             services.AddDatabase();
             services.AddHttpClient();
             services.AddRabbitMq();

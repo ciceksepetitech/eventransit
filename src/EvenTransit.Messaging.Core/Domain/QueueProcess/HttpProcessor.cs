@@ -4,6 +4,7 @@ using EvenTransit.Core.Abstractions.Data;
 using EvenTransit.Core.Abstractions.QueueProcess;
 using EvenTransit.Core.Dto;
 using EvenTransit.Core.Dto.Service;
+using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.Core.Enums;
 
 namespace EvenTransit.Messaging.Core.Domain.QueueProcess

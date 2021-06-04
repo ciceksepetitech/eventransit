@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Core.Abstractions.Service;
 using EvenTransit.Core.Dto.Service;
+using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.UI.Models.Events;
 using Microsoft.AspNetCore.Mvc;
 using EventDto = EvenTransit.Core.Dto.UI.EventDto;

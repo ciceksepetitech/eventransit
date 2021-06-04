@@ -40,7 +40,6 @@ namespace EvenTransit.Data.Repositories
 
         public async Task AddServiceToEvent(string eventId, Service serviceData)
         {
-            // TODO Refactor
             var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
             @event.Services.Add(serviceData);
             
@@ -49,7 +48,6 @@ namespace EvenTransit.Data.Repositories
 
         public async Task UpdateServiceOnEvent(string eventId, Service serviceData)
         {
-            // TODO Refactor
             var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
             var filter = Builders<Event>.Filter.Eq(x => x._id, eventId)
                          & Builders<Event>.Filter.ElemMatch(x => x.Services, Builders<Service>.Filter.Eq(x => x.Name, serviceData.Name));

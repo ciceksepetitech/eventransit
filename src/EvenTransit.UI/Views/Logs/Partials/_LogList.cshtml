@@ -1,4 +1,4 @@
-@model EvenTransit.UI.Models.Logs.LogsViewModel
+@model EvenTransit.UI.Models.Logs.LogList
 @{
     var index = 1;
 }
@@ -7,30 +7,26 @@
     <thead>
     <tr>
         <th class="index-column">#</th>
-        <th>EventName</th>
-        <th>ServiceName</th>
-        <th>LogType</th>
+        <th>Event</th>
+        <th>Service</th>
+        <th>Type</th>
     </tr>
     </thead>
-    @* @if (Model.LogList != null) *@
-    @* { *@
-    @*     <tbody> *@
-    @*     @foreach (var service in Model.LogList) *@
-    @*     { *@
-    @*         <tr> *@
-    @*             <td>1</td> *@
-    @*             <td>order_created</td> *@
-    @*             <td>cargo</td> *@
-    @*             <td>Success</td> *@
-    @*         </tr> *@
-    @*         index++; *@
-    @*     } *@
-    @*     </tbody> *@
-    @* } *@
-    <tr>
-        <td>1</td>
-        <td>order_created</td>
-        <td>cargo</td>
-        <td>Success</td>
-    </tr>
+    @if (Model.Items != null)
+    {
+        <tbody>
+        @foreach (var log in Model.Items)
+        {
+            <tr>
+                <td>@index</td>
+                <td>@log.EventName</td>
+                <td>@log.ServiceName</td>
+                <td>@log.LogType.ToString()</td>
+            </tr>
+            index++;
+        }
+        </tbody>
+    }
 </table>
+
+@await Html.PartialAsync("_Pagination", Model.TotalPages)

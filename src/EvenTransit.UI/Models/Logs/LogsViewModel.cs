@@ -4,11 +4,17 @@ namespace EvenTransit.UI.Models.Logs
 {
     public class LogsViewModel
     {
-        public LogsViewModel()
+        public LogList LogList { get; set; }
+    }
+
+    public class LogList
+    {
+        public LogList()
         {
-            LogList = new List<LogDetailViewModel>();
+            Items = new List<LogSearchResultViewModel>();
         }
         
-        public List<LogDetailViewModel> LogList { get; set; }
+        public List<LogSearchResultViewModel> Items { get; set; }
+        public int TotalPages { get; set; }
     }
 }

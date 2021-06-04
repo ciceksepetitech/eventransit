@@ -1,5 +1,6 @@
 using AutoMapper;
 using EvenTransit.Core.Dto.Service;
+using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.UI.Models.Events;
 
 namespace EvenTransit.UI.Mappers
@@ -10,9 +11,6 @@ namespace EvenTransit.UI.Mappers
         {
             CreateMap<EventDto, Core.Dto.UI.EventDto>();
             CreateMap<ServiceDto, Core.Dto.UI.ServiceDto>();
-            
-            // TODO Separate API and Service mapper profiles
-            CreateMap<SaveServiceModel, SaveServiceDto>();
         }
     }
 }

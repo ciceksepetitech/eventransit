@@ -5,6 +5,7 @@ using AutoMapper;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Core.Abstractions.Service;
 using EvenTransit.Core.Dto.Service;
+using EvenTransit.Core.Dto.Service.Event;
 
 namespace EvenTransit.Service.Services
 {
@@ -37,15 +38,7 @@ namespace EvenTransit.Service.Services
 
             if (eventDetails == null) return;
 
-            // TODO Automapper
-            var serviceData = new Core.Entities.Service
-            {
-                Name = model.ServiceName,
-                Url = model.Url,
-                Timeout = model.Timeout,
-                Headers = model.Headers
-            };
-
+            var serviceData = _mapper.Map<Core.Entities.Service>(model);
             var service = eventDetails.Services.FirstOrDefault(x => x.Name == model.ServiceName);
 
             if (service == null)

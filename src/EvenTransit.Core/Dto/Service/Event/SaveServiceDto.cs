@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace EvenTransit.Core.Dto.Service
+namespace EvenTransit.Core.Dto.Service.Event
 {
     public class SaveServiceDto
     {

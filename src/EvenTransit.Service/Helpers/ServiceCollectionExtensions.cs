@@ -31,6 +31,7 @@ namespace EvenTransit.Service.Helpers
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<ILogService, LogService>();
             
             return services;
         }

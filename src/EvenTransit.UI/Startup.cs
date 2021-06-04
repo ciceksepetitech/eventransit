@@ -1,3 +1,4 @@
+using EvenTransit.Core.Helpers;
 using EvenTransit.Data.Helpers;
 using EvenTransit.Service.Helpers;
 using Microsoft.AspNetCore.Builder;
@@ -19,6 +20,7 @@ namespace EvenTransit.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCoreServices();
             services.AddAutoMapper(typeof(Startup));
             services.AddCaching();
             services.AddDatabase();

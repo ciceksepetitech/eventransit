@@ -1,4 +1,4 @@
-@using EvenTransit.UI.Models.Logs
+@model EvenTransit.UI.Models.Logs.LogsViewModel
 @{
     ViewData["Title"] = "Logs";
 }
@@ -14,7 +14,7 @@
 </div>
 
 @await Html.PartialAsync("Partials/_LogsSearch")
-@await Html.PartialAsync("Partials/_LogList", new LogsViewModel())
+@await Html.PartialAsync("Partials/_LogList", Model.LogList)
 
 @section Scripts
 {
@@ -23,8 +23,6 @@
     <script src="~/lib/vanillajs-datepicker/js/datepicker-full.min.js"></script>
     <script>
     const elem = document.querySelector('#LogDate');
-    const datepicker = new DateRangePicker(elem, {
-      // ...options
-    }); 
+    const datepicker = new DateRangePicker(elem, {}); 
     </script>
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using EvenTransit.Core.Dto.Service;
+using EvenTransit.Core.Dto.Service.Event;
 
 namespace EvenTransit.Service.Mappers
 {
@@ -8,6 +9,7 @@ namespace EvenTransit.Service.Mappers
         public ServiceMapper()
         {
             CreateMap<Core.Entities.Service, ServiceDto>();
+            CreateMap<SaveServiceDto, Core.Entities.Service>();
         }
     }
 }

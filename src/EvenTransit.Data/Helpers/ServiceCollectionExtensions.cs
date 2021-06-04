@@ -1,3 +1,4 @@
+using System.Reflection;
 using EvenTransit.Core.Abstractions.Data;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Data.DataServices;
@@ -10,9 +11,12 @@ namespace EvenTransit.Data.Helpers
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            
             services.AddScoped<IEventsRepository, EventsMongoRepository>();
-            services.AddScoped<ILogsRepository, LogsRepository>();
+            services.AddScoped<ILogsRepository, LogsMongoRepository>();
             services.AddScoped<IEventsDataService, EventsDataService>();
+            services.AddScoped<ILogsDataService, LogsDataService>();
             
             return services;
         }

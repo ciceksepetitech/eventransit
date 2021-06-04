@@ -1,14 +1,14 @@
 using System;
 using EvenTransit.Core.Enums;
 
-namespace EvenTransit.Core.Entities
+namespace EvenTransit.UI.Models.Logs
 {
-    public class Logs : BaseEntity
+    public class LogSearchResultViewModel
     {
+        public string Id { get; set; }
         public string EventName { get; set; }
         public string ServiceName { get; set; }
         public LogType LogType { get; set; }
-        public LogDetail Details { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

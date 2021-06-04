@@ -7,6 +7,6 @@ namespace EvenTransit.Core.Dto
         public LogType LogType { get; set; }
         public string ServiceName { get; set; }
         public string EventName { get; set; }
-        public object Details { get; set; }
+        public LogDetailDto Details { get; set; }
     }
 }

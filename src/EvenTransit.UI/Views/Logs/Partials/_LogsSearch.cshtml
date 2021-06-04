@@ -1,52 +1,54 @@
-
-<div class="row">
-    <div class="col">
-        <div class="h-100 p-5 bg-light border rounded-3">
-            <div class="row">
-                <div class="col-4">
-                    <label for="LogDateFrom" class="form-label">Log Date</label>
-                    <div class="input-group" id="LogDate">
-                        <input type="text" class="form-control" placeholder="From" aria-label="From" id="LogDateFrom" name="LogDateFrom">
-                        <span class="input-group-text">to</span>
-                        <input type="text" class="form-control" placeholder="To" aria-label="To" id="LogDateTo" name="LogDateTo">
+@using (Html.BeginForm("Index", "Logs", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col">
+            <div class="h-100 p-5 bg-light border rounded-3">
+                <div class="row">
+                    <div class="col-4">
+                        <label for="LogDateFrom" class="form-label">Log Date</label>
+                        <div class="input-group" id="LogDate">
+                            <input type="text" class="form-control" placeholder="From" aria-label="From" id="LogDateFrom" name="LogDateFrom">
+                            <span class="input-group-text">to</span>
+                            <input type="text" class="form-control" placeholder="To" aria-label="To" id="LogDateTo" name="LogDateTo">
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <label for="LogType" class="form-label">Log Type</label>
-                    <select class="form-control" id="LogType" name="LogType">
-                        <option value="">Select...</option>
-                        <option value="0">Success</option>
-                        <option value="1">Fail</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label for="Event" class="form-label">Event</label>
-                    <select class="form-control" id="Event" name="Event">
-                        <option value="">Select...</option>
-                        <option value="0">order_created</option>
-                        <option value="0">order_dispatched</option>
-                        <option value="0">email_sent</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label for="Service" class="form-label">Service</label>
-                    <select class="form-control" id="Service" name="Service">
-                        <option value="">Select...</option>
-                        <option value="0">cargo</option>
-                        <option value="0">push</option>
-                        <option value="0">email</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label for="Keyword" class="form-label">Keyword</label>
-                    <input type="text" class="form-control" id="Keyword" name="Keyword">
-                </div>
-                <div class="col-1 d-flex">
-                    <button type="button" class="btn btn-success align-self-end">
-                        Search
-                    </button>
+                    <div class="col">
+                        <label for="LogType" class="form-label">Log Type</label>
+                        <select class="form-control" id="LogType" name="LogType">
+                            <option value="">Select...</option>
+                            <option value="0">Success</option>
+                            <option value="1">Fail</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="Event" class="form-label">Event</label>
+                        <select class="form-control" id="Event" name="Event">
+                            <option value="">Select...</option>
+                            <option value="0">order_created</option>
+                            <option value="0">order_dispatched</option>
+                            <option value="0">email_sent</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="Service" class="form-label">Service</label>
+                        <select class="form-control" id="Service" name="Service">
+                            <option value="">Select...</option>
+                            <option value="0">cargo</option>
+                            <option value="0">push</option>
+                            <option value="0">email</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="Keyword" class="form-label">Keyword</label>
+                        <input type="text" class="form-control" id="Keyword" name="Keyword">
+                    </div>
+                    <div class="col-1 d-flex">
+                        <button type="submit" class="btn btn-success align-self-end">
+                            Search
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}

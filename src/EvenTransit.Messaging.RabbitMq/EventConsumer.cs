@@ -10,6 +10,7 @@ using EvenTransit.Core.Abstractions.QueueProcess;
 using EvenTransit.Core.Constants;
 using EvenTransit.Core.Dto;
 using EvenTransit.Core.Dto.Service;
+using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.Core.Entities;
 using EvenTransit.Core.Enums;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
