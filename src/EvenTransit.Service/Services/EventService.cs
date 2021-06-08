@@ -58,5 +58,11 @@ namespace EvenTransit.Service.Services
 
             return data;
         }
+
+        public async Task<List<string>> GetServices(string eventName)
+        {
+            var serviceDetails = await _eventDataService.GetQueueNamesByEventAsync(eventName);
+            return serviceDetails;
+        }
     }
 }

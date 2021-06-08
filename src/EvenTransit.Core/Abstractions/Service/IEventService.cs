@@ -11,5 +11,6 @@ namespace EvenTransit.Core.Abstractions.Service
         Task<EventDto> GetEventDetailsAsync(string id);
         Task SaveService(SaveServiceDto model);
         Task<ServiceDto> GetServiceDetails(string eventId, string serviceName);
+        Task<List<string>> GetServices(string eventName);
     }
 }

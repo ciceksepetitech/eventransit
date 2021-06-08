@@ -1,3 +1,4 @@
+@model EvenTransit.UI.Models.Logs.LogsViewModel
 @using (Html.BeginForm("Index", "Logs", FormMethod.Get))
 {
     <div class="row">
@@ -15,27 +16,19 @@
                     <div class="col">
                         <label for="LogType" class="form-label">Log Type</label>
                         <select class="form-control" id="LogType" name="LogType">
-                            <option value="">Select...</option>
-                            <option value="0">Success</option>
-                            <option value="1">Fail</option>
+                            <option value="0">Select...</option>
+                            <option value="1">Success</option>
+                            <option value="2">Fail</option>
                         </select>
                     </div>
                     <div class="col">
-                        <label for="Event" class="form-label">Event</label>
-                        <select class="form-control" id="Event" name="Event">
-                            <option value="">Select...</option>
-                            <option value="0">order_created</option>
-                            <option value="0">order_dispatched</option>
-                            <option value="0">email_sent</option>
-                        </select>
+                        @Html.Label("EventName", "Event", new {@class = "form-label"})
+                        @Html.DropDownList("EventName", Model.Events, "Select...", new {@class = "form-control"})
                     </div>
                     <div class="col">
-                        <label for="Service" class="form-label">Service</label>
-                        <select class="form-control" id="Service" name="Service">
+                        <label for="ServiceName" class="form-label">Service</label>
+                        <select class="form-control" id="ServiceName" name="ServiceName">
                             <option value="">Select...</option>
-                            <option value="0">cargo</option>
-                            <option value="0">push</option>
-                            <option value="0">email</option>
                         </select>
                     </div>
                     <div class="col">
