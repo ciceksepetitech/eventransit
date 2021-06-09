@@ -2,7 +2,7 @@ using EvenTransit.Core.Enums;
 
 namespace EvenTransit.UI.Models.Logs
 {
-    public class LogDetailViewModel
+    public class LogItemViewModel
     {
         public string EventName { get; set; }
 
@@ -10,6 +10,11 @@ namespace EvenTransit.UI.Models.Logs
 
         public LogType Type { get; set; }
 
+        public LogItemDetailViewModel Details { get; set; }
+    }
+
+    public class LogItemDetailViewModel
+    {
         public HttpRequestViewModel Request { get; set; }
 
         public HttpResponseViewModel Response { get; set; }

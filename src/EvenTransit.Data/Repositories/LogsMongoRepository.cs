@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -43,6 +42,12 @@ namespace EvenTransit.Data.Repositories
                 Items = result,
                 TotalPages = totalPages
             };
+        }
+
+        public async Task<LogsDto> GetById(string id)
+        {
+            var log = await Collection.Find(x => x._id == id).FirstOrDefaultAsync();
+            return _mapper.Map<LogsDto>(log);
         }
     }
 }

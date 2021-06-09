@@ -50,5 +50,13 @@ namespace EvenTransit.UI.Controllers
             var services = await _eventService.GetServices(eventName);
             return Json(services);
         }
+
+        public async Task<IActionResult> GetById(string id)
+        {
+            var data = await _logService.GetById(id);
+            var result = _mapper.Map<LogItemViewModel>(data);
+            
+            return Json(result);
+        }
     }
 }

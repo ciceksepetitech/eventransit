@@ -10,6 +10,7 @@
         <th>Event</th>
         <th>Service</th>
         <th>Type</th>
+        <th class="index-column"></th>
     </tr>
     </thead>
     @if (Model.Items != null)
@@ -22,6 +23,11 @@
                 <td>@log.EventName</td>
                 <td>@log.ServiceName</td>
                 <td>@log.LogType.ToString()</td>
+                <td>
+                    <button class="btn btn-sm btn-warning log-detail" title="Details" onclick="getLogDetails('@log.Id')">
+                        <i class="fa fa-search fa-fw"></i>
+                    </button>
+                </td>
             </tr>
             index++;
         }
@@ -30,3 +36,4 @@
 </table>
 
 @await Html.PartialAsync("_Pagination", Model.TotalPages)
+@await Html.PartialAsync("Partials/_LogDetail")

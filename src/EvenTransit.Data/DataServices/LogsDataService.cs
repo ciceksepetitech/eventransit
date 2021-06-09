@@ -21,5 +21,10 @@ namespace EvenTransit.Data.DataServices
         {
             return await _logsRepository.GetLogs(expression, page);
         }
+
+        public async Task<LogsDto> GetById(string id)
+        {
+            return await _logsRepository.GetById(id);
+        }
     }
 }

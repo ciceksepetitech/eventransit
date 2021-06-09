@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EvenTransit.Core.Dto;
@@ -11,5 +10,6 @@ namespace EvenTransit.Core.Abstractions.Data
     {
         Task InsertLog(LogsDto model);
         Task<LogFilterDto> GetLogs(Expression<Func<Logs, bool>> predicate, int page);
+        Task<LogsDto> GetById(string id);
     }
 }

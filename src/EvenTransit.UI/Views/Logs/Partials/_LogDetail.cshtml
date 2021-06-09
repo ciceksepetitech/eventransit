@@ -1,0 +1,61 @@
+<div class="modal fade" id="logDetailModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Log Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+            <div class="mb-4">
+                <label for="EventName" class="form-label">Event Name</label>
+                <input type="text" class="form-control" id="EventName" readonly>
+            </div>
+            <div class="mb-4">
+                <label for="ServiceName" class="form-label">Service Name</label>
+                <input type="text" class="form-control" id="ServiceName" readonly>
+            </div>
+            <div class="mb-4">
+                <label for="LogType" class="form-label">Type</label>
+                <input type="text" class="form-control" id="LogType" readonly>
+            </div>
+            <div class="border rounded p-3 mb-4">
+                <h6>Request</h6>
+                <div class="mb-4">
+                    <label for="Url" class="form-label">Url</label>
+                    <input type="text" class="form-control" id="Url" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="Timeout" class="form-label">Timeout</label>
+                    <input type="text" class="form-control" id="Timeout" readonly>
+                </div>
+                <div class="mb-0">
+                    <label class="form-label">Body</label>
+                    <pre style="max-height:400px;"><code class="language-json" id="RequestBody"></code></pre>
+                </div>
+            </div>
+            <div class="border rounded p-3">
+                <h6>Response</h6>
+                <div class="mb-4">
+                    <label for="IsSuccess" class="form-label">Is Success</label>
+                    <input type="text" class="form-control" id="IsSuccess" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="StatusCode" class="form-label">Status Code</label>
+                    <input type="text" class="form-control" id="StatusCode" readonly>
+                </div>
+                <div class="mb-4">
+                    <label for="Message" class="form-label">Message</label>
+                    <input type="text" class="form-control" id="Message" readonly>
+                </div>
+                <div class="mb-0">
+                    <label class="form-label">Content</label>
+                    <pre style="max-height:400px;"><code class="language-json" id="ResponseBody"></code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+</div>

@@ -9,5 +9,6 @@ namespace EvenTransit.Core.Abstractions.Data.DataServices
     public interface ILogsDataService
     {
         Task<LogFilterDto> GetLogs(Expression<Func<Logs, bool>> expression, int page);
+        Task<LogsDto> GetById(string id);
     }
 }

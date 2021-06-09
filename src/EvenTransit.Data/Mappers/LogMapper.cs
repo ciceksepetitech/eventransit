@@ -8,10 +8,10 @@ namespace EvenTransit.Data.Mappers
     {
         public LogMapper()
         {
-            CreateMap<LogsDto, Logs>();
-            CreateMap<LogDetailDto, LogDetail>();
-            CreateMap<LogDetailRequestDto, LogDetailRequest>();
-            CreateMap<LogDetailResponseDto, LogDetailResponse>();
+            CreateMap<LogsDto, Logs>().ReverseMap();
+            CreateMap<LogDetailDto, LogDetail>().ReverseMap();
+            CreateMap<LogDetailRequestDto, LogDetailRequest>().ReverseMap();
+            CreateMap<LogDetailResponseDto, LogDetailResponse>().ReverseMap();
         }
     }
 }

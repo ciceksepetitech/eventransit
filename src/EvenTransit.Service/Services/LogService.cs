@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Core.Abstractions.Service;
+using EvenTransit.Core.Dto;
 using EvenTransit.Core.Dto.Service.Log;
 using EvenTransit.Core.Entities;
 using EvenTransit.Service.Rules.Log;
@@ -46,6 +47,11 @@ namespace EvenTransit.Service.Services
                 Items = _mapper.Map<List<LogFilterItemDto>>(result.Items),
                 TotalPages = result.TotalPages
             };
+        }
+
+        public async Task<LogsDto> GetById(string id)
+        {
+            return await _logsDataService.GetById(id);
         }
     }
 }
