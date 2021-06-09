@@ -17,14 +17,14 @@ namespace EvenTransit.Data.DataServices
             _logsRepository = logsRepository;
         }
 
-        public async Task<LogFilterDto> GetLogs(Expression<Func<Logs, bool>> expression, int page)
+        public async Task<LogFilterDto> GetLogsAsync(Expression<Func<Logs, bool>> expression, int page)
         {
-            return await _logsRepository.GetLogs(expression, page);
+            return await _logsRepository.GetLogsAsync(expression, page);
         }
 
-        public async Task<LogsDto> GetById(string id)
+        public async Task<LogsDto> GetByIdAsync(string id)
         {
-            return await _logsRepository.GetById(id);
+            return await _logsRepository.GetByIdAsync(id);
         }
     }
 }

@@ -47,13 +47,13 @@ namespace EvenTransit.UI.Controllers
         [Route("Logs/GetServices/{eventName}")]
         public async Task<IActionResult> GetServices(string eventName)
         {
-            var services = await _eventService.GetServices(eventName);
+            var services = await _eventService.GetServicesAsync(eventName);
             return Json(services);
         }
 
         public async Task<IActionResult> GetById(string id)
         {
-            var data = await _logService.GetById(id);
+            var data = await _logService.GetByIdAsync(id);
             var result = _mapper.Map<LogItemViewModel>(data);
             
             return Json(result);

@@ -9,8 +9,8 @@ namespace EvenTransit.Core.Abstractions.Data.DataServices
         Task<List<string>> GetQueueNamesByEventAsync(string eventName);
         Task<List<Event>> GetEventsAsync();
         Task<Event> GetEventAsync(string id);
-        Task AddServiceToEvent(string eventId, Entities.Service serviceData);
-        Task UpdateServiceOnEvent(string eventId, Entities.Service serviceData);
-        Task<Entities.Service> GetServiceDetails(string eventId, string serviceName);
+        Task AddServiceToEventAsync(string eventId, Entities.Service serviceData);
+        Task UpdateServiceOnEventAsync(string eventId, Entities.Service serviceData);
+        Task<Entities.Service> GetServiceDetailsAsync(string eventId, string serviceName);
     }
 }

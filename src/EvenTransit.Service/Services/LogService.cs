@@ -40,7 +40,7 @@ namespace EvenTransit.Service.Services
 
             var expression = eventNamePredicateHandler.HandleRequest(argParam, Expression.Constant(true), request);
             var lambda = Expression.Lambda<Func<Logs, bool>>(expression, argParam);
-            var result = await _logsDataService.GetLogs(lambda, request.Page);
+            var result = await _logsDataService.GetLogsAsync(lambda, request.Page);
 
             return new LogSearchResultDto
             {
@@ -49,9 +49,9 @@ namespace EvenTransit.Service.Services
             };
         }
 
-        public async Task<LogsDto> GetById(string id)
+        public async Task<LogsDto> GetByIdAsync(string id)
         {
-            return await _logsDataService.GetById(id);
+            return await _logsDataService.GetByIdAsync(id);
         }
     }
 }

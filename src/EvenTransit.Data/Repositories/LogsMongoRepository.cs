@@ -18,14 +18,14 @@ namespace EvenTransit.Data.Repositories
             _mapper = mapper;
         }
 
-        public async Task InsertLog(LogsDto model)
+        public async Task InsertLogAsync(LogsDto model)
         {
             var data = _mapper.Map<Logs>(model);
 
             await Collection.InsertOneAsync(data);
         }
 
-        public async Task<LogFilterDto> GetLogs(Expression<Func<Logs, bool>> predicate, int page)
+        public async Task<LogFilterDto> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page)
         {
             const int perPage = 100;
 
@@ -44,7 +44,7 @@ namespace EvenTransit.Data.Repositories
             };
         }
 
-        public async Task<LogsDto> GetById(string id)
+        public async Task<LogsDto> GetByIdAsync(string id)
         {
             var log = await Collection.Find(x => x._id == id).FirstOrDefaultAsync();
             return _mapper.Map<LogsDto>(log);

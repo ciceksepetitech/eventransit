@@ -8,8 +8,8 @@ namespace EvenTransit.Core.Abstractions.Data
 {
     public interface ILogsRepository
     {
-        Task InsertLog(LogsDto model);
-        Task<LogFilterDto> GetLogs(Expression<Func<Logs, bool>> predicate, int page);
-        Task<LogsDto> GetById(string id);
+        Task InsertLogAsync(LogsDto model);
+        Task<LogFilterDto> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page);
+        Task<LogsDto> GetByIdAsync(string id);
     }
 }

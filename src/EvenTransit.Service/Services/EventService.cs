@@ -32,7 +32,7 @@ namespace EvenTransit.Service.Services
             return _mapper.Map<EventDto>(eventDetails);
         }
 
-        public async Task SaveService(SaveServiceDto model)
+        public async Task SaveServiceAsync(SaveServiceDto model)
         {
             var eventDetails = await _eventDataService.GetEventAsync(model.EventId);
 
@@ -43,23 +43,23 @@ namespace EvenTransit.Service.Services
 
             if (service == null)
             {
-                await _eventDataService.AddServiceToEvent(model.EventId, serviceData);
+                await _eventDataService.AddServiceToEventAsync(model.EventId, serviceData);
             }
             else
             {
-                await _eventDataService.UpdateServiceOnEvent(model.EventId, serviceData);
+                await _eventDataService.UpdateServiceOnEventAsync(model.EventId, serviceData);
             }
         }
 
-        public async Task<ServiceDto> GetServiceDetails(string eventId, string serviceName)
+        public async Task<ServiceDto> GetServiceDetailsAsync(string eventId, string serviceName)
         {
-            var serviceDetails = await _eventDataService.GetServiceDetails(eventId, serviceName);
+            var serviceDetails = await _eventDataService.GetServiceDetailsAsync(eventId, serviceName);
             var data = _mapper.Map<ServiceDto>(serviceDetails);
 
             return data;
         }
 
-        public async Task<List<string>> GetServices(string eventName)
+        public async Task<List<string>> GetServicesAsync(string eventName)
         {
             var serviceDetails = await _eventDataService.GetQueueNamesByEventAsync(eventName);
             return serviceDetails;

@@ -38,7 +38,7 @@ namespace EvenTransit.Data.Repositories
             return @event.Services.FirstOrDefault(x => x.Name == serviceName);
         }
 
-        public async Task AddServiceToEvent(string eventId, Service serviceData)
+        public async Task AddServiceToEventAsync(string eventId, Service serviceData)
         {
             var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
             @event.Services.Add(serviceData);
@@ -46,7 +46,7 @@ namespace EvenTransit.Data.Repositories
             await Collection.ReplaceOneAsync(x => x._id == eventId, @event);
         }
 
-        public async Task UpdateServiceOnEvent(string eventId, Service serviceData)
+        public async Task UpdateServiceOnEventAsync(string eventId, Service serviceData)
         {
             var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
             var filter = Builders<Event>.Filter.Eq(x => x._id, eventId)

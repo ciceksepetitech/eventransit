@@ -21,7 +21,7 @@ namespace EvenTransit.Core.Domain.Common
         {
             var data = _mapper.Map<LogsDto>(details);
 
-            await _logsRepository.InsertLog(data);
+            await _logsRepository.InsertLogAsync(data);
         }
     }
 }

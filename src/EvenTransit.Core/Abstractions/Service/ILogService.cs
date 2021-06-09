@@ -7,6 +7,6 @@ namespace EvenTransit.Core.Abstractions.Service
     public interface ILogService
     {
         Task<LogSearchResultDto> SearchAsync(LogSearchRequestDto request);
-        Task<LogsDto> GetById(string id);
+        Task<LogsDto> GetByIdAsync(string id);
     }
 }
