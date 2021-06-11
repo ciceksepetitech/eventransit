@@ -8,8 +8,11 @@
         <th class="index-column"></th>
     </tr>
     </thead>
-        <tbody></tbody>
+    <tbody></tbody>
 </table>
 
-@* @await Html.PartialAsync("_Pagination", Model.TotalPages) *@
+<nav class="float-end">
+    <ul class="pagination" id="logs-pagination"></ul>
+</nav>
+
 @await Html.PartialAsync("Partials/_LogDetail")

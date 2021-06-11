@@ -51,13 +51,22 @@ async function getLogDetails(e) {
     logDetailModal.show();
 }
 
-async function search() {
+function bindPagination(){
+    document.querySelector("#logs-pagination button").addEventListener("click", async function (e) {
+        const page = parseInt(e.currentTarget.dataset.page);
+        await search(page);
+    });
+}
+
+async function search(page = 1) {
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
     const rowCount = tbodyRef.rows.length;
     for (let i = 0; i < rowCount; i++) {
         tbodyRef.deleteRow(i);
     }
-    
+
+    removePagination();
+
     const data = {
         LogDateFrom: getFieldValue("#LogDateFrom", null),
         LogDateTo: getFieldValue("#LogDateTo", null),
@@ -65,7 +74,7 @@ async function search() {
         EventName: getFieldValue("select#EventName", null),
         ServiceName: getFieldValue("select#ServiceName", null),
         Keyword: getFieldValue("#Keyword", null),
-        Page: 1
+        Page: page
     };
     const response = await fetch('/Logs/Search', {
         method: 'POST',
@@ -77,7 +86,6 @@ async function search() {
     const result = await response.json();
 
     if (result.items) {
-
         result.items.forEach((item, index) => {
             let newRow = tbodyRef.insertRow();
             let indexCell = newRow.insertCell();
@@ -104,12 +112,39 @@ async function search() {
 
         });
     }
+    
+    let paginationRef = document.getElementById('logs-pagination');
+
+    for (let i = 1; i <= result.totalPages; i++) {
+        let numberButton = document.createElement("button");
+        numberButton.setAttribute("class", "page-link");
+        numberButton.setAttribute("data-page", i);
+        numberButton.innerHTML = i;
+
+        const cssClass = page === i ? "page-item active" : "page-item";
+
+        let liElement = document.createElement("li");
+        liElement.setAttribute("class", cssClass);
+        liElement.appendChild(numberButton);
+
+        paginationRef.appendChild(liElement);
+    }
+    
+    bindPagination();
 }
 
 function clearServiceDropdown() {
     const length = serviceDropdown.options.length - 1;
     for (let i = length; i > 0; i--) {
         serviceDropdown.remove(i);
+    }
+}
+
+function removePagination() {
+    let paginationItems = document.querySelectorAll("#logs-pagination li");
+
+    for (let i = 0; i < paginationItems.length; i++) {
+        paginationItems[i].remove();
     }
 }
 
