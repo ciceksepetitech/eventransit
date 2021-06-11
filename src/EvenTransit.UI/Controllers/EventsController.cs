@@ -51,7 +51,7 @@ namespace EvenTransit.UI.Controllers
             var serviceData = await _eventService.GetServiceDetailsAsync(eventId, serviceName);
             var data = _mapper.Map<ServiceModel>(serviceData);
             
-            return Json(data);
+            return Ok(data);
         }
 
         [HttpPost]

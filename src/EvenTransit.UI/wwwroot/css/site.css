@@ -1,3 +1,7 @@
 ﻿.index-column {
     width: 4%;
 }
+
+.code-preview {
+    max-height: 400px;
+}

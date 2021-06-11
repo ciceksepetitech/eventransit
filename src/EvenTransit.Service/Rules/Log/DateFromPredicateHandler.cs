@@ -1,4 +1,3 @@
-using System;
 using System.Linq.Expressions;
 using EvenTransit.Core.Domain.Common;
 using EvenTransit.Core.Dto.Service.Log;
@@ -12,7 +11,7 @@ namespace EvenTransit.Service.Rules.Log
             BinaryExpression andExp;
             var expression = TrueExpression;
             
-            if (request.LogDateFrom != DateTime.MinValue)
+            if (request.LogDateFrom != null)
             {
                 var property = Expression.Property(parameter, "CreatedOn");
                 var expressionValue = Expression.Constant(request.LogDateFrom);

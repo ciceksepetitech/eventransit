@@ -5,8 +5,8 @@ namespace EvenTransit.Core.Dto.Service.Log
 {
     public class LogSearchRequestDto
     {
-        public DateTime LogDateFrom { get; set; }
-        public DateTime LogDateTo { get; set; }
+        public DateTime? LogDateFrom { get; set; }
+        public DateTime? LogDateTo { get; set; }
         public LogType LogType { get; set; }
         public string EventName { get; set; }
         public string ServiceName { get; set; }

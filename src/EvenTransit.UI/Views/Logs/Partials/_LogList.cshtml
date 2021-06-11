@@ -1,9 +1,4 @@
-@model EvenTransit.UI.Models.Logs.LogList
-@{
-    var index = 1;
-}
-
-<table class="table table-hover table-bordered table-striped mt-3">
+<table class="table table-hover table-bordered table-striped mt-3" id="logs">
     <thead>
     <tr>
         <th class="index-column">#</th>
@@ -13,27 +8,20 @@
         <th class="index-column"></th>
     </tr>
     </thead>
-    @if (Model.Items != null)
-    {
         <tbody>
-        @foreach (var log in Model.Items)
-        {
-            <tr>
-                <td>@index</td>
-                <td>@log.EventName</td>
-                <td>@log.ServiceName</td>
-                <td>@log.LogType.ToString()</td>
-                <td>
-                    <button class="btn btn-sm btn-warning log-detail" title="Details" onclick="getLogDetails('@log.Id')">
-                        <i class="fa fa-search fa-fw"></i>
-                    </button>
-                </td>
-            </tr>
-            index++;
-        }
+            @* <tr> *@
+            @*     <td>@index</td> *@
+            @*     <td>@log.EventName</td> *@
+            @*     <td>@log.ServiceName</td> *@
+            @*     <td>@log.LogType.ToString()</td> *@
+            @*     <td> *@
+            @*         <button class="btn btn-sm btn-warning log-detail" title="Details" onclick="getLogDetails('@log.Id')"> *@
+            @*             <i class="fa fa-search fa-fw"></i> *@
+            @*         </button> *@
+            @*     </td> *@
+            @* </tr> *@
         </tbody>
-    }
 </table>
 
-@await Html.PartialAsync("_Pagination", Model.TotalPages)
+@* @await Html.PartialAsync("_Pagination", Model.TotalPages) *@
 @await Html.PartialAsync("Partials/_LogDetail")

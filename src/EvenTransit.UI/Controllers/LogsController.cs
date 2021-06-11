@@ -22,26 +22,33 @@ namespace EvenTransit.UI.Controllers
             _eventService = eventService;
         }
 
-        public async Task<IActionResult> Index([FromQuery] LogFilterModel model)
+        public async Task<IActionResult> Index()
         {
-            if (model.Page <= 0) model.Page = 1;
-            
-            var request = _mapper.Map<LogSearchRequestDto>(model);
-            var result = await _logService.SearchAsync(request);
-            var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
             var events = await _eventService.GetAllAsync();
-            
             var responseModel = new LogsViewModel
             {
-                LogList = new LogList
-                {
-                    Items = response,
-                    TotalPages = result.TotalPages
-                },
                 Events = _mapper.Map<List<SelectListItem>>(events)
             };
 
             return View(responseModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search([FromBody] LogFilterModel model)
+        {
+            if (model.Page <= 0) model.Page = 1;
+
+            var request = _mapper.Map<LogSearchRequestDto>(model);
+            var result = await _logService.SearchAsync(request);
+            var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
+
+            var responseModel = new LogList
+            {
+                Items = response,
+                TotalPages = result.TotalPages
+            };
+
+            return Ok(responseModel);
         }
 
         [Route("Logs/GetServices/{eventName}")]
@@ -55,7 +62,7 @@ namespace EvenTransit.UI.Controllers
         {
             var data = await _logService.GetByIdAsync(id);
             var result = _mapper.Map<LogItemViewModel>(data);
-            
+
             return Json(result);
         }
     }

@@ -5,7 +5,6 @@ namespace EvenTransit.UI.Models.Logs
 {
     public class LogsViewModel
     {
-        public LogList LogList { get; set; }
         public List<SelectListItem> Events { get; set; }
     }
 

@@ -1,6 +1,6 @@
 const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailModal'), {});
 const serviceDropdown = document.querySelector("#ServiceName");
-document.querySelector("#EventName").addEventListener("change", async (e) => {
+document.querySelector("select#EventName").addEventListener("change", async (e) => {
     let selectedEvent = e.target.value;
 
     clearServiceDropdown();
@@ -25,7 +25,8 @@ document.querySelector("#EventName").addEventListener("change", async (e) => {
     }
 });
 
-async function getLogDetails(id) {
+async function getLogDetails(e) {
+    const id = e.currentTarget.dataset.id;
     const response = await fetch(`/Logs/GetById/${id}`, {
         method: 'GET',
         headers: {
@@ -50,9 +51,78 @@ async function getLogDetails(id) {
     logDetailModal.show();
 }
 
+async function search() {
+    let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
+    const rowCount = tbodyRef.rows.length;
+    for (let i = 0; i < rowCount; i++) {
+        tbodyRef.deleteRow(i);
+    }
+    
+    const data = {
+        LogDateFrom: getFieldValue("#LogDateFrom", null),
+        LogDateTo: getFieldValue("#LogDateTo", null),
+        LogType: parseInt(getFieldValue("#LogType", 0)),
+        EventName: getFieldValue("select#EventName", null),
+        ServiceName: getFieldValue("select#ServiceName", null),
+        Keyword: getFieldValue("#Keyword", null),
+        Page: 1
+    };
+    const response = await fetch('/Logs/Search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    const result = await response.json();
+
+    if (result.items) {
+
+        result.items.forEach((item, index) => {
+            let newRow = tbodyRef.insertRow();
+            let indexCell = newRow.insertCell();
+            let eventNameCell = newRow.insertCell();
+            let serviceNameCell = newRow.insertCell();
+            let typeCell = newRow.insertCell();
+            let actionCell = newRow.insertCell();
+
+            let logDetailActionIcon = document.createElement("i");
+            logDetailActionIcon.setAttribute('class', 'fa fa-search fa-fw');
+
+            let logDetailButton = document.createElement("button");
+            logDetailButton.addEventListener('click', getLogDetails);
+            logDetailButton.setAttribute('type', 'button');
+            logDetailButton.setAttribute('data-id', item.id);
+            logDetailButton.setAttribute('class', 'btn btn-sm btn-warning');
+            logDetailButton.appendChild(logDetailActionIcon);
+            actionCell.appendChild(logDetailButton);
+
+            indexCell.innerHTML = index + 1;
+            eventNameCell.innerHTML = item.eventName;
+            serviceNameCell.innerHTML = item.serviceName;
+            typeCell.innerHTML = getLogType(item.logType);
+
+        });
+    }
+}
+
 function clearServiceDropdown() {
     const length = serviceDropdown.options.length - 1;
     for (let i = length; i > 0; i--) {
         serviceDropdown.remove(i);
     }
+}
+
+function getFieldValue(selector, defaultValue) {
+    const val = document.querySelector(selector).value;
+
+    if (val === "" || val === undefined || val === null)
+        return defaultValue;
+    return val;
+}
+
+function getLogType(logType) {
+    if (logType === 0) return "None";
+    if (logType === 1) return "Success";
+    if (logType === 2) return "Fail";
 }
