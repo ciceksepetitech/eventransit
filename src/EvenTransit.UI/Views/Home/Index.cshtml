@@ -1,4 +1,5 @@
-﻿@{
+﻿@model EvenTransit.UI.Models.Home.DashboardViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -16,20 +17,20 @@
   <script>
     var ctx = document.getElementById('jobStatistics').getContext('2d');
     
-    const labels = ["01:00", "02:00", "03:00", "04:00", "05:00"];
+    const labels = @Html.Raw(Model.Dates);
     
     const data = {
       labels: labels,
       datasets: [
         {
           label: 'Succeeded',
-          data: [10, 20, 15, 40, 50],
+          data: @Html.Raw(Model.SuccessCount),
           borderColor: "rgb(25, 135, 84)",
           backgroundColor: "rgb(25, 135, 84, 0.5)",
         },
         {
           label: 'Failed',
-          data: [1, 5, 30, 2, 15],
+          data: @Html.Raw(Model.FailCount),
           borderColor: "rgb(245, 71, 72)",
           backgroundColor: "rgba(245, 71, 72, 0.5)",
         }

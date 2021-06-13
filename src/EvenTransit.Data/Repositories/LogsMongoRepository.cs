@@ -5,6 +5,7 @@ using AutoMapper;
 using EvenTransit.Core.Abstractions.Data;
 using EvenTransit.Core.Dto;
 using EvenTransit.Core.Entities;
+using EvenTransit.Core.Enums;
 using MongoDB.Driver;
 
 namespace EvenTransit.Data.Repositories
@@ -48,6 +49,12 @@ namespace EvenTransit.Data.Repositories
         {
             var log = await Collection.Find(x => x._id == id).FirstOrDefaultAsync();
             return _mapper.Map<LogsDto>(log);
+        }
+
+        public async Task<long> GetLogsCount(DateTime startDate, DateTime endDate, LogType type)
+        {
+            return await Collection.CountDocumentsAsync(x =>
+                x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
         }
     }
 }

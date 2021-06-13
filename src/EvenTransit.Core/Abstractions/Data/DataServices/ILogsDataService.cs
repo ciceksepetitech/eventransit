@@ -10,5 +10,6 @@ namespace EvenTransit.Core.Abstractions.Data.DataServices
     {
         Task<LogFilterDto> GetLogsAsync(Expression<Func<Logs, bool>> expression, int page);
         Task<LogsDto> GetByIdAsync(string id);
+        Task<(long, long)> GetLogsCountByDay(DateTime day);
     }
 }

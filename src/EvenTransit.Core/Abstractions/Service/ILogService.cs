@@ -8,5 +8,6 @@ namespace EvenTransit.Core.Abstractions.Service
     {
         Task<LogSearchResultDto> SearchAsync(LogSearchRequestDto request);
         Task<LogsDto> GetByIdAsync(string id);
+        Task<LogStatisticsDto> GetDashboardStatistics();
     }
 }

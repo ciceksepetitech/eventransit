@@ -53,5 +53,23 @@ namespace EvenTransit.Service.Services
         {
             return await _logsDataService.GetByIdAsync(id);
         }
+
+        public async Task<LogStatisticsDto> GetDashboardStatistics()
+        {
+            var response = new LogStatisticsDto();
+            var currentTime = DateTime.UtcNow;
+
+            for (var i = -4; i <= 0; i++)
+            {
+                var day = currentTime.AddDays(i);
+                var logsCount = await _logsDataService.GetLogsCountByDay(day);
+                
+                response.Dates.Add(day.ToString("yyyy-MM-dd"));
+                response.SuccessCount.Add(logsCount.Item1);
+                response.FailCount.Add(logsCount.Item2);
+            }
+            
+            return response;
+        }
     }
 }
