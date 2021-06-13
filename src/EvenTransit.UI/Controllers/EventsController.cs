@@ -25,7 +25,7 @@ namespace EvenTransit.UI.Controllers
         {
             var events = await _eventService.GetAllAsync();
             var data = _mapper.Map<List<EventDto>>(events);
-            
+
             return View(data);
         }
 
@@ -36,7 +36,7 @@ namespace EvenTransit.UI.Controllers
             if (eventDetails == null) return NotFound();
 
             var data = _mapper.Map<EventDto>(eventDetails);
-            
+
             return View(data);
         }
 
@@ -50,16 +50,25 @@ namespace EvenTransit.UI.Controllers
         {
             var serviceData = await _eventService.GetServiceDetailsAsync(eventId, serviceName);
             var data = _mapper.Map<ServiceModel>(serviceData);
-            
+
             return Ok(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveService([FromBody]SaveServiceModel model)
+        public async Task<IActionResult> SaveEvent([FromBody] SaveEventModel model)
+        {
+            var data = _mapper.Map<SaveEventDto>(model);
+            await _eventService.SaveEventAsync(data);
+
+            return Json(new {success = true});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveService([FromBody] SaveServiceModel model)
         {
             var data = _mapper.Map<SaveServiceDto>(model);
             await _eventService.SaveServiceAsync(data);
-            
+
             return Json(new {success = true});
         }
     }

@@ -12,7 +12,7 @@
             </h2>
         </div>
         <div class="col">
-            <button class="btn btn-sm btn-success float-end" data-bs-toggle="modal" data-bs-target="#newEventModel">
+            <button class="btn btn-sm btn-success float-end" data-bs-toggle="modal" data-bs-target="#newEventModal">
                 <i class="fa fa-plus-circle"></i> Add New Event
             </button>
         </div>
@@ -27,7 +27,7 @@
         <th>Service Count</th>
         <th>Succeeded Jobs</th>
         <th>Failed Jobs</th>
-        <th>Actions</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -36,13 +36,16 @@
         <tr>
             <td class="text-center">@index</td>
             <td class="col-2">@eventDto.Name</td>
-            <td class="col-2"><span class="badge rounded-pill bg-primary">100</span></td>
-            <td class="col-2"><span class="badge rounded-pill bg-success">1000</span></td>
-            <td class="col-2"><span class="badge rounded-pill bg-danger">10</span></td>
-            <td class="col-1">
-                <a class="btn btn-sm btn-warning" title="Edit" href="@Url.Action("Detail", "Events", new {id = eventDto.Id})">
-                    <i class="fa fa-edit fa-fw"></i> 
-                </a>
+            <td class="col-2">
+                <span class="badge rounded-pill bg-primary">100</span>
+            </td>
+            <td class="col-2">
+                <span class="badge rounded-pill bg-success">1000</span>
+            </td>
+            <td class="col-2">
+                <span class="badge rounded-pill bg-danger">10</span>
+            </td>
+            <td class="index-column text-center">
                 <a class="btn btn-sm btn-danger" title="Delete" href="@Url.Action("Delete", "Events", new {id = eventDto.Id})">
                     <i class="fa fa-times fa-fw"></i>
                 </a>
@@ -53,3 +56,10 @@
     }
     </tbody>
 </table>
+
+@await Html.PartialAsync("Partials/_SaveEvent")
+
+@section Scripts
+{
+    <script src="~/js/event/index.js"></script>
+}

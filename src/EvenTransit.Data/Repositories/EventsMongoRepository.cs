@@ -57,5 +57,10 @@ namespace EvenTransit.Data.Repositories
             
             await Collection.ReplaceOneAsync(filter, @event);
         }
+
+        public async Task AddEvent(Event dataModel)
+        {
+            await Collection.InsertOneAsync(dataModel);
+        }
     }
 }

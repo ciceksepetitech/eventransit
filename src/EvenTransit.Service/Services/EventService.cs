@@ -64,5 +64,10 @@ namespace EvenTransit.Service.Services
             var serviceDetails = await _eventDataService.GetQueueNamesByEventAsync(eventName);
             return serviceDetails;
         }
+
+        public async Task SaveEventAsync(SaveEventDto data)
+        {
+            await _eventDataService.AddEvent(data);
+        }
     }
 }

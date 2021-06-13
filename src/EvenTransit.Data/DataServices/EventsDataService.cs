@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using EvenTransit.Core.Abstractions.Common;
 using EvenTransit.Core.Abstractions.Data;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Core.Constants;
+using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.Core.Entities;
 
 namespace EvenTransit.Data.DataServices
@@ -14,11 +16,13 @@ namespace EvenTransit.Data.DataServices
         private const int CacheExpireTime = 60;
         private readonly IEventsRepository _eventsRepository;
         private readonly ICacheService _cacheService;
+        private readonly IMapper _mapper;
 
-        public EventsDataService(IEventsRepository eventsRepository, ICacheService cacheService)
+        public EventsDataService(IEventsRepository eventsRepository, ICacheService cacheService, IMapper mapper)
         {
             _eventsRepository = eventsRepository;
             _cacheService = cacheService;
+            _mapper = mapper;
         }
 
         public async Task<List<string>> GetQueueNamesByEventAsync(string eventName)
@@ -65,6 +69,14 @@ namespace EvenTransit.Data.DataServices
             var serviceDetails = eventDetails?.Services?.FirstOrDefault(x => x.Name == serviceName);
 
             return serviceDetails;
+        }
+
+        public async Task AddEvent(SaveEventDto data)
+        {
+            var dataModel = _mapper.Map<Event>(data);
+            await _eventsRepository.AddEvent(dataModel);
+
+            await _cacheService.DeleteAsync(CacheConstants.EventsKey);
         }
     }
 }

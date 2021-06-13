@@ -15,6 +15,7 @@ namespace EvenTransit.UI.Mappers
             CreateMap<EventDto, SelectListItem>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Name));
+            CreateMap<SaveEventModel, SaveEventDto>();
         }
     }
 }
