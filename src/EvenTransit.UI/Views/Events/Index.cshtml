@@ -45,10 +45,13 @@
             <td class="col-2">
                 <span class="badge rounded-pill bg-danger">10</span>
             </td>
-            <td class="index-column text-center">
-                <a class="btn btn-sm btn-danger" title="Delete" href="@Url.Action("Delete", "Events", new {id = eventDto.Id})">
-                    <i class="fa fa-times fa-fw"></i>
+            <td class="col-1 text-center">
+                <a class="btn btn-sm btn-warning" title="Edit" href="@Url.Action("Detail", "Events", new {id = eventDto.Id})">
+                    <i class="fa fa-edit fa-fw"></i>
                 </a>
+                <button type="button" class="btn btn-sm btn-danger delete-event" title="Delete" data-id="@eventDto.Id">
+                    <i class="fa fa-times fa-fw"></i>
+                </button>
             </td>
         </tr>
 
@@ -61,5 +64,5 @@
 
 @section Scripts
 {
-    <script src="~/js/event/index.js"></script>
+    <script src="~/js/event/index.js" asp-append-version="true"></script>
 }

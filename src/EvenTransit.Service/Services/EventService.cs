@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Core.Abstractions.Data.DataServices;
 using EvenTransit.Core.Abstractions.Service;
-using EvenTransit.Core.Dto.Service;
 using EvenTransit.Core.Dto.Service.Event;
 
 namespace EvenTransit.Service.Services
@@ -65,9 +64,14 @@ namespace EvenTransit.Service.Services
             return serviceDetails;
         }
 
-        public async Task SaveEventAsync(SaveEventDto data)
+        public async Task<bool> SaveEventAsync(SaveEventDto data)
         {
-            await _eventDataService.AddEvent(data);
+            return await _eventDataService.AddEventAsync(data);
+        }
+
+        public async Task<bool> DeleteEventAsync(string id)
+        {
+            return await _eventDataService.DeleteEventAsync(id);
         }
     }
 }

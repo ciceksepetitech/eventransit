@@ -71,12 +71,31 @@ namespace EvenTransit.Data.DataServices
             return serviceDetails;
         }
 
-        public async Task AddEvent(SaveEventDto data)
+        public async Task<bool> AddEventAsync(SaveEventDto data)
         {
             var dataModel = _mapper.Map<Event>(data);
-            await _eventsRepository.AddEvent(dataModel);
+            var @event = await _eventsRepository.GetEventAsync(x => x.Name == dataModel.Name);
 
+            if (@event != null)
+                return false;
+            
+            await _eventsRepository.AddEvent(dataModel);
             await _cacheService.DeleteAsync(CacheConstants.EventsKey);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteEventAsync(string id)
+        {
+            var @event = await _eventsRepository.GetEventAsync(x => x._id == id);
+
+            if (@event == null)
+                return false;
+
+            await _eventsRepository.DeleteEventAsync(id);
+            await _cacheService.DeleteAsync(CacheConstants.EventsKey);
+            
+            return true;
         }
     }
 }

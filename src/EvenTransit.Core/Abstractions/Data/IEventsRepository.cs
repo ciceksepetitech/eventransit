@@ -15,5 +15,6 @@ namespace EvenTransit.Core.Abstractions.Data
         Task AddServiceToEventAsync(string eventId, Entities.Service serviceData);
         Task UpdateServiceOnEventAsync(string eventId, Entities.Service serviceData);
         Task AddEvent(Event dataModel);
+        Task DeleteEventAsync(string id);
     }
 }

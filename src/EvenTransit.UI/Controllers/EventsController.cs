@@ -40,9 +40,10 @@ namespace EvenTransit.UI.Controllers
             return View(data);
         }
 
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete(string id)
         {
-            return Json(new {success = true});
+            var result = await _eventService.DeleteEventAsync(id);
+            return Json(new {success = result});
         }
 
         [Route("Events/GetServiceDetails/{eventId}/{serviceName}")]
@@ -58,9 +59,9 @@ namespace EvenTransit.UI.Controllers
         public async Task<IActionResult> SaveEvent([FromBody] SaveEventModel model)
         {
             var data = _mapper.Map<SaveEventDto>(model);
-            await _eventService.SaveEventAsync(data);
+            var result = await _eventService.SaveEventAsync(data);
 
-            return Json(new {success = true});
+            return Json(new {success = result});
         }
 
         [HttpPost]

@@ -62,5 +62,10 @@ namespace EvenTransit.Data.Repositories
         {
             await Collection.InsertOneAsync(dataModel);
         }
+
+        public async Task DeleteEventAsync(string id)
+        {
+            await Collection.DeleteOneAsync(x => x._id == id);
+        }
     }
 }
