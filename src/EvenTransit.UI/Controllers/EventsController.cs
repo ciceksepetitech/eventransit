@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using EvenTransit.Core.Abstractions.Common;
 using EvenTransit.Core.Abstractions.Service;
+using EvenTransit.Core.Dto;
 using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.UI.Models.Events;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +14,13 @@ namespace EvenTransit.UI.Controllers
     public class EventsController : Controller
     {
         private readonly IEventService _eventService;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
 
-        public EventsController(IEventService eventService, IMapper mapper)
+        public EventsController(IEventService eventService, IEventPublisher eventPublisher, IMapper mapper)
         {
             _eventService = eventService;
+            _eventPublisher = eventPublisher;
             _mapper = mapper;
         }
 
@@ -76,6 +80,13 @@ namespace EvenTransit.UI.Controllers
             var data = _mapper.Map<SaveServiceDto>(model);
             await _eventService.SaveServiceAsync(data);
 
+            var eventDetails = await _eventService.GetEventDetailsAsync(model.EventId);
+            _eventPublisher.RegisterNewService(new NewServiceDto
+            {
+                EventName = eventDetails.Name,
+                ServiceName = model.ServiceName
+            });
+            
             return Json(new {success = true});
         }
     }
