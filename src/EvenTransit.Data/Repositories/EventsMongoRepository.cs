@@ -67,5 +67,17 @@ namespace EvenTransit.Data.Repositories
         {
             await Collection.DeleteOneAsync(x => x._id == id);
         }
+
+        public async Task DeleteServiceAsync(string eventId, string serviceName)
+        {
+            var @event = await Collection.Find(x => x._id == eventId).FirstOrDefaultAsync();
+            var filter = Builders<Event>.Filter.Eq(x => x._id, eventId)
+                         & Builders<Event>.Filter.ElemMatch(x => x.Services, Builders<Service>.Filter.Eq(x => x.Name, serviceName));
+            
+            var service = @event.Services.FirstOrDefault(x => x.Name == serviceName);
+            @event.Services.Remove(service);
+            
+            await Collection.ReplaceOneAsync(filter, @event);
+        }
     }
 }

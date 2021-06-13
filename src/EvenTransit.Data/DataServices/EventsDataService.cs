@@ -97,5 +97,16 @@ namespace EvenTransit.Data.DataServices
             
             return true;
         }
+
+        public async Task<bool> DeleteServiceAsync(string id, string name)
+        {
+            var @event = await _eventsRepository.GetEventAsync(x => x._id == id);
+            var service = @event?.Services.FirstOrDefault(x => x.Name == name);
+            if (service == null)
+                return false;
+
+            await _eventsRepository.DeleteServiceAsync(id, name);
+            return true;
+        }
     }
 }

@@ -42,13 +42,13 @@ async function editService(eventId, serviceName) {
         }
     });
     const result = await response.json();
-    
+
     document.querySelector("#ServiceName").value = result.name;
     document.querySelector("#Url").value = result.url;
     document.querySelector("#Timeout").value = result.timeout;
 
     const headers = result.headers;
-    for(const key in headers) {
+    for (const key in headers) {
         const value = headers[key];
         addNewHeaderItem(key, value);
     }
@@ -56,11 +56,30 @@ async function editService(eventId, serviceName) {
     serviceModal.show();
 }
 
+async function deleteService(eventId, serviceName) {
+    if (confirm("Are you sure?")) {
+        const response = await fetch(`/Events/DeleteService/${eventId}/${serviceName}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const result = await response.json();
+        
+        if(!result.success){
+            alert("Service not deleted!");
+            return;
+        }
+
+        window.location.reload();
+    }
+}
+
 document.querySelector("#add-header").addEventListener("click", e => {
     addNewHeaderItem('', '');
 });
 
-function addNewHeaderItem(key, value){
+function addNewHeaderItem(key, value) {
     let tbodyRef = document.getElementById('headers').getElementsByTagName('tbody')[0];
     let newRow = tbodyRef.insertRow();
     let actionCell = newRow.insertCell();

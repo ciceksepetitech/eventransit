@@ -73,5 +73,10 @@ namespace EvenTransit.Service.Services
         {
             return await _eventDataService.DeleteEventAsync(id);
         }
+
+        public async Task<bool> DeleteServiceAsync(string id, string name)
+        {
+            return await _eventDataService.DeleteServiceAsync(id, name);
+        }
     }
 }

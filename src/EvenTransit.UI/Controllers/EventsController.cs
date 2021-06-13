@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Core.Abstractions.Service;
-using EvenTransit.Core.Dto.Service;
 using EvenTransit.Core.Dto.Service.Event;
 using EvenTransit.UI.Models.Events;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +42,13 @@ namespace EvenTransit.UI.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _eventService.DeleteEventAsync(id);
+            return Json(new {success = result});
+        }
+        
+        [Route("Events/DeleteService/{eventId}/{serviceName}")]
+        public async Task<IActionResult> DeleteService(string eventId, string serviceName)
+        {
+            var result = await _eventService.DeleteServiceAsync(eventId, serviceName);
             return Json(new {success = result});
         }
 
