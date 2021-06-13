@@ -1,0 +1,50 @@
+version: "3"
+services:
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    container_name: EventTransitUI
+    ports:
+      - "5100:80"
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+    env_file:
+      - eventransit.env
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: EventTransitApi
+    ports:
+      - "5101:80"
+    depends_on:
+      - redis
+      - rabbitmq
+      - mongo
+    env_file:
+      - eventransit.env
+    restart: always
+
+  redis:
+    container_name: eventransit_redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    container_name: eventransit_rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  mongo:
+    container_name: eventransit_mongo
+    image: mongo
+    ports:
+      - "27017:27107"
