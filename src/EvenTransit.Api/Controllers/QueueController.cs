@@ -18,23 +18,24 @@ namespace EvenTransit.Api.Controllers
             _queueService = queueService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request">Event information</param>
+        /// <returns></returns>
+        /// <response code="200">Event published to message broker.</response>
+        /// <response code="400">Validation problems</response>
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromQuery] string name, [FromBody] dynamic payload)
+        [ProducesResponseType(typeof(void), 200)]
+        [ProducesResponseType(typeof(void), 400)]
+        public async Task<IActionResult> PostAsync([FromBody] QueueRequest request)
         {
-            var request = new QueueRequest {Name = name, Payload = payload};
-            var validator = new QueueRequestValidator();
-
-            var validationResult = await validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-                return BadRequest(validationResult.Errors);
-
             var response = await _queueService.PublishAsync(new QueueRequestDto
-                {
-                    Name = name,
-                    Payload = payload
-                });
-            return response ? Ok() : BadRequest(); 
+            {
+                EventName = request.EventName,
+                Payload = request.Payload
+            });
+            return response ? Ok() : BadRequest();
         }
-        
     }
 }

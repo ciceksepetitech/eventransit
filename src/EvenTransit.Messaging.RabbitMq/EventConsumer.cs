@@ -146,7 +146,6 @@ namespace EvenTransit.Messaging.RabbitMq
             var eventConsumer = new EventingBasicConsumer(_channel);
             eventConsumer.Received += (sender, ea) =>
             {
-                // TODO Inspect
                 OnReceiveMessageAsync(eventName, service, ea);
             };
 

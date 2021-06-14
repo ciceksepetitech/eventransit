@@ -16,7 +16,7 @@ namespace EvenTransit.Service.Services
 
         public Task<bool> PublishAsync(QueueRequestDto requestDto)
         {
-            _eventPublisher.Publish(requestDto.Name, requestDto.Payload);
+            _eventPublisher.Publish(requestDto.EventName, requestDto.Payload);
             return Task.FromResult(true);
         }
     }

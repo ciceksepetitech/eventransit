@@ -8,9 +8,9 @@ namespace EvenTransit.Api.Validators
     {
         public QueueRequestValidator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(x => x.EventName)
                 .Must(x => !string.IsNullOrEmpty(x))
-                .WithMessage(string.Format(ValidationConstants.IsRequired, "Name"));
+                .WithMessage(string.Format(ValidationConstants.IsRequired, "EventName"));
         }
     }
 }
