@@ -1,6 +1,6 @@
 using AutoMapper;
-using EvenTransit.Core.Dto.Service.Log;
-using EvenTransit.Core.Entities;
+using EvenTransit.Data.Entities;
+using EvenTransit.Service.Dto.Log;
 
 namespace EvenTransit.Service.Mappers
 {
@@ -8,6 +8,13 @@ namespace EvenTransit.Service.Mappers
     {
         public LogMapper()
         {
+            CreateMap<Logs, LogItemDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src._id));
+
+            CreateMap<LogDetail, LogItemDetailDto>();
+            CreateMap<LogDetailRequest, LogItemDetailRequestDto>();
+            CreateMap<LogDetailResponse, LogItemDetailResponseDto>();
+
             CreateMap<Logs, LogFilterItemDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src._id));
         }

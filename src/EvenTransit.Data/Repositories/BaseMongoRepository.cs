@@ -1,5 +1,5 @@
-using System;
-using EvenTransit.Core.Constants;
+using EvenTransit.Data.Settings;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace EvenTransit.Data.Repositories
@@ -8,10 +8,10 @@ namespace EvenTransit.Data.Repositories
     {
         protected readonly IMongoCollection<T> Collection;
 
-        public BaseMongoRepository()
+        public BaseMongoRepository(IOptions<MongoDbSettings> mongoDbSettings)
         {
-            var client = new MongoClient(Environment.GetEnvironmentVariable(MongoConstants.Host));
-            var database = client.GetDatabase(Environment.GetEnvironmentVariable(MongoConstants.Database));
+            var client = new MongoClient(mongoDbSettings.Value.Host);
+            var database = client.GetDatabase(mongoDbSettings.Value.Database);
             Collection = database.GetCollection<T>(typeof(T).Name);
         }
     }

@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using EvenTransit.Core.Abstractions.Common;
+using EvenTransit.Messaging.Core.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

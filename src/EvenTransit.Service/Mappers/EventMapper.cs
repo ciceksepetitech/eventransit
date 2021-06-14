@@ -1,7 +1,6 @@
 using AutoMapper;
-using EvenTransit.Core.Dto.Service;
-using EvenTransit.Core.Dto.Service.Event;
-using EvenTransit.Core.Entities;
+using EvenTransit.Data.Entities;
+using EvenTransit.Service.Dto.Event;
 
 namespace EvenTransit.Service.Mappers
 {

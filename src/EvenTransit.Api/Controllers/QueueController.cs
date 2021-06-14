@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using EvenTransit.Api.Models;
 using EvenTransit.Api.Validators;
-using EvenTransit.Core.Abstractions.Service;
-using EvenTransit.Core.Dto;
+using EvenTransit.Messaging.Core.Dto;
+using EvenTransit.Service.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvenTransit.Api.Controllers

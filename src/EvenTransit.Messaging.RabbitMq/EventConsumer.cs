@@ -1,18 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
-using EvenTransit.Core.Abstractions.Common;
-using EvenTransit.Core.Abstractions.Data;
-using EvenTransit.Core.Abstractions.QueueProcess;
-using EvenTransit.Core.Constants;
-using EvenTransit.Core.Dto;
-using EvenTransit.Core.Dto.Service;
-using EvenTransit.Core.Dto.Service.Event;
-using EvenTransit.Core.Entities;
 using EvenTransit.Core.Enums;
+using EvenTransit.Data.Abstractions;
+using EvenTransit.Data.Entities;
+using EvenTransit.Messaging.Core;
+using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -53,8 +49,8 @@ namespace EvenTransit.Messaging.RabbitMq
             _newServiceConsumer = new EventingBasicConsumer(_channel);
             _newServiceConsumer.Received += OnNewServiceCreated;
 
-            _channel.QueueBind(RabbitMqConstants.NewServiceQueue, RabbitMqConstants.NewServiceQueue, string.Empty);
-            _channel.BasicConsume(RabbitMqConstants.NewServiceQueue, false, _newServiceConsumer);
+            _channel.QueueBind(MessagingConstants.NewServiceQueue, MessagingConstants.NewServiceQueue, string.Empty);
+            _channel.BasicConsume(MessagingConstants.NewServiceQueue, false, _newServiceConsumer);
 
             #endregion
 

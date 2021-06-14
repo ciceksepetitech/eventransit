@@ -2,10 +2,11 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
-using EvenTransit.Core.Abstractions.Data;
-using EvenTransit.Core.Dto;
-using EvenTransit.Core.Entities;
 using EvenTransit.Core.Enums;
+using EvenTransit.Data.Abstractions;
+using EvenTransit.Data.Entities;
+using EvenTransit.Data.Settings;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace EvenTransit.Data.Repositories
@@ -14,20 +15,19 @@ namespace EvenTransit.Data.Repositories
     {
         private readonly IMapper _mapper;
 
-        public LogsMongoRepository(IMapper mapper)
+        public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, IMapper mapper) : base(mongoDbSettings)
         {
             _mapper = mapper;
         }
 
-        public async Task InsertLogAsync(LogsDto model)
+        public async Task InsertLogAsync(Logs model)
         {
-            var data = _mapper.Map<Logs>(model);
-            data.CreatedOn = DateTime.UtcNow;
+            model.CreatedOn = DateTime.UtcNow;
 
-            await Collection.InsertOneAsync(data);
+            await Collection.InsertOneAsync(model);
         }
 
-        public async Task<LogFilterDto> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page)
+        public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page)
         {
             const int perPage = 100;
 
@@ -39,17 +39,16 @@ namespace EvenTransit.Data.Repositories
                 .Limit(perPage)
                 .ToListAsync();
 
-            return new LogFilterDto
+            return new LogFilter
             {
                 Items = result,
                 TotalPages = totalPages
             };
         }
 
-        public async Task<LogsDto> GetByIdAsync(string id)
+        public async Task<Logs> GetByIdAsync(string id)
         {
-            var log = await Collection.Find(x => x._id == id).FirstOrDefaultAsync();
-            return _mapper.Map<LogsDto>(log);
+            return await Collection.Find(x => x._id == id).FirstOrDefaultAsync();
         }
 
         public async Task<long> GetLogsCount(DateTime startDate, DateTime endDate, LogType type)

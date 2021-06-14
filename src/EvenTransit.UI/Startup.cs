@@ -1,6 +1,6 @@
-using EvenTransit.Core.Helpers;
-using EvenTransit.Data.Helpers;
-using EvenTransit.Messaging.RabbitMq.Helpers;
+using EvenTransit.Cache;
+using EvenTransit.Data;
+using EvenTransit.Messaging.RabbitMq;
 using EvenTransit.Service.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,12 +21,11 @@ namespace EvenTransit.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRabbitMq();
-            services.AddCoreServices();
+            services.AddRabbitMq(Configuration);
             services.AddHttpClient();
             services.AddAutoMapper(typeof(Startup));
-            services.AddCaching();
-            services.AddDatabase();
+            services.AddRedisCache(Configuration);
+            services.AddDatabase(Configuration);
             services.AddServices();
             services.AddMessaging();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

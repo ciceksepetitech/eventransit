@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
-using EvenTransit.Core.Domain.Common;
-using EvenTransit.Core.Dto.Service.Log;
 using EvenTransit.Core.Enums;
+using EvenTransit.Service.Dto.Log;
 
 namespace EvenTransit.Service.Rules.Log
 {

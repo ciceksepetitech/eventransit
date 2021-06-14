@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using EvenTransit.Core.Abstractions.Data;
-using EvenTransit.Core.Entities;
+using EvenTransit.Data.Abstractions;
+using EvenTransit.Data.Entities;
+using EvenTransit.Data.Settings;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace EvenTransit.Data.Repositories
 {
     public class EventsMongoRepository : BaseMongoRepository<Event>, IEventsRepository
     {
+        public EventsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
+        {
+        }
+        
         public async Task<List<Event>> GetEventsAsync()
         {
             var result = await Collection.FindAsync(_ => true);

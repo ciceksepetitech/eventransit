@@ -1,9 +1,8 @@
 using System.Text;
 using System.Text.Json;
-using EvenTransit.Core.Abstractions.Common;
-using EvenTransit.Core.Abstractions.Data.DataServices;
-using EvenTransit.Core.Constants;
-using EvenTransit.Core.Dto;
+using EvenTransit.Messaging.Core;
+using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
 
@@ -13,12 +12,9 @@ namespace EvenTransit.Messaging.RabbitMq
     {
         private readonly IModel _channel;
         private readonly IBasicProperties _properties;
-        private readonly IEventsDataService _eventsDataService;
 
-        public EventPublisher(IRabbitMqConnectionFactory connection, IEventsDataService eventsDataService)
+        public EventPublisher(IRabbitMqConnectionFactory connection)
         {
-            _eventsDataService = eventsDataService;
-
             _channel = connection.ProducerConnection.CreateModel();
             _properties = _channel.CreateBasicProperties();
             _properties.Persistent = true;
@@ -34,7 +30,7 @@ namespace EvenTransit.Messaging.RabbitMq
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-            _channel.BasicPublish(RabbitMqConstants.NewServiceQueue, RabbitMqConstants.NewServiceQueue, false,
+            _channel.BasicPublish(MessagingConstants.NewServiceQueue, MessagingConstants.NewServiceQueue, false,
                 _properties, body);
         }
     }

@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using EvenTransit.Core.Abstractions.Common;
-using EvenTransit.Core.Abstractions.Service;
-using EvenTransit.Core.Dto;
-using EvenTransit.Core.Dto.Service.Event;
+using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Dto;
+using EvenTransit.Service.Abstractions;
+using EvenTransit.Service.Dto.Event;
 using EvenTransit.UI.Models.Events;
 using Microsoft.AspNetCore.Mvc;
-using EventDto = EvenTransit.Core.Dto.UI.EventDto;
 
 namespace EvenTransit.UI.Controllers
 {
@@ -27,7 +26,7 @@ namespace EvenTransit.UI.Controllers
         public async Task<IActionResult> Index()
         {
             var events = await _eventService.GetAllAsync();
-            var data = _mapper.Map<List<EventDto>>(events);
+            var data = _mapper.Map<List<EventViewModel>>(events);
 
             return View(data);
         }
@@ -38,7 +37,7 @@ namespace EvenTransit.UI.Controllers
 
             if (eventDetails == null) return NotFound();
 
-            var data = _mapper.Map<EventDto>(eventDetails);
+            var data = _mapper.Map<EventViewModel>(eventDetails);
 
             return View(data);
         }

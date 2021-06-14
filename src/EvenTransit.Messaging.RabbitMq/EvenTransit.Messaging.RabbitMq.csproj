@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EvenTransit.Core\EvenTransit.Core.csproj" />
+      <ProjectReference Include="..\EvenTransit.Messaging.Core\EvenTransit.Messaging.Core.csproj" />
     </ItemGroup>
 
 </Project>

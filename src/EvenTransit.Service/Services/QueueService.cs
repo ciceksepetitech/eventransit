@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using EvenTransit.Core.Abstractions.Common;
-using EvenTransit.Core.Abstractions.Service;
-using EvenTransit.Core.Dto;
+using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Dto;
+using EvenTransit.Service.Abstractions;
 
 namespace EvenTransit.Service.Services
 {

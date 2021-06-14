@@ -1,6 +1,5 @@
 using AutoMapper;
-using EvenTransit.Core.Dto;
-using EvenTransit.Core.Dto.Service.Log;
+using EvenTransit.Service.Dto.Log;
 using EvenTransit.UI.Models.Logs;
 
 namespace EvenTransit.UI.Mappers
@@ -12,10 +11,10 @@ namespace EvenTransit.UI.Mappers
             CreateMap<LogFilterModel, LogSearchRequestDto>();
             CreateMap<LogFilterItemDto, LogSearchResultViewModel>();
 
-            CreateMap<LogsDto, LogItemViewModel>();
-            CreateMap<LogDetailDto, LogItemDetailViewModel>();
-            CreateMap<LogDetailRequestDto, HttpRequestViewModel>();
-            CreateMap<LogDetailResponseDto, HttpResponseViewModel>();
+            CreateMap<LogItemDto, LogItemViewModel>();
+            CreateMap<LogItemDetailDto, LogItemDetailViewModel>();
+            CreateMap<LogItemDetailRequestDto, HttpRequestViewModel>();
+            CreateMap<LogItemDetailResponseDto, HttpResponseViewModel>();
         }
     }
 }

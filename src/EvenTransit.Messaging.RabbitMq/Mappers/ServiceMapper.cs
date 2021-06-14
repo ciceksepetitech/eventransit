@@ -1,7 +1,6 @@
 using AutoMapper;
-using EvenTransit.Core.Dto.Service;
-using EvenTransit.Core.Dto.Service.Event;
-using EvenTransit.Core.Entities;
+using EvenTransit.Data.Entities;
+using EvenTransit.Messaging.Core.Dto;
 
 namespace EvenTransit.Messaging.RabbitMq.Mappers
 {

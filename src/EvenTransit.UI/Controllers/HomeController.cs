@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
-using EvenTransit.Core.Abstractions.Service;
+using EvenTransit.Service.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using EvenTransit.UI.Models;
 using EvenTransit.UI.Models.Home;
