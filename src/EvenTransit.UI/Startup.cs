@@ -23,10 +23,12 @@ namespace EvenTransit.UI
         {
             services.AddRabbitMq();
             services.AddCoreServices();
+            services.AddHttpClient();
             services.AddAutoMapper(typeof(Startup));
             services.AddCaching();
             services.AddDatabase();
             services.AddServices();
+            services.AddMessaging();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 

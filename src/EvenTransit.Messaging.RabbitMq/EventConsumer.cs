@@ -35,7 +35,7 @@ namespace EvenTransit.Messaging.RabbitMq
             IHttpProcessor httpProcessor,
             IEventsRepository eventsRepository,
             IEventLog eventLog,
-            ILogger<EventConsumer> logger, 
+            ILogger<EventConsumer> logger,
             IMapper mapper)
         {
             _httpProcessor = httpProcessor;
@@ -81,15 +81,19 @@ namespace EvenTransit.Messaging.RabbitMq
             try
             {
                 var serviceData = _mapper.Map<ServiceDto>(serviceInfo);
-                
-                await _httpProcessor.ProcessAsync(eventName, serviceData, message);
-                _channel.BasicAck(ea.DeliveryTag, false);
+
+                var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, message);
+
+                if (processResult)
+                    _channel.BasicAck(ea.DeliveryTag, false);
+                else
+                    _channel.BasicNack(ea.DeliveryTag, false, true);
             }
             catch (Exception e)
             {
                 _logger.LogError("Message consume fail!", e);
 
-                _channel.BasicNack(ea.DeliveryTag, false, false);
+                _channel.BasicNack(ea.DeliveryTag, false, true);
 
                 await _eventLog.LogAsync(new EventLogDto
                 {
@@ -144,10 +148,7 @@ namespace EvenTransit.Messaging.RabbitMq
         private void BindQueue(string eventName, Service service)
         {
             var eventConsumer = new EventingBasicConsumer(_channel);
-            eventConsumer.Received += (sender, ea) =>
-            {
-                OnReceiveMessageAsync(eventName, service, ea);
-            };
+            eventConsumer.Received += (sender, ea) => { OnReceiveMessageAsync(eventName, service, ea); };
 
             _channel.QueueBind(service.Name, eventName, eventName);
             _channel.BasicConsume(service.Name, false, eventConsumer);

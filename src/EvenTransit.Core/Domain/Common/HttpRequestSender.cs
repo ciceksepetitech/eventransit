@@ -34,7 +34,7 @@ namespace EvenTransit.Core.Domain.Common
 
             requestMessage.Method = HttpMethod.Post;
 
-            var content = new StringContent(request.Body, Encoding.UTF8);
+            var content = new StringContent(request.Body, Encoding.UTF8, "application/json");
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);

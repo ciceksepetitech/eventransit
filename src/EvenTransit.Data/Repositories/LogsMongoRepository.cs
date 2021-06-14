@@ -22,6 +22,7 @@ namespace EvenTransit.Data.Repositories
         public async Task InsertLogAsync(LogsDto model)
         {
             var data = _mapper.Map<Logs>(model);
+            data.CreatedOn = DateTime.UtcNow;
 
             await Collection.InsertOneAsync(data);
         }

@@ -37,32 +37,38 @@ async function getLogDetails(e) {
 
     document.querySelector("#logDetailModal #EventName").value = result.eventName;
     document.querySelector("#logDetailModal #ServiceName").value = result.serviceName;
-    document.querySelector("#logDetailModal #LogType").value = result.type;
+    document.querySelector("#logDetailModal #LogType").value = getLogType(result.logType);
     document.querySelector("#logDetailModal #Url").value = result.details.request.url;
     document.querySelector("#logDetailModal #Timeout").value = result.details.request.timeout;
     document.querySelector("#logDetailModal #RequestBody").innerHTML = result.details.request.body;
     document.querySelector("#logDetailModal #IsSuccess").value = result.details.response.isSuccess;
     document.querySelector("#logDetailModal #StatusCode").value = result.details.response.statusCode;
     document.querySelector("#logDetailModal #Message").value = result.details.message;
-    document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response.body;
+    document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response.response;
 
     hljs.highlightAll();
 
     logDetailModal.show();
 }
 
-function bindPagination(){
-    document.querySelector("#logs-pagination button").addEventListener("click", async function (e) {
-        const page = parseInt(e.currentTarget.dataset.page);
-        await search(page);
-    });
+function bindPagination() {
+    console.log("a");
+    document.querySelectorAll('#logs-pagination button')
+        .forEach(button => button.addEventListener('click', changePage));
+}
+
+async function changePage(e) {
+    const page = parseInt(e.currentTarget.dataset.page);
+    console.log(page);
+    await search(page);
 }
 
 async function search(page = 1) {
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
     const rowCount = tbodyRef.rows.length;
+
     for (let i = 0; i < rowCount; i++) {
-        tbodyRef.deleteRow(i);
+        tbodyRef.deleteRow(0);
     }
 
     removePagination();
@@ -92,6 +98,7 @@ async function search(page = 1) {
             let eventNameCell = newRow.insertCell();
             let serviceNameCell = newRow.insertCell();
             let typeCell = newRow.insertCell();
+            let createdOnCell = newRow.insertCell();
             let actionCell = newRow.insertCell();
 
             let logDetailActionIcon = document.createElement("i");
@@ -109,10 +116,10 @@ async function search(page = 1) {
             eventNameCell.innerHTML = item.eventName;
             serviceNameCell.innerHTML = item.serviceName;
             typeCell.innerHTML = getLogType(item.logType);
-
+            createdOnCell.innerHTML = item.createdOn;
         });
     }
-    
+
     let paginationRef = document.getElementById('logs-pagination');
 
     for (let i = 1; i <= result.totalPages; i++) {
@@ -129,7 +136,7 @@ async function search(page = 1) {
 
         paginationRef.appendChild(liElement);
     }
-    
+
     bindPagination();
 }
 

@@ -6,6 +6,6 @@ namespace EvenTransit.Core.Abstractions.QueueProcess
 {
     public interface IHttpProcessor
     {
-        Task ProcessAsync(string eventName, ServiceDto service, string message);
+        Task<bool> ProcessAsync(string eventName, ServiceDto service, string message);
     }
 }

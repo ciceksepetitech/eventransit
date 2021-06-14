@@ -22,7 +22,7 @@ namespace EvenTransit.Messaging.Core.Domain.QueueProcess
             _eventLog = eventLog;
         }
 
-        public async Task ProcessAsync(string eventName, ServiceDto service, string message)
+        public async Task<bool> ProcessAsync(string eventName, ServiceDto service, string message)
         {
             var request = new HttpRequestDto
             {
@@ -47,6 +47,8 @@ namespace EvenTransit.Messaging.Core.Domain.QueueProcess
             };
 
             await _eventLog.LogAsync(logData);
+
+            return result.IsSuccess;
         }
     }
 }

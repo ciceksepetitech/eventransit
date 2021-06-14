@@ -8,7 +8,7 @@ namespace EvenTransit.UI.Models.Logs
 
         public string ServiceName { get; set; }
 
-        public LogType Type { get; set; }
+        public LogType LogType { get; set; }
 
         public LogItemDetailViewModel Details { get; set; }
     }
