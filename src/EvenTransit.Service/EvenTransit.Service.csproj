@@ -7,12 +7,7 @@
     <ItemGroup>
       <ProjectReference Include="..\EvenTransit.Cache\EvenTransit.Cache.csproj" />
       <ProjectReference Include="..\EvenTransit.Data\EvenTransit.Data.csproj" />
-      <ProjectReference Include="..\EvenTransit.Messaging.Core\EvenTransit.Messaging.Core.csproj" />
       <ProjectReference Include="..\EvenTransit.Messaging.RabbitMq\EvenTransit.Messaging.RabbitMq.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Dto" />
     </ItemGroup>
 
 </Project>

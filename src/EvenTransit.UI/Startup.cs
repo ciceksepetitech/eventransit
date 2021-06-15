@@ -2,8 +2,11 @@ using EvenTransit.Cache;
 using EvenTransit.Data;
 using EvenTransit.Messaging.RabbitMq;
 using EvenTransit.Service.Helpers;
+using EvenTransit.UI.Filters;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +24,8 @@ namespace EvenTransit.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+            services.AddScoped<ValidateModelAttribute>();
             services.AddRabbitMq(Configuration);
             services.AddHttpClient();
             services.AddAutoMapper(typeof(Startup));
@@ -28,7 +33,9 @@ namespace EvenTransit.UI
             services.AddDatabase(Configuration);
             services.AddServices();
             services.AddMessaging();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation()
+                .AddFluentValidation(c => c.RegisterValidatorsFromAssemblyContaining<Startup>());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

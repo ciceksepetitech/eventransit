@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
+using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EvenTransit.UI.Controllers
 {
+    [ValidateModel]
     public class LogsController : Controller
     {
         private readonly ILogService _logService;
@@ -32,7 +34,7 @@ namespace EvenTransit.UI.Controllers
 
             return View(responseModel);
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Search([FromBody] LogFilterModel model)
         {
@@ -48,7 +50,7 @@ namespace EvenTransit.UI.Controllers
                 TotalPages = result.TotalPages
             };
 
-            return Ok(responseModel);
+            return Json(new {IsSuccess = true, Data = responseModel});
         }
 
         [Route("Logs/GetServices/{eventName}")]

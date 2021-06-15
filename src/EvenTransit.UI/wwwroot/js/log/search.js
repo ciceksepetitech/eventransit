@@ -52,14 +52,12 @@ async function getLogDetails(e) {
 }
 
 function bindPagination() {
-    console.log("a");
     document.querySelectorAll('#logs-pagination button')
         .forEach(button => button.addEventListener('click', changePage));
 }
 
 async function changePage(e) {
     const page = parseInt(e.currentTarget.dataset.page);
-    console.log(page);
     await search(page);
 }
 
@@ -91,6 +89,18 @@ async function search(page = 1) {
     });
     const result = await response.json();
 
+    document.getElementById("errors").classList.add("d-none");
+
+    if (!result.isSuccess){
+        let errorMessage = "";
+        for (let i = 0; i < result.errors.length; i++) {
+            errorMessage += result.errors[i] + "<br/>";
+        }
+        document.getElementById("errors").innerHTML = errorMessage;
+        document.getElementById("errors").classList.remove("d-none");
+        return;
+    }
+    
     if (result.items) {
         result.items.forEach((item, index) => {
             let newRow = tbodyRef.insertRow();

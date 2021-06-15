@@ -18,9 +18,16 @@ saveForm.addEventListener("submit", async e => {
     });
 
     const result = await response.json();
+    document.getElementById("event-errors").classList.add("d-none");
 
-    if (!result.success) {
-        alert("Service already created before.");
+    if (!result.isSuccess){
+        let errorMessage = "";
+        
+        for (let i = 0; i < result.errors.length; i++) {
+            errorMessage += result.errors[i] + "<br/>";
+        }
+        document.getElementById("event-errors").innerHTML = errorMessage;
+        document.getElementById("event-errors").classList.remove("d-none");
         return;
     }
 

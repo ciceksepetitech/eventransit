@@ -5,11 +5,13 @@ using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Event;
+using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Events;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvenTransit.UI.Controllers
 {
+    [ValidateModel]
     public class EventsController : Controller
     {
         private readonly IEventService _eventService;
@@ -69,8 +71,13 @@ namespace EvenTransit.UI.Controllers
         {
             var data = _mapper.Map<SaveEventDto>(model);
             var result = await _eventService.SaveEventAsync(data);
+            
+            if (!result)
+            {
+                return Json(new {IsSuccess = false, Errors = new[]{"This service already created before"}});
+            }
 
-            return Json(new {success = result});
+            return Json(new {IsSuccess = true});
         }
 
         [HttpPost]
@@ -86,7 +93,7 @@ namespace EvenTransit.UI.Controllers
                 ServiceName = model.ServiceName
             });
             
-            return Json(new {success = true});
+            return Json(new {IsSuccess = true});
         }
     }
 }

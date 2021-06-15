@@ -28,7 +28,17 @@ saveForm.addEventListener("submit", async e => {
     });
 
     const result = await response.json();
-    console.log(result);
+    document.getElementById("service-errors").classList.add("d-none");
+
+    if (!result.isSuccess){
+        let errorMessage = "";
+        for (let i = 0; i < result.errors.length; i++) {
+            errorMessage += result.errors[i] + "<br/>";
+        }
+        document.getElementById("service-errors").innerHTML = errorMessage;
+        document.getElementById("service-errors").classList.remove("d-none");
+        return;
+    }
 
     serviceModal.hide();
     window.location.reload();

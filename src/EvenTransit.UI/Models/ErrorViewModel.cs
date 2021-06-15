@@ -1,5 +1,3 @@
-using System;
-
 namespace EvenTransit.UI.Models
 {
     public class ErrorViewModel

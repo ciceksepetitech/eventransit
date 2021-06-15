@@ -4,6 +4,6 @@ namespace EvenTransit.Api.Models
     {
         public string EventName { get; set; }
 
-        public dynamic Payload { get; set; }
+        public object Payload { get; set; }
     }
 }
