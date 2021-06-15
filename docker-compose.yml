@@ -11,8 +11,8 @@ services:
       - redis
       - rabbitmq
       - mongo
-    env_file:
-      - eventransit.env
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=production
     restart: always
 
   api:
@@ -26,8 +26,8 @@ services:
       - redis
       - rabbitmq
       - mongo
-    env_file:
-      - eventransit.env
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=production
     restart: always
 
   redis:

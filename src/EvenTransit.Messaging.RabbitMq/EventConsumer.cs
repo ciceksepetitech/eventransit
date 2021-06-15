@@ -91,7 +91,7 @@ namespace EvenTransit.Messaging.RabbitMq
 
                 _channel.BasicNack(ea.DeliveryTag, false, true);
 
-                await _eventLog.LogAsync(new EventLogDto
+                var logData = new EventLogDto
                 {
                     EventName = eventName,
                     ServiceName = serviceInfo.Name,
@@ -104,7 +104,9 @@ namespace EvenTransit.Messaging.RabbitMq
                         },
                         Message = e.Message
                     }
-                });
+                };
+                
+                await _eventLog.LogAsync(_mapper.Map<Logs>(logData));
             }
         }
 

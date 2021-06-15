@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using EvenTransit.Messaging.Core.Dto;
+using EvenTransit.Data.Entities;
 
 namespace EvenTransit.Messaging.Core.Abstractions
 {
     public interface IEventLog
     {
-        Task LogAsync(EventLogDto details);
+        Task LogAsync(Logs details);
     }
 }

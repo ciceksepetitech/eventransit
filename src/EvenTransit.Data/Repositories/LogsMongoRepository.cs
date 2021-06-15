@@ -1,7 +1,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AutoMapper;
 using EvenTransit.Core.Enums;
 using EvenTransit.Data.Abstractions;
 using EvenTransit.Data.Entities;
@@ -13,11 +12,8 @@ namespace EvenTransit.Data.Repositories
 {
     public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     {
-        private readonly IMapper _mapper;
-
-        public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, IMapper mapper) : base(mongoDbSettings)
+        public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
         {
-            _mapper = mapper;
         }
 
         public async Task InsertLogAsync(Logs model)

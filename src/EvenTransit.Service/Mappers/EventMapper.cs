@@ -11,6 +11,9 @@ namespace EvenTransit.Service.Mappers
             CreateMap<Event, EventDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src._id))
                 .ReverseMap();
+
+            CreateMap<SaveEventDto, Event>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.EventName));
         }
     }
 }
