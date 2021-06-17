@@ -146,6 +146,7 @@ namespace EvenTransit.Messaging.RabbitMq
         private void BindQueue(string eventName, Service service)
         {
             var eventConsumer = new EventingBasicConsumer(_channel);
+            // TODO Map Service Entity to ServiceDto
             eventConsumer.Received += (sender, ea) => { OnReceiveMessageAsync(eventName, service, ea); };
 
             _channel.QueueBind(service.Name, eventName, eventName);
