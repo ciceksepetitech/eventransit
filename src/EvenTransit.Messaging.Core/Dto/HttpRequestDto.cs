@@ -6,7 +6,7 @@ namespace EvenTransit.Messaging.Core.Dto
     {
         public string Url { get; set; }
         public int Timeout { get; set; }
-        public string Body { get; set; }
+        public byte[] Body { get; set; }
         public Dictionary<string, string> Headers { get; set; }
     }
 }

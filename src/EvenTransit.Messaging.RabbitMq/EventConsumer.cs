@@ -72,13 +72,12 @@ namespace EvenTransit.Messaging.RabbitMq
 
         private async Task OnReceiveMessageAsync(string eventName, Service serviceInfo, BasicDeliverEventArgs ea)
         {
-            var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-
+            var bodyArray = ea.Body.ToArray();
             try
             {
                 var serviceData = _mapper.Map<ServiceDto>(serviceInfo);
 
-                var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, message);
+                var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, bodyArray);
 
                 if (processResult)
                     _channel.BasicAck(ea.DeliveryTag, false);
@@ -100,7 +99,7 @@ namespace EvenTransit.Messaging.RabbitMq
                     {
                         Request = new HttpRequestDto
                         {
-                            Body = message
+                            Body = bodyArray
                         },
                         Message = e.Message
                     }

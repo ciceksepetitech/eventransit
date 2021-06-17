@@ -1,3 +1,4 @@
+using System.Text;
 using System.Threading.Tasks;
 using EvenTransit.Core.Enums;
 using EvenTransit.Data.Entities;
@@ -17,7 +18,7 @@ namespace EvenTransit.Messaging.Core.Domain
             _eventLog = eventLog;
         }
 
-        public async Task<bool> ProcessAsync(string eventName, ServiceDto service, string message)
+        public async Task<bool> ProcessAsync(string eventName, ServiceDto service, byte[] message)
         {
             var request = new HttpRequestDto
             {
@@ -36,6 +37,7 @@ namespace EvenTransit.Messaging.Core.Domain
 
         private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result, HttpRequestDto request)
         {
+            var body = Encoding.UTF8.GetString(request.Body);
             var logData = new Logs
             {
                 EventName = eventName,
@@ -47,7 +49,7 @@ namespace EvenTransit.Messaging.Core.Domain
                     {
                         Url = request.Url,
                         Timeout = request.Timeout,
-                        Body = request.Body,
+                        Body = body,
                         Headers = request.Headers
                     },
                     Response = new LogDetailResponse
