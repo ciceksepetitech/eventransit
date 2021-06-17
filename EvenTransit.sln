@@ -4,7 +4,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C9DE5015-716
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{72BBACCC-2F0D-439F-B39C-D95880B01E45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Core", "src\EvenTransit.Core\EvenTransit.Core.csproj", "{E5BFCB8D-3F4A-4369-82ED-8A786E7B65C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Domain", "src\EvenTransit.Domain\EvenTransit.Domain.csproj", "{E5BFCB8D-3F4A-4369-82ED-8A786E7B65C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Data", "src\EvenTransit.Data\EvenTransit.Data.csproj", "{1BFF36F0-BFE1-49C9-BB33-2F82B747B6FD}"
 EndProject

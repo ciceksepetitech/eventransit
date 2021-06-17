@@ -1,5 +1,5 @@
 using System;
-using EvenTransit.Core.Enums;
+using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Service.Dto.Log
 {

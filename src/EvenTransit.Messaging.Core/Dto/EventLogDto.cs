@@ -1,4 +1,4 @@
-using EvenTransit.Core.Enums;
+using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Messaging.Core.Dto
 {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using EvenTransit.Core.Enums;
+using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Service.Dto.Log
 {

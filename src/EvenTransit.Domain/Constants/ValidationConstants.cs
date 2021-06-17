@@ -1,4 +1,4 @@
-namespace EvenTransit.Core.Constants
+namespace EvenTransit.Domain.Constants
 {
     public class ValidationConstants
     {

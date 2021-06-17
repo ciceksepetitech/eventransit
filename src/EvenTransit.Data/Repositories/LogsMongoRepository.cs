@@ -1,10 +1,10 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using EvenTransit.Core.Enums;
 using EvenTransit.Data.Abstractions;
 using EvenTransit.Data.Entities;
 using EvenTransit.Data.Settings;
+using EvenTransit.Domain.Enums;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 

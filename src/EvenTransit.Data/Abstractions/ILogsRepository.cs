@@ -1,8 +1,8 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using EvenTransit.Core.Enums;
 using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Data.Abstractions
 {

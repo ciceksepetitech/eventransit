@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EvenTransit.Core\EvenTransit.Core.csproj" />
+        <ProjectReference Include="..\EvenTransit.Domain\EvenTransit.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

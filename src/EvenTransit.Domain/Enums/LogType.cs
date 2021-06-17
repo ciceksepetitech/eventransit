@@ -1,4 +1,4 @@
-namespace EvenTransit.Core.Enums
+namespace EvenTransit.Domain.Enums
 {
     public enum LogType
     {

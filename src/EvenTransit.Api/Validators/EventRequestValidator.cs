@@ -1,12 +1,12 @@
 using EvenTransit.Api.Models;
-using EvenTransit.Core.Constants;
+using EvenTransit.Domain.Constants;
 using FluentValidation;
 
 namespace EvenTransit.Api.Validators
 {
-    public class QueueRequestValidator : AbstractValidator<EventRequest>
+    public class EventRequestValidator : AbstractValidator<EventRequest>
     {
-        public QueueRequestValidator()
+        public EventRequestValidator()
         {
             RuleFor(x => x.EventName)
                 .Must(x => !string.IsNullOrEmpty(x))

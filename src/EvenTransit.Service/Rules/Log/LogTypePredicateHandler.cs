@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using EvenTransit.Core.Enums;
+using EvenTransit.Domain.Enums;
 using EvenTransit.Service.Dto.Log;
 
 namespace EvenTransit.Service.Rules.Log

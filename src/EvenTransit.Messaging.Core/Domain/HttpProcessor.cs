@@ -1,7 +1,7 @@
 using System.Text;
 using System.Threading.Tasks;
-using EvenTransit.Core.Enums;
 using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 
