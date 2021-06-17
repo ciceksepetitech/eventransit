@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using EvenTransit.Data.Abstractions;
+using EvenTransit.Domain.Abstractions;
 using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;

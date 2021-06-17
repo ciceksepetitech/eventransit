@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -33,7 +34,7 @@ namespace EvenTransit.UI.Controllers
             return View(data);
         }
 
-        public async Task<IActionResult> Detail(string id)
+        public async Task<IActionResult> Detail(Guid id)
         {
             var eventDetails = await _eventService.GetEventDetailsAsync(id);
 
@@ -44,21 +45,21 @@ namespace EvenTransit.UI.Controllers
             return View(data);
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _eventService.DeleteEventAsync(id);
             return Json(new {success = result});
         }
         
         [Route("Events/DeleteService/{eventId}/{serviceName}")]
-        public async Task<IActionResult> DeleteService(string eventId, string serviceName)
+        public async Task<IActionResult> DeleteService(Guid eventId, string serviceName)
         {
             var result = await _eventService.DeleteServiceAsync(eventId, serviceName);
             return Json(new {success = result});
         }
 
         [Route("Events/GetServiceDetails/{eventId}/{serviceName}")]
-        public async Task<IActionResult> GetServiceDetails(string eventId, string serviceName)
+        public async Task<IActionResult> GetServiceDetails(Guid eventId, string serviceName)
         {
             var serviceData = await _eventService.GetServiceDetailsAsync(eventId, serviceName);
             var data = _mapper.Map<ServiceModel>(serviceData);

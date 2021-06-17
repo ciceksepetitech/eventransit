@@ -1,5 +1,6 @@
 using System.Reflection;
 using EvenTransit.Data;
+using EvenTransit.Data.MongoDb;
 using EvenTransit.Messaging.RabbitMq;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.BackgroundServices;
@@ -27,7 +28,7 @@ namespace EvenTransit.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDatabase(Configuration);
+            services.AddMongoDbDatabase(Configuration);
             services.AddHttpClient();
             services.AddRabbitMq(Configuration);
             services.AddMessaging();

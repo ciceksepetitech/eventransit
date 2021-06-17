@@ -1,4 +1,5 @@
 using EvenTransit.Data;
+using EvenTransit.Data.MongoDb;
 using EvenTransit.Messaging.RabbitMq;
 using EvenTransit.Service.Helpers;
 using EvenTransit.UI.Filters;
@@ -28,7 +29,7 @@ namespace EvenTransit.UI
             services.AddRabbitMq(Configuration);
             services.AddHttpClient();
             services.AddAutoMapper(typeof(Startup));
-            services.AddDatabase(Configuration);
+            services.AddMongoDbDatabase(Configuration);
             services.AddServices();
             services.AddMessaging();
             services.AddControllersWithViews()

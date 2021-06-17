@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace EvenTransit.Data.Entities
+namespace EvenTransit.Domain.Entities
 {
     public class Event : BaseEntity
     {

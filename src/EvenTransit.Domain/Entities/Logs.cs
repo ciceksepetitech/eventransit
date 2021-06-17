@@ -1,7 +1,7 @@
 using System;
 using EvenTransit.Domain.Enums;
 
-namespace EvenTransit.Data.Entities
+namespace EvenTransit.Domain.Entities
 {
     public class Logs : BaseEntity
     {

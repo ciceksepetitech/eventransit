@@ -1,5 +1,5 @@
 using AutoMapper;
-using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Dto;
 
 namespace EvenTransit.Messaging.RabbitMq.Mappers

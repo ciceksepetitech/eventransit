@@ -1,14 +1,14 @@
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using EvenTransit.Data.Abstractions;
-using EvenTransit.Data.Entities;
-using EvenTransit.Data.Settings;
+using EvenTransit.Data.MongoDb.Settings;
+using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace EvenTransit.Data.Repositories
+namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     {
@@ -18,6 +18,7 @@ namespace EvenTransit.Data.Repositories
 
         public async Task InsertLogAsync(Logs model)
         {
+            model.Id = Guid.NewGuid();
             model.CreatedOn = DateTime.UtcNow;
 
             await Collection.InsertOneAsync(model);
@@ -42,9 +43,9 @@ namespace EvenTransit.Data.Repositories
             };
         }
 
-        public async Task<Logs> GetByIdAsync(string id)
+        public async Task<Logs> GetByIdAsync(Guid id)
         {
-            return await Collection.Find(x => x._id == id).FirstOrDefaultAsync();
+            return await Collection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<long> GetLogsCount(DateTime startDate, DateTime endDate, LogType type)

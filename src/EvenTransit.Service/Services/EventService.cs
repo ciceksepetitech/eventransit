@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using EvenTransit.Data.Abstractions;
-using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
@@ -38,19 +39,19 @@ namespace EvenTransit.Service.Services
             return _mapper.Map<List<EventDto>>(events);
         }
 
-        public async Task<EventDto> GetEventDetailsAsync(string id)
+        public async Task<EventDto> GetEventDetailsAsync(Guid id)
         {
-            var eventDetails = await _eventsRepository.GetEventAsync(x => x._id == id);
+            var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == id);
             return _mapper.Map<EventDto>(eventDetails);
         }
 
         public async Task SaveServiceAsync(SaveServiceDto model)
         {
-            var eventDetails = await _eventsRepository.GetEventAsync(x => x._id == model.EventId);
+            var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == model.EventId);
 
             if (eventDetails == null) return;
 
-            var serviceData = _mapper.Map<Data.Entities.Service>(model);
+            var serviceData = _mapper.Map<Domain.Entities.Service>(model);
             var service = eventDetails.Services.FirstOrDefault(x => x.Name == model.ServiceName);
 
             if (service == null)
@@ -63,9 +64,9 @@ namespace EvenTransit.Service.Services
             }
         }
 
-        public async Task<ServiceDto> GetServiceDetailsAsync(string eventId, string serviceName)
+        public async Task<ServiceDto> GetServiceDetailsAsync(Guid eventId, string serviceName)
         {
-            var eventDetails = await _eventsRepository.GetEventAsync(x => x._id == eventId);
+            var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == eventId);
             var serviceDetails = eventDetails?.Services?.FirstOrDefault(x => x.Name == serviceName);
             var data = _mapper.Map<ServiceDto>(serviceDetails);
 
@@ -93,9 +94,9 @@ namespace EvenTransit.Service.Services
             return true;
         }
 
-        public async Task<bool> DeleteEventAsync(string id)
+        public async Task<bool> DeleteEventAsync(Guid id)
         {
-            var @event = await _eventsRepository.GetEventAsync(x => x._id == id);
+            var @event = await _eventsRepository.GetEventAsync(x => x.Id == id);
 
             if (@event == null)
                 return false;
@@ -105,9 +106,9 @@ namespace EvenTransit.Service.Services
             return true;
         }
 
-        public async Task<bool> DeleteServiceAsync(string id, string name)
+        public async Task<bool> DeleteServiceAsync(Guid id, string name)
         {
-            var @event = await _eventsRepository.GetEventAsync(x => x._id == id);
+            var @event = await _eventsRepository.GetEventAsync(x => x.Id == id);
             var service = @event?.Services.FirstOrDefault(x => x.Name == name);
             if (service == null)
                 return false;

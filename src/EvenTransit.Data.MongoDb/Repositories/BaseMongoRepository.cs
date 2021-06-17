@@ -1,8 +1,8 @@
-using EvenTransit.Data.Settings;
+using EvenTransit.Data.MongoDb.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace EvenTransit.Data.Repositories
+namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class BaseMongoRepository<T>
     {

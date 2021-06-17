@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
-using EvenTransit.Data.Abstractions;
-using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
@@ -49,7 +49,7 @@ namespace EvenTransit.Service.Services
             };
         }
 
-        public async Task<LogItemDto> GetByIdAsync(string id)
+        public async Task<LogItemDto> GetByIdAsync(Guid id)
         {
             var data = await _logsRepository.GetByIdAsync(id);
             return _mapper.Map<LogItemDto>(data);

@@ -7,8 +7,8 @@ namespace EvenTransit.Service.Mappers
     {
         public ServiceMapper()
         {
-            CreateMap<Data.Entities.Service, ServiceDto>();
-            CreateMap<SaveServiceDto, Data.Entities.Service>()
+            CreateMap<Domain.Entities.Service, ServiceDto>();
+            CreateMap<SaveServiceDto, Domain.Entities.Service>()
                 .ForMember(dest => dest.Name, cfg => cfg.MapFrom(src => src.ServiceName));
         }
     }

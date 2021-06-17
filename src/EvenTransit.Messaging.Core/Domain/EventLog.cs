@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using EvenTransit.Data.Abstractions;
-using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Abstractions;
 
 namespace EvenTransit.Messaging.Core.Domain

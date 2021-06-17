@@ -6,7 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{72BBACCC-2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Domain", "src\EvenTransit.Domain\EvenTransit.Domain.csproj", "{E5BFCB8D-3F4A-4369-82ED-8A786E7B65C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Data", "src\EvenTransit.Data\EvenTransit.Data.csproj", "{1BFF36F0-BFE1-49C9-BB33-2F82B747B6FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Data.MongoDb", "src\EvenTransit.Data.MongoDb\EvenTransit.Data.MongoDb.csproj", "{1BFF36F0-BFE1-49C9-BB33-2F82B747B6FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Service", "src\EvenTransit.Service\EvenTransit.Service.csproj", "{2FE2F027-5F2F-4875-8C4E-5605CCF5315C}"
 EndProject

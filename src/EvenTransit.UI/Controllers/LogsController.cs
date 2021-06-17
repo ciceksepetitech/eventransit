@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -60,7 +61,7 @@ namespace EvenTransit.UI.Controllers
             return Json(services);
         }
 
-        public async Task<IActionResult> GetById(string id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var data = await _logService.GetByIdAsync(id);
             var result = _mapper.Map<LogItemViewModel>(data);

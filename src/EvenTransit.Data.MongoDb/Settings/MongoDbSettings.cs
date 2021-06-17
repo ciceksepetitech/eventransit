@@ -1,4 +1,4 @@
-namespace EvenTransit.Data.Settings
+namespace EvenTransit.Data.MongoDb.Settings
 {
     public class MongoDbSettings
     {

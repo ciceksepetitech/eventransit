@@ -1,14 +1,14 @@
-using EvenTransit.Data.Abstractions;
-using EvenTransit.Data.Repositories;
-using EvenTransit.Data.Settings;
+using EvenTransit.Data.MongoDb.Repositories;
+using EvenTransit.Data.MongoDb.Settings;
+using EvenTransit.Domain.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EvenTransit.Data
+namespace EvenTransit.Data.MongoDb
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMongoDbDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IEventsRepository, EventsMongoRepository>();
             services.AddScoped<ILogsRepository, LogsMongoRepository>();

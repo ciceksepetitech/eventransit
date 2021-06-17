@@ -1,5 +1,5 @@
 using AutoMapper;
-using EvenTransit.Data.Entities;
+using EvenTransit.Domain.Entities;
 using EvenTransit.Service.Dto.Event;
 
 namespace EvenTransit.Service.Mappers
@@ -8,9 +8,7 @@ namespace EvenTransit.Service.Mappers
     {
         public EventMapper()
         {
-            CreateMap<Event, EventDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src._id))
-                .ReverseMap();
+            CreateMap<Event, EventDto>().ReverseMap();
 
             CreateMap<SaveEventDto, Event>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.EventName));
