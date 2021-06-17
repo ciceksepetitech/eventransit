@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using EvenTransit.Api.Models;
-using EvenTransit.Api.Validators;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace EvenTransit.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/queue")]
-    public class QueueController : ControllerBase
+    [Route("api/v1/event")]
+    public class EventController : ControllerBase
     {
-        private readonly IQueueService _queueService;
+        private readonly IEventService _eventService;
 
-        public QueueController(IQueueService queueService)
+        public EventController(IEventService eventService)
         {
-            _queueService = queueService;
+            _eventService = eventService;
         }
 
         /// <summary>
@@ -28,9 +27,9 @@ namespace EvenTransit.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(void), 400)]
-        public async Task<IActionResult> PostAsync([FromBody] QueueRequest request)
+        public async Task<IActionResult> PostAsync([FromBody] EventRequest request)
         {
-            var response = await _queueService.PublishAsync(new QueueRequestDto
+            var response = await _eventService.PublishAsync(new EventRequestDto
             {
                 EventName = request.EventName,
                 Payload = request.Payload

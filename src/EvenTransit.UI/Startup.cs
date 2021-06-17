@@ -1,4 +1,3 @@
-using EvenTransit.Cache;
 using EvenTransit.Data;
 using EvenTransit.Messaging.RabbitMq;
 using EvenTransit.Service.Helpers;
@@ -29,7 +28,6 @@ namespace EvenTransit.UI
             services.AddRabbitMq(Configuration);
             services.AddHttpClient();
             services.AddAutoMapper(typeof(Startup));
-            services.AddRedisCache(Configuration);
             services.AddDatabase(Configuration);
             services.AddServices();
             services.AddMessaging();

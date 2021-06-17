@@ -1,6 +1,6 @@
 namespace EvenTransit.Api.Models
 {
-    public class QueueRequest
+    public class EventRequest
     {
         public string EventName { get; set; }
 

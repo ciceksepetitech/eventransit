@@ -1,5 +1,4 @@
 using System.Reflection;
-using EvenTransit.Cache;
 using EvenTransit.Data;
 using EvenTransit.Messaging.RabbitMq;
 using EvenTransit.Service.Abstractions;
@@ -31,10 +30,9 @@ namespace EvenTransit.Api
             services.AddDatabase(Configuration);
             services.AddHttpClient();
             services.AddRabbitMq(Configuration);
-            services.AddRedisCache(Configuration);
             services.AddMessaging();
 
-            services.AddScoped<IQueueService, QueueService>();
+            services.AddScoped<IEventService, EventService>();
             services.AddHostedService<QueueDeclarationService>();
             services.AddHostedService<ConsumerBinderService>();
             

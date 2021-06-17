@@ -1,7 +1,4 @@
 using System.Reflection;
-using EvenTransit.Cache.Abstractions;
-using EvenTransit.Cache.Domain;
-using EvenTransit.Cache.Settings;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Service.Abstractions;

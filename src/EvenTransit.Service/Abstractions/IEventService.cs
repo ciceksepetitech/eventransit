@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Dto.Event;
+using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 
 namespace EvenTransit.Service.Abstractions
 {
     public interface IEventService
     {
+        Task<bool> PublishAsync(EventRequestDto requestDto);
         Task<List<EventDto>> GetAllAsync();
         Task<EventDto> GetEventDetailsAsync(string id);
         Task SaveServiceAsync(SaveServiceDto model);

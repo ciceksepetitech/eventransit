@@ -1,6 +1,6 @@
 namespace EvenTransit.Messaging.Core.Dto
 {
-    public class QueueRequestDto
+    public class EventRequestDto
     {
         public string EventName { get; set; }
 

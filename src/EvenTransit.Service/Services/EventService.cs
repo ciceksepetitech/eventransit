@@ -2,33 +2,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using EvenTransit.Cache.Abstractions;
-using EvenTransit.Core.Constants;
-using EvenTransit.Core.Enums;
 using EvenTransit.Data.Abstractions;
 using EvenTransit.Data.Entities;
+using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Event;
+using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 
 namespace EvenTransit.Service.Services
 {
     public class EventService : IEventService
     {
-        private readonly ICacheService _cacheService;
         private readonly IEventsRepository _eventsRepository;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
 
-        public EventService(ICacheService cacheService, IEventsRepository eventsRepository, IMapper mapper)
+        public EventService(IEventsRepository eventsRepository, IEventPublisher eventPublisher, IMapper mapper)
         {
-            _cacheService = cacheService;
             _eventsRepository = eventsRepository;
+            _eventPublisher = eventPublisher;
             _mapper = mapper;
+        }
+        
+        public Task<bool> PublishAsync(EventRequestDto requestDto)
+        {
+            _eventPublisher.Publish(requestDto.EventName, requestDto.Payload);
+            return Task.FromResult(true);
         }
 
         public async Task<List<EventDto>> GetAllAsync()
         {
-            var events = await _cacheService.GetAsync(CacheConstants.EventsKey, ExpireTimes.OneHour,
-                async () => await _eventsRepository.GetEventsAsync());
+            var events = await _eventsRepository.GetEventsAsync();
 
             return _mapper.Map<List<EventDto>>(events);
         }
@@ -69,14 +74,8 @@ namespace EvenTransit.Service.Services
 
         public async Task<List<string>> GetServicesAsync(string eventName)
         {
-            var key = string.Format(CacheConstants.QueuesByEventKey, eventName);
-            var queueNames = await _cacheService.GetAsync(key, ExpireTimes.OneHour, async () =>
-            {
-                var queues = await _eventsRepository.GetEventAsync(x => x.Name == eventName);
-                var data = queues.Services.Select(x => x.Name).ToList();
-
-                return data;
-            });
+            var queues = await _eventsRepository.GetEventAsync(x => x.Name == eventName);
+            var queueNames = queues.Services.Select(x => x.Name).ToList();
 
             return queueNames;
         }
@@ -90,7 +89,6 @@ namespace EvenTransit.Service.Services
                 return false;
 
             await _eventsRepository.AddEvent(dataModel);
-            await _cacheService.DeleteAsync(CacheConstants.EventsKey);
 
             return true;
         }
@@ -103,7 +101,6 @@ namespace EvenTransit.Service.Services
                 return false;
 
             await _eventsRepository.DeleteEventAsync(id);
-            await _cacheService.DeleteAsync(CacheConstants.EventsKey);
 
             return true;
         }

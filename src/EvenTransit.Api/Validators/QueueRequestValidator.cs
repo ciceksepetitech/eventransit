@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace EvenTransit.Api.Validators
 {
-    public class QueueRequestValidator : AbstractValidator<QueueRequest>
+    public class QueueRequestValidator : AbstractValidator<EventRequest>
     {
         public QueueRequestValidator()
         {
