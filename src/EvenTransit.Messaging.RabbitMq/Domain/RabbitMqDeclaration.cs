@@ -33,9 +33,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                 }
             }
 
-            channel.ExchangeDeclare(MessagingConstants.NewServiceQueue, ExchangeType.Direct, true, false, null);
-            channel.QueueDeclare(MessagingConstants.NewServiceQueue, false, false, false, null);
-            channel.QueueBind(MessagingConstants.NewServiceQueue, MessagingConstants.NewServiceQueue, string.Empty);
+            channel.ExchangeDeclare(MessagingConstants.NewServiceExchange, ExchangeType.Fanout, false, false, null);
         }
     }
 }

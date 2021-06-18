@@ -1,7 +1,7 @@
 using EvenTransit.UI.Models.Logs;
 using FluentValidation;
 
-namespace EvenTransit.UI.Validation.Logs
+namespace EvenTransit.UI.Validators.Logs
 {
     public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
     {

@@ -49,8 +49,9 @@ namespace EvenTransit.Messaging.RabbitMq
             _newServiceConsumer = new EventingBasicConsumer(_channel);
             _newServiceConsumer.Received += OnNewServiceCreated;
 
-            _channel.QueueBind(MessagingConstants.NewServiceQueue, MessagingConstants.NewServiceQueue, string.Empty);
-            _channel.BasicConsume(MessagingConstants.NewServiceQueue, false, _newServiceConsumer);
+            var queueName = _channel.QueueDeclare().QueueName;
+            _channel.QueueBind(queueName, MessagingConstants.NewServiceExchange, string.Empty);
+            _channel.BasicConsume(queueName, false, _newServiceConsumer);
 
             #endregion
 
@@ -127,7 +128,7 @@ namespace EvenTransit.Messaging.RabbitMq
             {
                 _channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
                 _channel.QueueDeclare(serviceName, false, false, false, null);
-                _channel.QueueBind(serviceName, eventName, string.Empty);
+                _channel.QueueBind(serviceName, eventName, eventName);
 
                 var service = _eventsRepository.GetServiceByEvent(eventName, serviceName);
                 BindQueue(eventName, service);

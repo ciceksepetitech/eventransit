@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Text.Json;
 using EvenTransit.Messaging.Core;
@@ -30,7 +31,7 @@ namespace EvenTransit.Messaging.RabbitMq
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-            _channel.BasicPublish(MessagingConstants.NewServiceQueue, MessagingConstants.NewServiceQueue, false,
+            _channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
                 _properties, body);
         }
     }

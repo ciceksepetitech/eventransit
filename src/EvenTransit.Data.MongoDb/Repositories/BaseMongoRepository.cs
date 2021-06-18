@@ -8,7 +8,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
     {
         protected readonly IMongoCollection<T> Collection;
 
-        public BaseMongoRepository(IOptions<MongoDbSettings> mongoDbSettings)
+        protected BaseMongoRepository(IOptions<MongoDbSettings> mongoDbSettings)
         {
             var client = new MongoClient(mongoDbSettings.Value.Host);
             var database = client.GetDatabase(mongoDbSettings.Value.Database);
