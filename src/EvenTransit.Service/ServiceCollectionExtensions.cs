@@ -5,7 +5,7 @@ using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EvenTransit.Service.Helpers
+namespace EvenTransit.Service
 {
     public static class ServiceCollectionExtensions
     {

@@ -12,6 +12,7 @@ namespace EvenTransit.Data.MongoDb
         {
             services.AddScoped<IEventsRepository, EventsMongoRepository>();
             services.AddScoped<ILogsRepository, LogsMongoRepository>();
+            services.AddScoped<ILogStatisticsRepository, LogStatisticsMongoRepository>();
 
             services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
 

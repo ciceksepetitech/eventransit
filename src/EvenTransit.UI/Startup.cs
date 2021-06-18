@@ -1,7 +1,7 @@
 using EvenTransit.Data;
 using EvenTransit.Data.MongoDb;
 using EvenTransit.Messaging.RabbitMq;
-using EvenTransit.Service.Helpers;
+using EvenTransit.Service;
 using EvenTransit.UI.Filters;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;

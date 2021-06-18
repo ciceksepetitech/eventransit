@@ -14,7 +14,6 @@ namespace EvenTransit.Messaging.RabbitMq
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             
-            // TODO Check lifetime
             services.AddScoped<IEventConsumer, EventConsumer>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();

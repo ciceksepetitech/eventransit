@@ -78,8 +78,8 @@ namespace EvenTransit.Service.Services
             var startDate = new DateTime(day.Year, day.Month, day.Day, 0, 0, 0);
             var endDate = new DateTime(day.Year, day.Month, day.Day, 23, 59, 59);
 
-            var successLogsCount = await _logsRepository.GetLogsCount(startDate, endDate, LogType.Success);
-            var failLogsCount = await _logsRepository.GetLogsCount(startDate, endDate, LogType.Fail);
+            var successLogsCount = await _logsRepository.GetLogsCountAsync(startDate, endDate, LogType.Success);
+            var failLogsCount = await _logsRepository.GetLogsCountAsync(startDate, endDate, LogType.Fail);
 
             return (successLogsCount, failLogsCount);
         }

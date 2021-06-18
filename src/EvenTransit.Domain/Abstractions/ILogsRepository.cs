@@ -11,6 +11,7 @@ namespace EvenTransit.Domain.Abstractions
         Task InsertLogAsync(Logs model);
         Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page);
         Task<Logs> GetByIdAsync(Guid id);
-        Task<long> GetLogsCount(DateTime startDate, DateTime endDate, LogType type);
+        Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type);
+        long GetLogsCount(DateTime startDate, DateTime endDate, LogType type);
     }
 }

@@ -48,9 +48,15 @@ namespace EvenTransit.Data.MongoDb.Repositories
             return await Collection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<long> GetLogsCount(DateTime startDate, DateTime endDate, LogType type)
+        public async Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type)
         {
             return await Collection.CountDocumentsAsync(x =>
+                x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
+        }
+
+        public long GetLogsCount(DateTime startDate, DateTime endDate, LogType type)
+        {
+            return Collection.CountDocuments(x =>
                 x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
         }
     }
