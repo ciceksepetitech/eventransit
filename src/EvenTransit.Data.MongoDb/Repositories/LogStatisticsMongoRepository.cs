@@ -11,7 +11,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class LogStatisticsMongoRepository : BaseMongoRepository<LogStatistic>, ILogStatisticsRepository
     {
-        protected LogStatisticsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
+        public LogStatisticsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
         {
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,12 +16,16 @@ namespace EvenTransit.Service.Services
     public class LogService : ILogService
     {
         private readonly ILogsRepository _logsRepository;
+        private readonly ILogStatisticsRepository _logStatisticsRepository;
         private readonly IMapper _mapper;
 
-        public LogService(ILogsRepository logsRepository, IMapper mapper)
+        public LogService(ILogsRepository logsRepository, 
+            IMapper mapper, 
+            ILogStatisticsRepository logStatisticsRepository)
         {
             _logsRepository = logsRepository;
             _mapper = mapper;
+            _logStatisticsRepository = logStatisticsRepository;
         }
 
         public async Task<LogSearchResultDto> SearchAsync(LogSearchRequestDto request)
@@ -58,17 +63,17 @@ namespace EvenTransit.Service.Services
         public async Task<LogStatisticsDto> GetDashboardStatistics()
         {
             var response = new LogStatisticsDto();
-            var currentTime = DateTime.UtcNow;
+            var startDate = DateTime.Today.AddDays(-4);
+            var endDate = DateTime.Now;
+            var logStatistics = await _logStatisticsRepository.GetStatisticsAsync(startDate, endDate);
 
-            for (var i = -4; i <= 0; i++)
-            {
-                var day = currentTime.AddDays(i);
-                var logsCount = await GetLogsCountByDay(day);
-                
-                response.Dates.Add(day.ToString("yyyy-MM-dd"));
-                response.SuccessCount.Add(logsCount.Item1);
-                response.FailCount.Add(logsCount.Item2);
-            }
+            var dates = logStatistics.Select(x => x.Date.ToString("yyyy-MM-dd")).ToList();
+            var successCount = logStatistics.Select(x => x.SuccessCount).ToList();
+            var failCount = logStatistics.Select(x => x.FailCount).ToList();
+
+            response.Dates = dates;
+            response.SuccessCount = successCount;
+            response.FailCount = failCount;
             
             return response;
         }
