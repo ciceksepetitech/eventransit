@@ -168,7 +168,7 @@ namespace EvenTransit.Messaging.RabbitMq
         private void BindRetryQueue(string eventName, string serviceName)
         {
             var retryExchangeName = eventName.GetRetryExchangeName();
-            _channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, false, false, null);
+            _channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
             
             var retryQueueName = serviceName.GetRetryQueueName();
             var retryQueueArguments = new Dictionary<string, object>
@@ -179,7 +179,7 @@ namespace EvenTransit.Messaging.RabbitMq
             };
             
             _channel.QueueDeclare(queue: retryQueueName,
-                false,
+                true,
                 false,
                 false,
                 retryQueueArguments);

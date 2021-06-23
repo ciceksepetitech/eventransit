@@ -28,7 +28,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                 foreach (var service in @event.Services)
                 {
                     channel.QueueDeclare(queue: service.Name,
-                        false,
+                        true,
                         false,
                         false,
                         null);
@@ -42,7 +42,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                         {"x-message-ttl", MessagingConstants.DeadLetterQueueTTL}
                     };
                     channel.QueueDeclare(queue: retryQueueName,
-                        false,
+                        true,
                         false,
                         false,
                         retryQueueArguments);
