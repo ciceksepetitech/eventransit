@@ -15,12 +15,12 @@ namespace EvenTransit.Service.BackgroundServices
         private readonly ILogsRepository _logsRepository;
         private Timer _timer;
 
-        public LogStatisticsService(IServiceProvider serviceProvider)
+        public LogStatisticsService(IServiceScopeFactory serviceScopeFactory)
         {
-            _logStatisticsRepository = serviceProvider.GetRequiredService<ILogStatisticsRepository>();
-            _logsRepository = serviceProvider.GetRequiredService<ILogsRepository>();
+            using var scope = serviceScopeFactory.CreateScope();
+            _logStatisticsRepository = scope.ServiceProvider.GetRequiredService<ILogStatisticsRepository>();
+            _logsRepository = scope.ServiceProvider.GetRequiredService<ILogsRepository>();
         }
-        
 
         public Task StartAsync(CancellationToken cancellationToken)
         {

@@ -21,10 +21,15 @@ namespace EvenTransit.Messaging.RabbitMq
             _properties.Persistent = true;
         }
 
-        public void Publish(string eventName, dynamic payload)
+        public void Publish(string eventName, object payload)
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
             _channel.BasicPublish(eventName, eventName, false, _properties, body);
+        }
+
+        public void PublishToRetry(string eventName, string serviceName, byte[] payload)
+        {
+            _channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, _properties, payload);
         }
 
         public void RegisterNewService(NewServiceDto data)

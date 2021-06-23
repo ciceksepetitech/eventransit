@@ -27,12 +27,9 @@ namespace EvenTransit.Data.MongoDb.Repositories
 
         public void UpdateStatistic(Guid id, long successCount, long failCount)
         {
-            var data = new LogStatistic
-            {
-                FailCount = failCount,
-                SuccessCount = successCount
-            };
-            Collection.ReplaceOne(x => x.Id == id, data);
+            var update = Builders<LogStatistic>.Update.Set("FailCount", failCount);
+            update.Set("SuccessCount", successCount);
+            Collection.UpdateOne(x => x.Id == id, update);
         }
 
         public async Task<List<LogStatistic>> GetStatisticsAsync(DateTime startDate, DateTime endDate)
