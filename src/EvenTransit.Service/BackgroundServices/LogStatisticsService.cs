@@ -31,7 +31,7 @@ namespace EvenTransit.Service.BackgroundServices
 
         private void CalculateStatistics(object state)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var startDate = DateTime.Today;
             var endDate = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
             

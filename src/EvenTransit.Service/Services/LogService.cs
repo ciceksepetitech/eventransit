@@ -64,7 +64,7 @@ namespace EvenTransit.Service.Services
         {
             var response = new LogStatisticsDto();
             var startDate = DateTime.Today.AddDays(-4);
-            var endDate = DateTime.Now;
+            var endDate = DateTime.UtcNow;
             var logStatistics = await _logStatisticsRepository.GetStatisticsAsync(startDate, endDate);
 
             var dates = logStatistics.Select(x => x.Date.ToString("yyyy-MM-dd")).ToList();
