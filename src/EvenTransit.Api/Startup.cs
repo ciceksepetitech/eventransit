@@ -37,6 +37,7 @@ namespace EvenTransit.Api
             services.AddHostedService<QueueDeclarationService>();
             services.AddHostedService<ConsumerBinderService>();
             services.AddHostedService<LogStatisticsService>();
+            services.AddHostedService<EventLogStatisticsService>();
             
             services.AddControllers().AddFluentValidation(opt =>
             {

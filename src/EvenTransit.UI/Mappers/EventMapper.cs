@@ -10,6 +10,7 @@ namespace EvenTransit.UI.Mappers
         public EventMapper()
         {
             CreateMap<EventDto, EventViewModel>();
+            CreateMap<EventDto, EventListViewModel>();
             CreateMap<ServiceDto, ServiceViewModel>();
             CreateMap<EventDto, SelectListItem>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name))

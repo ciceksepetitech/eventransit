@@ -36,7 +36,7 @@ namespace EvenTransit.Service.BackgroundServices
             var endDate = new DateTime(now.Year, now.Month, now.Day, 23, 59, 59);
             
             var successCount = _logsRepository.GetLogsCount(startDate, endDate, LogType.Success);
-            var failCount = _logsRepository.GetLogsCount(startDate, endDate, LogType.Success);
+            var failCount = _logsRepository.GetLogsCount(startDate, endDate, LogType.Fail);
             var statistic = _logStatisticsRepository.GetStatistic(startDate);
             
             if (statistic == null)

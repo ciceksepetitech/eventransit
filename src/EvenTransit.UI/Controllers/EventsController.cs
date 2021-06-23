@@ -29,7 +29,7 @@ namespace EvenTransit.UI.Controllers
         public async Task<IActionResult> Index()
         {
             var events = await _eventService.GetAllAsync();
-            var data = _mapper.Map<List<EventViewModel>>(events);
+            var data = _mapper.Map<List<EventListViewModel>>(events);
 
             return View(data);
         }

@@ -1,14 +1,13 @@
-using System.Collections.Generic;
+using System;
 
-namespace EvenTransit.Service.Dto.Event
+namespace EvenTransit.UI.Models.Events
 {
-    public class EventDto
+    public class EventListViewModel
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public int ServiceCount { get; set; }
         public long SuccessCount { get; set; }
         public long FailCount { get; set; }
-        public List<ServiceDto> Services { get; set; }
     }
 }

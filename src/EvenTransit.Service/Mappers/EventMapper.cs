@@ -9,9 +9,13 @@ namespace EvenTransit.Service.Mappers
         public EventMapper()
         {
             CreateMap<Event, EventDto>().ReverseMap();
+            CreateMap<EventLogStatistic, EventDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.EventName))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.EventId));
 
             CreateMap<SaveEventDto, Event>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.EventName));
+            CreateMap<SaveEventDto, EventLogStatistic>();
         }
     }
 }

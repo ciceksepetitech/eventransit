@@ -1,4 +1,4 @@
-@model List<EvenTransit.UI.Models.Events.EventViewModel>
+@model List<EvenTransit.UI.Models.Events.EventListViewModel>
 @{
     ViewData["Title"] = "Events";
     var index = 1;
@@ -37,13 +37,13 @@
             <td class="text-center">@index</td>
             <td class="col-2">@eventDto.Name</td>
             <td class="col-2">
-                <span class="badge rounded-pill bg-primary">100</span>
+                <span class="badge rounded-pill bg-primary">@eventDto.ServiceCount</span>
             </td>
             <td class="col-2">
-                <span class="badge rounded-pill bg-success">1000</span>
+                <span class="badge rounded-pill bg-success">@eventDto.SuccessCount</span>
             </td>
             <td class="col-2">
-                <span class="badge rounded-pill bg-danger">10</span>
+                <span class="badge rounded-pill bg-danger">@eventDto.FailCount</span>
             </td>
             <td class="col-1 text-center">
                 <a class="btn btn-sm btn-warning" title="Edit" href="@Url.Action("Detail", "Events", new {id = eventDto.Id})">

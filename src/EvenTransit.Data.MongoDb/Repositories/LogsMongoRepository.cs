@@ -59,5 +59,13 @@ namespace EvenTransit.Data.MongoDb.Repositories
             return Collection.CountDocuments(x =>
                 x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
         }
+
+        public (long, long) GetLogsCountByEvent(string eventName)
+        {
+            var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Success);
+            var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Fail);
+
+            return (successLogCount, failLogCount);
+        }
     }
 }

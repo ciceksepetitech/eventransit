@@ -16,12 +16,18 @@ namespace EvenTransit.Service.Services
     public class EventService : IEventService
     {
         private readonly IEventsRepository _eventsRepository;
+        private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
         private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
 
-        public EventService(IEventsRepository eventsRepository, IEventPublisher eventPublisher, IMapper mapper)
+        public EventService(
+            IEventsRepository eventsRepository,
+            IEventLogStatisticRepository eventLogStatisticRepository,
+            IEventPublisher eventPublisher, 
+            IMapper mapper)
         {
             _eventsRepository = eventsRepository;
+            _eventLogStatisticRepository = eventLogStatisticRepository;
             _eventPublisher = eventPublisher;
             _mapper = mapper;
         }
@@ -34,7 +40,7 @@ namespace EvenTransit.Service.Services
 
         public async Task<List<EventDto>> GetAllAsync()
         {
-            var events = await _eventsRepository.GetEventsAsync();
+            var events = await _eventLogStatisticRepository.GetAllAsync();
 
             return _mapper.Map<List<EventDto>>(events);
         }
@@ -57,6 +63,11 @@ namespace EvenTransit.Service.Services
             if (service == null)
             {
                 await _eventsRepository.AddServiceToEventAsync(model.EventId, serviceData);
+
+                var eventLogData = await _eventLogStatisticRepository.GetAsync(model.EventId);
+                eventLogData.ServiceCount++;
+
+                await _eventLogStatisticRepository.UpdateAsync(model.EventId, eventLogData);
             }
             else
             {
@@ -90,6 +101,11 @@ namespace EvenTransit.Service.Services
                 return false;
 
             await _eventsRepository.AddEvent(dataModel);
+            
+            var eventLogModel = _mapper.Map<EventLogStatistic>(data);
+            eventLogModel.EventId = dataModel.Id;
+            
+            await _eventLogStatisticRepository.InsertAsync(eventLogModel);
 
             return true;
         }
@@ -102,6 +118,7 @@ namespace EvenTransit.Service.Services
                 return false;
 
             await _eventsRepository.DeleteEventAsync(id);
+            await _eventLogStatisticRepository.DeleteAsync(id);
 
             return true;
         }
@@ -114,6 +131,14 @@ namespace EvenTransit.Service.Services
                 return false;
 
             await _eventsRepository.DeleteServiceAsync(id, name);
+
+            var eventLogData = await _eventLogStatisticRepository.GetAsync(id);
+            var newServiceCount = eventLogData.ServiceCount - 1;
+            if (newServiceCount < 0) newServiceCount = 0;
+            eventLogData.ServiceCount = newServiceCount;
+
+            await _eventLogStatisticRepository.UpdateAsync(id, eventLogData);
+            
             return true;
         }
     }

@@ -13,5 +13,6 @@ namespace EvenTransit.Domain.Abstractions
         Task<Logs> GetByIdAsync(Guid id);
         Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type);
         long GetLogsCount(DateTime startDate, DateTime endDate, LogType type);
+        (long, long) GetLogsCountByEvent(string eventName);
     }
 }
