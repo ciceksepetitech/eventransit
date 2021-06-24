@@ -34,7 +34,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                         null);
                     channel.QueueBind(service.Name, @event.Name, @event.Name);
 
-                    var retryQueueName = service.Name.GetRetryQueueName();
+                    var retryQueueName = service.Name.GetRetryQueueName(@event.Name);
                     var retryQueueArguments = new Dictionary<string, object>
                     {
                         {"x-dead-letter-exchange", @event.Name},

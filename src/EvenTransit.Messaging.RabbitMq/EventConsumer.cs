@@ -134,7 +134,7 @@ namespace EvenTransit.Messaging.RabbitMq
             try
             {
                 _channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
-                _channel.QueueDeclare(serviceName, false, false, false, null);
+                _channel.QueueDeclare(serviceName, true, false, false, null);
 
                 var service = _eventsRepository.GetServiceByEvent(eventName, serviceName);
                 BindQueue(eventName, service);
@@ -165,7 +165,7 @@ namespace EvenTransit.Messaging.RabbitMq
             var retryExchangeName = eventName.GetRetryExchangeName();
             _channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
-            var retryQueueName = serviceName.GetRetryQueueName();
+            var retryQueueName = serviceName.GetRetryQueueName(eventName);
             var retryQueueArguments = new Dictionary<string, object>
             {
                 {"x-dead-letter-exchange", eventName},

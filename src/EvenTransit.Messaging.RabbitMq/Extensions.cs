@@ -6,6 +6,6 @@ namespace EvenTransit.Messaging.RabbitMq
         private const string RetryQueueSuffix = "retry";
 
         public static string GetRetryExchangeName(this string exchangeName) => $"{exchangeName}.{RetryExchangeSuffix}";
-        public static string GetRetryQueueName(this string queueName) => $"{queueName}.{RetryQueueSuffix}";
+        public static string GetRetryQueueName(this string queueName, string eventName) => $"{eventName}.{queueName}.{RetryQueueSuffix}";
     }
 }
