@@ -23,7 +23,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
             {
                 var retryExchangeName = @event.Name.GetRetryExchangeName();
                 channel.ExchangeDeclare(@event.Name, ExchangeType.Direct, true, false, null);
-                channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, false, false, null);
+                channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
                 foreach (var service in @event.Services)
                 {
