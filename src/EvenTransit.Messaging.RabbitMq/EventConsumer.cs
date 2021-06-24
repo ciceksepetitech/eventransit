@@ -33,7 +33,7 @@ namespace EvenTransit.Messaging.RabbitMq
             IEventsRepository eventsRepository,
             IEventLog eventLog,
             ILogger<EventConsumer> logger,
-            IMapper mapper, 
+            IMapper mapper,
             IEventPublisher eventPublisher)
         {
             _httpProcessor = httpProcessor;
@@ -77,31 +77,27 @@ namespace EvenTransit.Messaging.RabbitMq
         private async Task OnReceiveMessageAsync(string eventName, Service serviceInfo, BasicDeliverEventArgs ea)
         {
             var bodyArray = ea.Body.ToArray();
+            var retryCount = GetRetryCount(ea.BasicProperties);
+
             try
             {
                 var serviceData = _mapper.Map<ServiceDto>(serviceInfo);
                 var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, bodyArray);
 
-                var retryCount = GetRetryCount(ea.BasicProperties);
-                _logger.LogInformation(retryCount?.ToString() ?? "-1");
-                
                 _channel.BasicAck(ea.DeliveryTag, false);
 
-                if (!processResult)
-                {
-                    _eventPublisher.PublishToRetry(eventName, serviceData.Name, bodyArray);
-                }
+                if (!processResult && retryCount < MessagingConstants.MaxRetryCount)
+                    _eventPublisher.PublishToRetry(eventName, serviceData.Name, bodyArray, retryCount);
             }
             catch (Exception e)
             {
                 _logger.LogError("Message consume fail!", e);
 
-                var retryCount = GetRetryCount(ea.BasicProperties);
-                _logger.LogInformation(retryCount?.ToString() ?? "-1");
-                
                 _channel.BasicAck(ea.DeliveryTag, false);
-                _eventPublisher.PublishToRetry(eventName, serviceInfo.Name, bodyArray);
-                
+
+                if (retryCount < MessagingConstants.MaxRetryCount)
+                    _eventPublisher.PublishToRetry(eventName, serviceInfo.Name, bodyArray, retryCount);
+
                 var logData = new EventLogDto
                 {
                     EventName = eventName,
@@ -116,7 +112,7 @@ namespace EvenTransit.Messaging.RabbitMq
                         Message = e.Message
                     }
                 };
-                
+
                 await _eventLog.LogAsync(_mapper.Map<Logs>(logData));
             }
         }
@@ -169,7 +165,7 @@ namespace EvenTransit.Messaging.RabbitMq
         {
             var retryExchangeName = eventName.GetRetryExchangeName();
             _channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
-            
+
             var retryQueueName = serviceName.GetRetryQueueName();
             var retryQueueArguments = new Dictionary<string, object>
             {
@@ -177,30 +173,23 @@ namespace EvenTransit.Messaging.RabbitMq
                 {"x-dead-letter-routing-key", serviceName},
                 {"x-message-ttl", MessagingConstants.DeadLetterQueueTTL}
             };
-            
+
             _channel.QueueDeclare(queue: retryQueueName,
                 true,
                 false,
                 false,
                 retryQueueArguments);
-            
+
             _channel.QueueBind(retryQueueName, retryExchangeName, serviceName);
             _channel.QueueBind(serviceName, eventName, serviceName);
         }
-        
-        private long? GetRetryCount(IBasicProperties properties)
+
+        private long GetRetryCount(IBasicProperties properties)
         {
-            if (properties.Headers.ContainsKey("x-death"))
-            {
-                var deathProperties = (List<object>)properties.Headers["x-death"];
-                var lastRetry = (Dictionary<string, object>)deathProperties[0];
-                var count = lastRetry["count"];
-                return (long)count;
-            }
-            else
-            {
-                return null;
-            }
+            if (properties?.Headers == null || !properties.Headers.ContainsKey(MessagingConstants.RetryHeaderName)) 
+                return 0;
+
+            return (long) properties.Headers[MessagingConstants.RetryHeaderName];
         }
     }
 }

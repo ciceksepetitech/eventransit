@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using EvenTransit.Messaging.Core;
@@ -27,9 +27,17 @@ namespace EvenTransit.Messaging.RabbitMq
             _channel.BasicPublish(eventName, eventName, false, _properties, body);
         }
 
-        public void PublishToRetry(string eventName, string serviceName, byte[] payload)
+        public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
         {
-            _channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, _properties, payload);
+            var newRetryCount = retryCount + 1;
+            var properties = _channel.CreateBasicProperties();
+            properties.Persistent = true;
+            properties.Headers = new Dictionary<string, object>
+            {
+                {MessagingConstants.RetryHeaderName, newRetryCount}
+            };
+
+            _channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
         }
 
         public void RegisterNewService(NewServiceDto data)
