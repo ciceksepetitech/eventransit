@@ -101,8 +101,8 @@ async function search(page = 1) {
         return;
     }
     
-    if (result.items) {
-        result.items.forEach((item, index) => {
+    if (result.data.items) {
+        result.data.items.forEach((item, index) => {
             let newRow = tbodyRef.insertRow();
             let indexCell = newRow.insertCell();
             let eventNameCell = newRow.insertCell();
@@ -132,7 +132,7 @@ async function search(page = 1) {
 
     let paginationRef = document.getElementById('logs-pagination');
 
-    for (let i = 1; i <= result.totalPages; i++) {
+    for (let i = 1; i <= result.data.totalPages; i++) {
         let numberButton = document.createElement("button");
         numberButton.setAttribute("class", "page-link");
         numberButton.setAttribute("data-page", i);
