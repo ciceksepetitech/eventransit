@@ -40,6 +40,8 @@ saveForm.addEventListener("submit", async e => {
         return;
     }
 
+    saveForm.reset();
+
     serviceModal.hide();
     window.location.reload();
 });
