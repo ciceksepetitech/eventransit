@@ -32,6 +32,7 @@ namespace EvenTransit.UI
             services.AddMongoDbDatabase(Configuration);
             services.AddServices();
             services.AddMessaging();
+            services.AddHealthChecks();
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation()
                 .AddFluentValidation(c => c.RegisterValidatorsFromAssemblyContaining<Startup>());
@@ -61,6 +62,7 @@ namespace EvenTransit.UI
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHealthChecks("/health");
             });
         }
     }

@@ -31,6 +31,9 @@ namespace EvenTransit.Messaging.RabbitMq
                 return connectionFactory;
             });
 
+            services.AddHealthChecks()
+                .AddCheck<RabbitMqHealthCheck>("rabbitmq");
+            
             return services;
         }
     }

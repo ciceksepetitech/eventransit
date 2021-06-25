@@ -17,7 +17,7 @@ namespace EvenTransit.Data.MongoDb
         {
             _settings = settings.Value;
         }
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
         {
             try
             {
@@ -25,11 +25,11 @@ namespace EvenTransit.Data.MongoDb
                 var database = client.GetDatabase(_settings.Database);
                 var isConnected = database.RunCommandAsync((Command<BsonDocument>) "{ping:1}", cancellationToken: cancellationToken).Wait(1000);
 
-                return isConnected ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy();
+                return isConnected ? Task.FromResult(HealthCheckResult.Healthy()) : Task.FromResult(HealthCheckResult.Unhealthy());
             }
             catch (Exception ex)
             {
-                return new HealthCheckResult(HealthStatus.Unhealthy, exception: ex);
+                return Task.FromResult(new HealthCheckResult(HealthStatus.Unhealthy, exception: ex));
             }
         }
     }
