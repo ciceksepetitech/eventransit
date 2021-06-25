@@ -7,5 +7,6 @@ namespace EvenTransit.Messaging.RabbitMq
 
         public static string GetRetryExchangeName(this string exchangeName) => $"{exchangeName}.{RetryExchangeSuffix}";
         public static string GetRetryQueueName(this string queueName, string eventName) => $"{eventName}.{queueName}.{RetryQueueSuffix}";
+        public static string GetQueueName(this string queueName, string eventName) => $"{eventName}.{queueName}";
     }
 }

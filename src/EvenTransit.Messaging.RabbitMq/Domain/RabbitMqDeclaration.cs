@@ -27,18 +27,19 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
 
                 foreach (var service in @event.Services)
                 {
-                    channel.QueueDeclare(queue: service.Name,
+                    var queueName = service.Name.GetQueueName(@event.Name);
+                    channel.QueueDeclare(queue: queueName,
                         true,
                         false,
                         false,
                         null);
-                    channel.QueueBind(service.Name, @event.Name, @event.Name);
+                    channel.QueueBind(queueName, @event.Name, @event.Name);
 
                     var retryQueueName = service.Name.GetRetryQueueName(@event.Name);
                     var retryQueueArguments = new Dictionary<string, object>
                     {
                         {"x-dead-letter-exchange", @event.Name},
-                        {"x-dead-letter-routing-key", service.Name},
+                        {"x-dead-letter-routing-key", queueName},
                         {"x-message-ttl", MessagingConstants.DeadLetterQueueTTL}
                     };
                     channel.QueueDeclare(queue: retryQueueName,
@@ -46,8 +47,8 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                         false,
                         false,
                         retryQueueArguments);
-                    channel.QueueBind(retryQueueName, retryExchangeName, service.Name);
-                    channel.QueueBind(service.Name, @event.Name, service.Name);
+                    channel.QueueBind(retryQueueName, retryExchangeName, queueName);
+                    channel.QueueBind(queueName, @event.Name, queueName);
                 }
             }
 
