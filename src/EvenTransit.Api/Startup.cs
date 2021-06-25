@@ -38,6 +38,8 @@ namespace EvenTransit.Api
             services.AddHostedService<ConsumerBinderService>();
             services.AddHostedService<LogStatisticsService>();
             services.AddHostedService<EventLogStatisticsService>();
+
+            services.AddHealthChecks();
             
             services.AddControllers().AddFluentValidation(opt =>
             {
@@ -67,7 +69,11 @@ namespace EvenTransit.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+            });
         }
     }
 }

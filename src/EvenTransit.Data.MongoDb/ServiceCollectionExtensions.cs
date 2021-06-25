@@ -17,6 +17,9 @@ namespace EvenTransit.Data.MongoDb
             services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
 
             services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
+            
+            services.AddHealthChecks()
+                .AddCheck<MongoDbHealthCheck>("mongodb");
 
             return services;
         }
