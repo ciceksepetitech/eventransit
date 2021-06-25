@@ -48,6 +48,7 @@ namespace EvenTransit.Api
             
             services.AddSwaggerGen(c =>
             {
+                c.MapType<object>(() => new OpenApiSchema { Type = "object", Nullable = true });
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "EvenTransit.Api", Version = "v1"});
             });
         }
@@ -61,7 +62,10 @@ namespace EvenTransit.Api
             }
             
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvenTransit.Api v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvenTransit.Api v1");
+            });
             
             app.UseHttpsRedirection();
 
