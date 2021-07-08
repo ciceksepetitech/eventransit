@@ -10,6 +10,10 @@ EvenTransit is a solution which transfers events into relevant service(s) in a d
 - Failure management. (Retry logic.)
 - Fully compatible with containerized environments such as Kubernetes.
 
+## Dependencies
+- [.Net 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [RabbitMq](https://www.rabbitmq.com/download.html)
+- [MongoDB](https://www.mongodb.com/try/download/community)
 
 ## Message Processing Mechanism
 
@@ -23,7 +27,6 @@ An event is published into EvenTransit service. EvenTransit transfers published 
 ![EvenTransit Dependency Relations](assets/EvenTransitWithDependencies.svg)
 
  
-
 ## Retry Mechanism
 
 Retry mechanism is involved occurence of an error from external services. Delivered message is transferred into retry exchange and queue. The message waits 30 sec before it republishes. EvenTransit tries message to publish 5 times. Each HTTP call is logged into database.
@@ -32,4 +35,29 @@ Retry mechanism is involved occurence of an error from external services. Delive
 
 > Used Dead Letter Exchange and Dead Letter Queue patterns
 
+## Installation
+
+To get started locally, follow these instructions:
+- Clone to your local computer using `git`
+- Make sure that you have `.Net 5.0`
+- Run `docker-compose up` command in your shell
+  - Navigate to `http://<SERVER_IP_OR_HOST>:5101` for API project
+  - Navigate to `http://<SERVER_IP_OR_HOST>:5100` for UI project
+
+## Usage
+
+Publish an event with below command
+```bash 
+curl -X POST "https://localhost:5010/api/v1/event" \ 
+-H  "accept: */*" \
+-H  "Content-Type: application/json" \ 
+-d "{\"eventName\":\"order_created\",\"payload\":{\"name\":\"test\"}}"
+``` 
+
+
+## Contribution
+
+
+## Licenses
+EvenTransit use either the MIT or Apache 2 licenses for code.
 

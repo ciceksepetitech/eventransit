@@ -8,7 +8,6 @@ services:
     ports:
       - "5100:80"
     depends_on:
-      - redis
       - rabbitmq
       - mongo
     environment: 
@@ -23,18 +22,11 @@ services:
     ports:
       - "5101:80"
     depends_on:
-      - redis
       - rabbitmq
       - mongo
     environment: 
       - ASPNETCORE_ENVIRONMENT=production
     restart: always
-
-  redis:
-    container_name: eventransit_redis
-    image: redis
-    ports:
-      - "6379:6379"
 
   rabbitmq:
     container_name: eventransit_rabbitmq
