@@ -56,7 +56,20 @@ curl -X POST "https://localhost:5010/api/v1/event" \
 
 
 ## Contribution
+We are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving EvenTransit.
 
+### Contribution Prerequisites
+You have installed below prerequisites.
+- .Net 5.0
+- RabbitMq
+- MongoDB
+
+
+### Sending a Pull Request
+Before submitting a pull request, please make sure the following is done:
+- Fork the repository and create your branch from `main`.
+- Make sure you use [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) branching model 
+- Don't forget to add new feature explanation to documentation
 
 ## Licenses
 EvenTransit use either the MIT or Apache 2 licenses for code.
