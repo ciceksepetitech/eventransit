@@ -72,5 +72,5 @@ Before submitting a pull request, please make sure the following is done:
 - Don't forget to add new feature explanation to documentation
 
 ## Licenses
-EvenTransit use either the MIT or Apache 2 licenses for code.
+EvenTransit use either the [MIT](LICENSE.txt) or [Apache 2](https://www.apache.org/licenses/LICENSE-2.0) licenses for code.
 
