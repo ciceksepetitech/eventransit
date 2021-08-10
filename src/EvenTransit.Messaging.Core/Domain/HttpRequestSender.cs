@@ -31,10 +31,11 @@ namespace EvenTransit.Messaging.Core.Domain
                     requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
-
+            
             requestMessage.Method = HttpMethod.Post;
-
-            var content = new ByteArrayContent(request.Body);
+            
+            var contentData = Encoding.UTF8.GetString(request.Body);
+            var content = new StringContent(contentData, Encoding.UTF8, "application/json");
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);
