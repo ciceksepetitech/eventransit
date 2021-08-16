@@ -51,7 +51,7 @@ Publish an event with below command
 curl -X POST "https://localhost:5010/api/v1/event" \ 
 -H  "accept: */*" \
 -H  "Content-Type: application/json" \ 
--d "{\"eventName\":\"order_created\",\"payload\":{\"name\":\"test\"}}"
+-d "{\"eventName\": \"order_created\",\"payload\": {\"name\": \"test\"}}"
 ``` 
 
 
