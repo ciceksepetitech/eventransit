@@ -54,6 +54,8 @@ curl -X POST "https://localhost:5010/api/v1/event" \
 -d "{\"eventName\":\"order_created\",\"payload\":{\"name\":\"test\"}}"
 ``` 
 
+## Dashboard
+[Dashboard Wiki](Dashbard.md)
 
 ## Contribution
 We are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving EvenTransit.

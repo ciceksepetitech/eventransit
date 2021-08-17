@@ -93,7 +93,7 @@ namespace EvenTransit.Messaging.RabbitMq
             }
             catch (Exception e)
             {
-                _logger.LogError("Message consume fail!", e);
+                _logger.LogError(e, "Message consume fail!");
 
                 _channel.BasicAck(ea.DeliveryTag, false);
 
