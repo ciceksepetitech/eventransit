@@ -23,10 +23,12 @@ You can click `Add New Event` button to create a new event.
 
 ### Service Operations
 #### Add a New Service to Event
-- First, you can click `edit` button on event.
+- Firstly, you can click `edit` button on event.
+
 ![New Service](assets/add-a-new-service.png) 
 
 - Then, you can click `Add New Service` button to open a new service form.
+
 ![Service List](assets/service-list.png) 
 
 - Finally, fill the inputs and click `Save` button.
