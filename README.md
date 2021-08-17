@@ -55,7 +55,7 @@ curl -X POST "https://localhost:5010/api/v1/event" \
 ``` 
 
 ## Dashboard
-[Dashboard Wiki](Dashbard.md)
+[Dashboard Wiki](Dashboard.md)
 
 ## Contribution
 We are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving EvenTransit.
