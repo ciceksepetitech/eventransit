@@ -388,3 +388,5 @@ FodyWeavers.xsd
 # Project specific
 !Logs/
 !Log/
+
+.build
