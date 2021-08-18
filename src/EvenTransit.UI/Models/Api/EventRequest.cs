@@ -1,4 +1,4 @@
-namespace EvenTransit.Api.Models
+namespace EvenTransit.UI.Models.Api
 {
     public class EventRequest
     {

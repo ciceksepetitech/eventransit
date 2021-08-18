@@ -1,8 +1,8 @@
-using EvenTransit.Api.Models;
 using EvenTransit.Domain.Constants;
+using EvenTransit.UI.Models.Api;
 using FluentValidation;
 
-namespace EvenTransit.Api.Validators
+namespace EvenTransit.UI.Validators.Api
 {
     public class EventRequestValidator : AbstractValidator<EventRequest>
     {

@@ -51,6 +51,7 @@ namespace EvenTransit.UI.Controllers
             return Json(new {success = result});
         }
         
+        [HttpGet]
         [Route("Events/DeleteService/{eventId}/{serviceName}")]
         public async Task<IActionResult> DeleteService(Guid eventId, string serviceName)
         {
@@ -58,6 +59,7 @@ namespace EvenTransit.UI.Controllers
             return Json(new {success = result});
         }
 
+        [HttpGet]
         [Route("Events/GetServiceDetails/{eventId}/{serviceName}")]
         public async Task<IActionResult> GetServiceDetails(Guid eventId, string serviceName)
         {

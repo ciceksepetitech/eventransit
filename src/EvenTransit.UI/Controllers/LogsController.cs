@@ -54,6 +54,7 @@ namespace EvenTransit.UI.Controllers
             return Json(new {IsSuccess = true, Data = responseModel});
         }
 
+        [HttpGet]
         [Route("Logs/GetServices/{eventName}")]
         public async Task<IActionResult> GetServices(string eventName)
         {

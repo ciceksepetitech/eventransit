@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using EvenTransit.Api.Models;
+using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
+using EvenTransit.UI.Models.Api;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EvenTransit.Api.Controllers
+namespace EvenTransit.UI.Controllers.Api
 {
     [ApiController]
     [Route("api/v1/event")]

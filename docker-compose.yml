@@ -3,24 +3,10 @@ services:
   ui:
     build:
       context: .
-      dockerfile: Dockerfile.ui
+      dockerfile: Dockerfile
     container_name: EventTransitUI
     ports:
       - "5100:80"
-    depends_on:
-      - rabbitmq
-      - mongo
-    environment: 
-      - ASPNETCORE_ENVIRONMENT=production
-    restart: always
-
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    container_name: EventTransitApi
-    ports:
-      - "5101:80"
     depends_on:
       - rabbitmq
       - mongo
