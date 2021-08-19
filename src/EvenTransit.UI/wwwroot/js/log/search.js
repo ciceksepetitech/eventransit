@@ -42,9 +42,9 @@ async function getLogDetails(e) {
     document.querySelector("#logDetailModal #Timeout").value = result.details.request.timeout;
     document.querySelector("#logDetailModal #RequestBody").innerHTML = result.details.request.body;
     document.querySelector("#logDetailModal #IsSuccess").value = result.details.response?.isSuccess;
-    document.querySelector("#logDetailModal #StatusCode").value = result.details.response.statusCode;
+    document.querySelector("#logDetailModal #StatusCode").value = result.details.response?.statusCode;
     document.querySelector("#logDetailModal #Message").value = result.details.message;
-    document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response.response;
+    document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response?.response;
 
     hljs.highlightAll();
 
