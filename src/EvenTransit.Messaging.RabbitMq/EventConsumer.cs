@@ -138,7 +138,7 @@ namespace EvenTransit.Messaging.RabbitMq
                 _channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
                 _channel.QueueDeclare(queueName, true, false, false, null);
 
-                var service = _eventsRepository.GetServiceByEvent(eventName, queueName);
+                var service = _eventsRepository.GetServiceByEvent(eventName, serviceInfo.ServiceName);
                 BindQueue(eventName, service);
                 BindRetryQueue(eventName, queueName);
 
