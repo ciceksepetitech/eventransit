@@ -60,6 +60,8 @@ async function editService(eventId, serviceName) {
     document.querySelector("#Timeout").value = result.timeout;
 
     const headers = result.headers;
+    clearTable();
+    
     for (const key in headers) {
         const value = headers[key];
         addNewHeaderItem(key, value);
@@ -124,4 +126,14 @@ function addNewHeaderItem(key, value) {
 function removeHeaderItem(e) {
     const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex - 1;
     document.querySelector('#headers tbody').deleteRow(rowIndex);
+}
+
+function clearTable(){
+    let tbody = document.getElementById("headers").getElementsByTagName('tbody')[0];
+    tbody.innerHTML = "";
+}
+
+function clearNewProcessModal(){
+    saveForm.reset();
+    clearTable();
 }
