@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
@@ -22,9 +23,7 @@ namespace EvenTransit.Messaging.RabbitMq
             {
                 var connectionFactory = new ConnectionFactory
                 {
-                    HostName = configuration["RabbitMq:Host"],
-                    UserName = configuration["RabbitMq:UserName"],
-                    Password = configuration["RabbitMq:Password"],
+                    Uri = new Uri(configuration["RabbitMq:Endpoint"]),
                     AutomaticRecoveryEnabled = true
                 };
 
