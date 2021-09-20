@@ -77,7 +77,6 @@ async function search(page = 1) {
         LogType: parseInt(getFieldValue("#LogType", 0)),
         EventName: getFieldValue("select#EventName", null),
         ServiceName: getFieldValue("select#ServiceName", null),
-        Keyword: getFieldValue("#Keyword", null),
         Page: page
     };
     const response = await fetch('/Logs/Search', {
