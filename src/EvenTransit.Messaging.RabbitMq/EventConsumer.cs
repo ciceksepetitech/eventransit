@@ -140,7 +140,7 @@ namespace EvenTransit.Messaging.RabbitMq
 
                 var service = _eventsRepository.GetServiceByEvent(eventName, serviceInfo.ServiceName);
                 BindQueue(eventName, service);
-                BindRetryQueue(eventName, queueName);
+                BindRetryQueue(eventName, service.Name);
 
                 _channel.BasicAck(ea.DeliveryTag, false);
             }
