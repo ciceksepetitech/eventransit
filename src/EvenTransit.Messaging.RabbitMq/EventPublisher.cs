@@ -11,41 +11,48 @@ namespace EvenTransit.Messaging.RabbitMq
 {
     public class EventPublisher : IEventPublisher
     {
-        private readonly IModel _channel;
-        private readonly IBasicProperties _properties;
+        private readonly IRabbitMqConnectionFactory _connection;
 
         public EventPublisher(IRabbitMqConnectionFactory connection)
         {
-            _channel = connection.ProducerConnection.CreateModel();
-            _properties = _channel.CreateBasicProperties();
-            _properties.Persistent = true;
+            _connection = connection;
         }
 
         public void Publish(string eventName, object payload)
         {
+            using var channel = _connection.ProducerConnection.CreateModel();
+            
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
-            _channel.BasicPublish(eventName, eventName, false, _properties, body);
+            channel.BasicPublish(eventName, eventName, false, properties, body);
         }
 
         public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
         {
+            using var channel = _connection.ProducerConnection.CreateModel();
             var newRetryCount = retryCount + 1;
-            var properties = _channel.CreateBasicProperties();
+            
+            var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
             properties.Headers = new Dictionary<string, object>
             {
                 {MessagingConstants.RetryHeaderName, newRetryCount}
             };
-
-            _channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
+            
+            channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
         }
 
         public void RegisterNewService(NewServiceDto data)
         {
+            using var channel = _connection.ProducerConnection.CreateModel();
+            var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
+            
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-            _channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
-                _properties, body);
+            channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
+                properties, body);
         }
     }
 }
