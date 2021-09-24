@@ -20,38 +20,34 @@ namespace EvenTransit.Messaging.RabbitMq
 
         public void Publish(string eventName, object payload)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
-            
-            var properties = channel.CreateBasicProperties();
+            var properties = _connection.ProducerChannel.CreateBasicProperties();
             properties.Persistent = true;
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
-            channel.BasicPublish(eventName, eventName, false, properties, body);
+            _connection.ProducerChannel.BasicPublish(eventName, eventName, false, properties, body);
         }
 
         public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
             var newRetryCount = retryCount + 1;
             
-            var properties = channel.CreateBasicProperties();
+            var properties = _connection.ProducerChannel.CreateBasicProperties();
             properties.Persistent = true;
             properties.Headers = new Dictionary<string, object>
             {
                 {MessagingConstants.RetryHeaderName, newRetryCount}
             };
             
-            channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
+            _connection.ProducerChannel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
         }
 
         public void RegisterNewService(NewServiceDto data)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
-            var properties = channel.CreateBasicProperties();
+            var properties = _connection.ProducerChannel.CreateBasicProperties();
             properties.Persistent = true;
             
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-            channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
+            _connection.ProducerChannel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
                 properties, body);
         }
     }
