@@ -6,7 +6,5 @@ namespace EvenTransit.Messaging.RabbitMq.Abstractions
     {
         IConnection ProducerConnection { get; }
         IConnection ConsumerConnection { get; }
-        IModel ProducerChannel { get; }
-        IModel ConsumerChannel { get; }
     }
 }

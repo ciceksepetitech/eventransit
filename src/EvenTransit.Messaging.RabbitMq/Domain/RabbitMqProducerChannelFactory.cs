@@ -13,9 +13,9 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
         private readonly object _guard = new();
         private readonly IRabbitMqConnectionFactory _connection;
         private readonly ILogger<RabbitMqProducerChannelFactory> _logger;
-        
+
         public ChannelTypes ChannelType => ChannelTypes.Producer;
-        
+
         public IModel Channel
         {
             get
@@ -28,36 +28,33 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                     }
 
                     _channel = new Lazy<IModel>(_connection.ProducerConnection.CreateModel());
-                    
+
                     return _channel.Value;
                 }
             }
         }
-        
-        public RabbitMqProducerChannelFactory(IRabbitMqConnectionFactory connection, 
+
+        public RabbitMqProducerChannelFactory(IRabbitMqConnectionFactory connection,
             ILogger<RabbitMqProducerChannelFactory> logger)
         {
             _connection = connection;
             _logger = logger;
             _channel = new Lazy<IModel>(connection.ProducerConnection.CreateModel());
         }
-        
+
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!_disposed && disposing)
             {
-                if (disposing)
-                {
-                    if (!_channel.IsValueCreated) return;
+                if (!_channel.IsValueCreated) return;
 
-                    if (!Channel.IsOpen) return;
-            
-                    Channel.Close();
-                    _disposed = true;
-                    GC.SuppressFinalize(this);
-                    
-                    _logger.LogInformation("Producer channel closed successfully.");
-                }
+                if (!Channel.IsOpen) return;
+
+                Channel.Close();
+                _disposed = true;
+                GC.SuppressFinalize(this);
+
+                _logger.LogInformation("Producer channel closed successfully.");
             }
         }
 
