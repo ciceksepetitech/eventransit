@@ -19,10 +19,12 @@ namespace EvenTransit.UI.Validators.Logs
 
             RuleFor(x => x.LogDateFrom)
                 .Must(x => DateTime.TryParse(x, out var _))
+                .When(x => !string.IsNullOrWhiteSpace(x.LogDateFrom))
                 .WithMessage(ValidationConstants.InvalidLogDateFrom);
             
             RuleFor(x => x.LogDateTo)
                 .Must(x => DateTime.TryParse(x, out var _))
+                .When(x => !string.IsNullOrWhiteSpace(x.LogDateTo))
                 .WithMessage(ValidationConstants.InvalidLogDateTo);
         }
     }
