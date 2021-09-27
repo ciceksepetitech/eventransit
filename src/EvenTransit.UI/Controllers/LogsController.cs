@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using EvenTransit.Domain.Extensions;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
 using EvenTransit.UI.Filters;
@@ -41,7 +42,16 @@ namespace EvenTransit.UI.Controllers
         {
             if (model.Page <= 0) model.Page = 1;
 
-            var request = _mapper.Map<LogSearchRequestDto>(model);
+            var request = new LogSearchRequestDto
+            {
+                EventName = model.EventName,
+                ServiceName = model.ServiceName,
+                LogType = model.LogType,
+                Page = model.Page,
+                LogDateFrom = model.LogDateFrom.ConvertToDateTime(),
+                LogDateTo = model.LogDateTo.ConvertToDateTime()
+            };
+            
             var result = await _logService.SearchAsync(request);
             var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
 
