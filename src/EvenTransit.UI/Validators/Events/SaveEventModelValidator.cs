@@ -1,3 +1,4 @@
+using EvenTransit.Domain.Constants;
 using EvenTransit.UI.Models.Events;
 using FluentValidation;
 
@@ -10,6 +11,10 @@ namespace EvenTransit.UI.Validators.Events
             RuleFor(x => x.EventName)
                 .Must(x => !string.IsNullOrWhiteSpace(x))
                 .WithMessage("Event name cannot be empty");
+            
+            RuleFor(x => x.EventName)
+                .Matches(@"^([a-zA-Z\-])+$")
+                .WithMessage(ValidationConstants.ServiceNameRegexError);
         }
     }
 }

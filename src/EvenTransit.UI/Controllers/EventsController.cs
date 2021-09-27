@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Event;
 using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Events;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvenTransit.UI.Controllers
@@ -55,8 +57,12 @@ namespace EvenTransit.UI.Controllers
         [Route("Events/DeleteService/{eventId}/{serviceName}")]
         public async Task<IActionResult> DeleteService(Guid eventId, string serviceName)
         {
-            var result = await _eventService.DeleteServiceAsync(eventId, serviceName);
-            return Json(new {success = result});
+            var isSuccess = await _eventService.DeleteServiceAsync(eventId, serviceName);
+            var message = isSuccess ? MessageConstants.ProcessDeleted : MessageConstants.ProcessDeleteOperationFailed;
+            var response = new {isSuccess = isSuccess, Message =  message};
+            var statusCode = isSuccess ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest;
+
+            return StatusCode(statusCode, response);
         }
 
         [HttpGet]
@@ -72,6 +78,7 @@ namespace EvenTransit.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveEvent([FromBody] SaveEventModel model)
         {
+            //TODO: Add Event - Service Name regex 
             var data = _mapper.Map<SaveEventDto>(model);
             var result = await _eventService.SaveEventAsync(data);
             

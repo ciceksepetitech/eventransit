@@ -76,6 +76,15 @@ namespace EvenTransit.Messaging.RabbitMq
             #endregion
         }
 
+        public void DeleteQueue(string eventName, string serviceName)
+        {
+            var queueName = serviceName.GetQueueName(eventName);
+            var retryQueueName = serviceName.GetRetryQueueName(eventName);
+            
+            _channel.QueueDelete(queueName, false, false);
+            _channel.QueueDelete(retryQueueName, false, false);
+        }
+        
         private async Task OnReceiveMessageAsync(string eventName, Service serviceInfo, BasicDeliverEventArgs ea)
         {
             var bodyArray = ea.Body.ToArray();

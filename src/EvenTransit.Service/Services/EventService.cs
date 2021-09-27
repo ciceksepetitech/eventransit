@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Constants;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Event;
+using Microsoft.Extensions.Logging;
 using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 
 namespace EvenTransit.Service.Services
@@ -19,17 +21,23 @@ namespace EvenTransit.Service.Services
         private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
         private readonly IEventPublisher _eventPublisher;
         private readonly IMapper _mapper;
+        private readonly IEventConsumer _eventConsumer;
+        private readonly ILogger<EventService> _logger;
 
         public EventService(
             IEventsRepository eventsRepository,
             IEventLogStatisticRepository eventLogStatisticRepository,
             IEventPublisher eventPublisher, 
-            IMapper mapper)
+            IMapper mapper, 
+            IEventConsumer eventConsumer, 
+            ILogger<EventService> logger)
         {
             _eventsRepository = eventsRepository;
             _eventLogStatisticRepository = eventLogStatisticRepository;
             _eventPublisher = eventPublisher;
             _mapper = mapper;
+            _eventConsumer = eventConsumer;
+            _logger = logger;
         }
         
         public Task<bool> PublishAsync(EventRequestDto requestDto)
@@ -112,6 +120,7 @@ namespace EvenTransit.Service.Services
 
         public async Task<bool> DeleteEventAsync(Guid id)
         {
+            //TODO: Delete exchange from rabbitmq
             var @event = await _eventsRepository.GetEventAsync(x => x.Id == id);
 
             if (@event == null)
@@ -129,17 +138,27 @@ namespace EvenTransit.Service.Services
             var service = @event?.Services.FirstOrDefault(x => x.Name == name);
             if (service == null)
                 return false;
-
-            await _eventsRepository.DeleteServiceAsync(id, name);
-
-            var eventLogData = await _eventLogStatisticRepository.GetAsync(id);
-            var newServiceCount = eventLogData.ServiceCount - 1;
-            if (newServiceCount < 0) newServiceCount = 0;
-            eventLogData.ServiceCount = newServiceCount;
-
-            await _eventLogStatisticRepository.UpdateAsync(id, eventLogData);
             
-            return true;
+            try
+            {
+                _eventConsumer.DeleteQueue(@event.Name, service.Name);
+                
+                await _eventsRepository.DeleteServiceAsync(id, name);
+
+                var eventLogData = await _eventLogStatisticRepository.GetAsync(id);
+                var newServiceCount = eventLogData.ServiceCount - 1;
+                if (newServiceCount < 0) newServiceCount = 0;
+                eventLogData.ServiceCount = newServiceCount;
+
+                await _eventLogStatisticRepository.UpdateAsync(id, eventLogData);
+            
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(MessageConstants.ProcessDeleteOperationFailed, e);
+                return false;
+            }
         }
     }
 }

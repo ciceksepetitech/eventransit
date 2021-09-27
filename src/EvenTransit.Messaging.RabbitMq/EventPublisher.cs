@@ -13,9 +13,9 @@ namespace EvenTransit.Messaging.RabbitMq
 {
     public class EventPublisher : IEventPublisher
     {
-        private IModel _channel;
+        private readonly IModel _channel;
 
-        public EventPublisher(List<IRabbitMqChannelFactory> channelFactories)
+        public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories)
         {
             var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
             _channel = channelFactory.Channel;
