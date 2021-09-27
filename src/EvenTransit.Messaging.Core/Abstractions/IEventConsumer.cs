@@ -7,5 +7,7 @@ namespace EvenTransit.Messaging.Core.Abstractions
         Task ConsumeAsync();
 
         void DeleteQueue(string eventName, string serviceName);
+
+        void DeleteExchange(string eventName);
     }
 }

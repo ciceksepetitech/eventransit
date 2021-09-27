@@ -84,7 +84,13 @@ namespace EvenTransit.Messaging.RabbitMq
             _channel.QueueDelete(queueName, false, false);
             _channel.QueueDelete(retryQueueName, false, false);
         }
-        
+
+        public void DeleteExchange(string eventName)
+        {
+            _channel.ExchangeDelete(eventName);
+            _channel.ExchangeDelete(eventName.GetRetryExchangeName());
+        }
+
         private async Task OnReceiveMessageAsync(string eventName, Service serviceInfo, BasicDeliverEventArgs ea)
         {
             var bodyArray = ea.Body.ToArray();

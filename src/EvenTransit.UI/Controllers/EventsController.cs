@@ -47,10 +47,13 @@ namespace EvenTransit.UI.Controllers
             return View(data);
         }
 
+        [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _eventService.DeleteEventAsync(id);
-            return Json(new {success = result});
+            var isSuccess = await _eventService.DeleteEventAsync(id);
+            var statusCode = isSuccess ? StatusCodes.Status200OK : StatusCodes.Status404NotFound;
+
+            return StatusCode(statusCode);
         }
         
         [HttpGet]
@@ -58,7 +61,7 @@ namespace EvenTransit.UI.Controllers
         public async Task<IActionResult> DeleteService(Guid eventId, string serviceName)
         {
             var isSuccess = await _eventService.DeleteServiceAsync(eventId, serviceName);
-            var message = isSuccess ? MessageConstants.ProcessDeleted : MessageConstants.ProcessDeleteOperationFailed;
+            var message = isSuccess ? MessageConstants.ServiceDeleted : MessageConstants.ServiceDeleteOperationFailed;
             var response = new {isSuccess = isSuccess, Message =  message};
             var statusCode = isSuccess ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest;
 

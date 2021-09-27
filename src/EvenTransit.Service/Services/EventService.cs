@@ -120,16 +120,30 @@ namespace EvenTransit.Service.Services
 
         public async Task<bool> DeleteEventAsync(Guid id)
         {
-            //TODO: Delete exchange from rabbitmq
-            var @event = await _eventsRepository.GetEventAsync(x => x.Id == id);
+            try
+            {
+                var @event = await _eventsRepository.GetEventAsync(x => x.Id == id);
 
-            if (@event == null)
+                if (@event == null)
+                    return false;
+                
+                _eventConsumer.DeleteExchange(@event.Name);
+
+                foreach (var service in @event.Services)
+                {
+                    _eventConsumer.DeleteQueue(@event.Name, service.Name);
+                }
+                
+                await _eventsRepository.DeleteEventAsync(id);
+                await _eventLogStatisticRepository.DeleteAsync(id);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(MessageConstants.EventNotDeleted, e);
                 return false;
-
-            await _eventsRepository.DeleteEventAsync(id);
-            await _eventLogStatisticRepository.DeleteAsync(id);
-
-            return true;
+            }
         }
 
         public async Task<bool> DeleteServiceAsync(Guid id, string name)
@@ -156,7 +170,7 @@ namespace EvenTransit.Service.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(MessageConstants.ProcessDeleteOperationFailed, e);
+                _logger.LogError(MessageConstants.ServiceDeleteOperationFailed, e);
                 return false;
             }
         }

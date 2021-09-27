@@ -40,15 +40,13 @@ async function deleteEvent(e) {
         const id = e.currentTarget.dataset.id;
 
         const response = await fetch(`/Events/Delete/${id}`, {
-            method: 'GET',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
-        const result = await response.json();
-
-        if (!result.success) {
+        if (response.status !== 200) {
             alert("Event not deleted!");
             return;
         }
