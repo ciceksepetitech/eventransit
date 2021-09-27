@@ -31,12 +31,13 @@ saveForm.addEventListener("submit", async e => {
     document.getElementById("service-errors").classList.add("d-none");
 
     if (!result.isSuccess){
-        let errorMessage = "";
-        for (let i = 0; i < result.errors.length; i++) {
-            errorMessage += result.errors[i] + "<br/>";
-        }
-        document.getElementById("service-errors").innerHTML = errorMessage;
+        document.getElementById("service-errors").innerHTML = result.message;
         document.getElementById("service-errors").classList.remove("d-none");
+        
+        setTimeout(function() {
+            document.getElementById("service-errors").classList.add("d-none");
+            document.getElementById("service-errors").innerHTML="";
+        }, 5000);
         return;
     }
 
@@ -55,6 +56,7 @@ async function editService(eventId, serviceName) {
     });
     const result = await response.json();
 
+    document.getElementById("HiddenServiceName").value = result.name;
     document.querySelector("#ServiceName").value = result.name;
     document.querySelector("#Url").value = result.url;
     document.querySelector("#Timeout").value = result.timeout;
@@ -73,7 +75,7 @@ async function editService(eventId, serviceName) {
 async function deleteService(eventId, serviceName) {
     if (confirm("Are you sure?")) {
         const response = await fetch(`/Events/DeleteService/${eventId}/${serviceName}`, {
-            method: 'GET',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -134,6 +136,7 @@ function clearTable(){
 }
 
 function clearNewProcessModal(){
+    document.getElementById("HiddenServiceName").value = "";
     saveForm.reset();
     clearTable();
 }

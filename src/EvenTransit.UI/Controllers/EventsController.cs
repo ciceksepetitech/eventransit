@@ -6,6 +6,7 @@ using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
+using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
 using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Events;
@@ -56,7 +57,7 @@ namespace EvenTransit.UI.Controllers
             return StatusCode(statusCode);
         }
         
-        [HttpGet]
+        [HttpDelete]
         [Route("Events/DeleteService/{eventId}/{serviceName}")]
         public async Task<IActionResult> DeleteService(Guid eventId, string serviceName)
         {
@@ -81,23 +82,28 @@ namespace EvenTransit.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveEvent([FromBody] SaveEventModel model)
         {
-            //TODO: Add Event - Service Name regex 
             var data = _mapper.Map<SaveEventDto>(model);
             var result = await _eventService.SaveEventAsync(data);
-            
-            if (!result)
+            var response = new BaseResponseDto
             {
-                return Json(new {IsSuccess = false, Errors = new[]{"This service already created before"}});
-            }
+                IsSuccess = result,
+                Message = result ? MessageConstants.EventCreated : MessageConstants.ServiceNameAlreadyExist
+            };
+            var statusCode = result ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest;
 
-            return Json(new {IsSuccess = true});
+            return StatusCode(statusCode, response);
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveService([FromBody] SaveServiceModel model)
         {
             var data = _mapper.Map<SaveServiceDto>(model);
-            await _eventService.SaveServiceAsync(data);
+            var response = await _eventService.SaveServiceAsync(data);
+
+            if (!response.IsSuccess)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, response);
+            }
 
             var eventDetails = await _eventService.GetEventDetailsAsync(model.EventId);
             _eventPublisher.RegisterNewService(new NewServiceDto
@@ -106,7 +112,7 @@ namespace EvenTransit.UI.Controllers
                 ServiceName = model.ServiceName
             });
             
-            return Json(new {IsSuccess = true});
+            return StatusCode(StatusCodes.Status200OK, response);
         }
     }
 }

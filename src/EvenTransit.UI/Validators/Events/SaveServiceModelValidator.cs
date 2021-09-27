@@ -1,4 +1,5 @@
 using System;
+using EvenTransit.Domain.Constants;
 using EvenTransit.UI.Models.Events;
 using FluentValidation;
 
@@ -19,6 +20,10 @@ namespace EvenTransit.UI.Validators.Events
             RuleFor(x => x.Url)
                 .Must(x => !string.IsNullOrWhiteSpace(x))
                 .WithMessage("Url cannot be empty");
+            
+            RuleFor(x => x.ServiceName)
+                .Matches(@"^([a-zA-Z\-])+$")
+                .WithMessage(ValidationConstants.ServiceNameRegexError);
         }
     }
 }

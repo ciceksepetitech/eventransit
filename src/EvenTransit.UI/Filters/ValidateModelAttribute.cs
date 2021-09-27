@@ -14,7 +14,7 @@ namespace EvenTransit.UI.Filters
                     .SelectMany(x => x.Errors)
                     .Select(x => x.ErrorMessage);
 
-                context.Result = new BadRequestObjectResult(new {IsSuccess = false, Errors = errors});
+                context.Result = new BadRequestObjectResult(new {IsSuccess = false, Message = errors.FirstOrDefault()});
             }
 
             base.OnActionExecuting(context);

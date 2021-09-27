@@ -91,11 +91,7 @@ async function search(page = 1) {
     document.getElementById("errors").classList.add("d-none");
 
     if (!result.isSuccess){
-        let errorMessage = "";
-        for (let i = 0; i < result.errors.length; i++) {
-            errorMessage += result.errors[i] + "<br/>";
-        }
-        document.getElementById("errors").innerHTML = errorMessage;
+        document.getElementById("errors").innerHTML = result.message;
         document.getElementById("errors").classList.remove("d-none");
         return;
     }

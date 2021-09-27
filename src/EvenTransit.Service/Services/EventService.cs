@@ -9,6 +9,7 @@ using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
+using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
 using Microsoft.Extensions.Logging;
 using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
@@ -59,12 +60,20 @@ namespace EvenTransit.Service.Services
             return _mapper.Map<EventDto>(eventDetails);
         }
 
-        public async Task SaveServiceAsync(SaveServiceDto model)
+        public async Task<BaseResponseDto> SaveServiceAsync(SaveServiceDto model)
         {
             var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == model.EventId);
 
-            if (eventDetails == null) return;
+            if (eventDetails == null)
+            {
+                return new BaseResponseDto {IsSuccess = false, Message = MessageConstants.EventNotFound};
+            }
 
+            if (!string.IsNullOrWhiteSpace(model.HiddenServiceName) && model.HiddenServiceName != model.ServiceName)
+            {
+                return new BaseResponseDto {IsSuccess = false, Message = MessageConstants.CannotUpdateServiceName};
+            }
+            
             var serviceData = _mapper.Map<Domain.Entities.Service>(model);
             var service = eventDetails.Services.FirstOrDefault(x => x.Name == model.ServiceName);
 
@@ -79,8 +88,14 @@ namespace EvenTransit.Service.Services
             }
             else
             {
+                if (string.IsNullOrWhiteSpace(model.HiddenServiceName))
+                {
+                    return new BaseResponseDto {IsSuccess = false, Message = MessageConstants.ServiceNameAlreadyExist};
+                }
                 await _eventsRepository.UpdateServiceOnEventAsync(model.EventId, serviceData);
             }
+
+            return new BaseResponseDto {IsSuccess = true, Message = MessageConstants.ServiceRequestProceeded};
         }
 
         public async Task<ServiceDto> GetServiceDetailsAsync(Guid eventId, string serviceName)

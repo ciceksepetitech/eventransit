@@ -14,7 +14,7 @@ namespace EvenTransit.UI.Validators.Events
             
             RuleFor(x => x.EventName)
                 .Matches(@"^([a-zA-Z\-])+$")
-                .WithMessage(ValidationConstants.ServiceNameRegexError);
+                .WithMessage(ValidationConstants.EventNameRegexError);
         }
     }
 }
