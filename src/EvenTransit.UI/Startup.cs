@@ -9,6 +9,7 @@ using EvenTransit.Service.Services;
 using EvenTransit.UI.Filters;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -85,7 +86,8 @@ namespace EvenTransit.UI
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/healthcheck", new HealthCheckOptions { Predicate = _ => false });
+                endpoints.MapHealthChecks("/readiness");
             });
         }
     }
