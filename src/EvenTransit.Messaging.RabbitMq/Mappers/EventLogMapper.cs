@@ -10,7 +10,8 @@ namespace EvenTransit.Messaging.RabbitMq.Mappers
         {
             CreateMap<EventLogDto, Logs>();
             CreateMap<EventDetailDto, LogDetail>();
-            CreateMap<HttpRequestDto, LogDetailRequest>();
+            CreateMap<EventLogHttpRequestDto, LogDetailRequest>();
+            CreateMap<EventLogHttpResponseDto, LogDetailResponse>();
         }
     }
 }

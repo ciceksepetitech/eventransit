@@ -12,6 +12,7 @@ using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -124,9 +125,16 @@ namespace EvenTransit.Messaging.RabbitMq
                     LogType = LogType.Fail,
                     Details = new EventDetailDto
                     {
-                        Request = new HttpRequestDto
+                        Request = new EventLogHttpRequestDto
                         {
-                            Body = bodyArray
+                            Body = Encoding.UTF8.GetString(bodyArray),
+                            Url = serviceData.Url,
+                            Timeout = serviceData.Timeout
+                        },
+                        Response = new EventLogHttpResponseDto
+                        {
+                            IsSuccess = false,
+                            StatusCode = StatusCodes.Status500InternalServerError
                         },
                         Message = e.Message
                     }
