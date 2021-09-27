@@ -18,6 +18,10 @@ namespace EvenTransit.Messaging.RabbitMq
             services.AddScoped<IEventConsumer, EventConsumer>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+            
+            services.AddSingleton<IRabbitMqChannelFactory, RabbitMqProducerChannelFactory>();
+            services.AddSingleton<IRabbitMqChannelFactory, RabbitMqConsumerChannelFactory>();
+            
             services.AddScoped<IRabbitMqDeclaration, RabbitMqDeclaration>();
             services.AddScoped(typeof(IConnectionFactory), provider =>
             {

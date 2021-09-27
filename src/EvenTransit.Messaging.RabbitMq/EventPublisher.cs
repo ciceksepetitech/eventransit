@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
+using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
@@ -11,47 +13,44 @@ namespace EvenTransit.Messaging.RabbitMq
 {
     public class EventPublisher : IEventPublisher
     {
-        private readonly IRabbitMqConnectionFactory _connection;
+        private IModel _channel;
 
-        public EventPublisher(IRabbitMqConnectionFactory connection)
+        public EventPublisher(List<IRabbitMqChannelFactory> channelFactories)
         {
-            _connection = connection;
+            var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
+            _channel = channelFactory.Channel;
         }
 
         public void Publish(string eventName, object payload)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
-            
-            var properties = channel.CreateBasicProperties();
+            var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
-            channel.BasicPublish(eventName, eventName, false, properties, body);
+            _channel.BasicPublish(eventName, eventName, false, properties, body);
         }
 
         public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
             var newRetryCount = retryCount + 1;
             
-            var properties = channel.CreateBasicProperties();
+            var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
             properties.Headers = new Dictionary<string, object>
             {
                 {MessagingConstants.RetryHeaderName, newRetryCount}
             };
             
-            channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
+            _channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
         }
 
         public void RegisterNewService(NewServiceDto data)
         {
-            using var channel = _connection.ProducerConnection.CreateModel();
-            var properties = channel.CreateBasicProperties();
+            var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
             
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-            channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
+            _channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
                 properties, body);
         }
     }
