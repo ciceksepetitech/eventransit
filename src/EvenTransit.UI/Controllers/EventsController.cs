@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EvenTransit.UI.Controllers
 {
     [ValidateModel]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class EventsController : Controller
     {
         private readonly IEventService _eventService;
@@ -76,7 +77,7 @@ namespace EvenTransit.UI.Controllers
             var serviceData = await _eventService.GetServiceDetailsAsync(eventId, serviceName);
             var data = _mapper.Map<ServiceModel>(serviceData);
 
-            return Ok(data);
+            return StatusCode(StatusCodes.Status200OK, data);
         }
 
         [HttpPost]

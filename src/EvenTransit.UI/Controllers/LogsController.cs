@@ -7,12 +7,14 @@ using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
 using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Logs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EvenTransit.UI.Controllers
 {
     [ValidateModel]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class LogsController : Controller
     {
         private readonly ILogService _logService;
@@ -61,7 +63,7 @@ namespace EvenTransit.UI.Controllers
                 TotalPages = result.TotalPages
             };
 
-            return Json(new {IsSuccess = true, Data = responseModel});
+            return StatusCode(StatusCodes.Status200OK, new {IsSuccess = true, Data = responseModel});
         }
 
         [HttpGet]
@@ -69,7 +71,7 @@ namespace EvenTransit.UI.Controllers
         public async Task<IActionResult> GetServices(string eventName)
         {
             var services = await _eventService.GetServicesAsync(eventName);
-            return Json(services);
+            return StatusCode(StatusCodes.Status200OK, services);
         }
 
         public async Task<IActionResult> GetById(Guid id)
@@ -77,7 +79,7 @@ namespace EvenTransit.UI.Controllers
             var data = await _logService.GetByIdAsync(id);
             var result = _mapper.Map<LogItemViewModel>(data);
 
-            return Json(result);
+            return StatusCode(StatusCodes.Status200OK, result);
         }
     }
 }

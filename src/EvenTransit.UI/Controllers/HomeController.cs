@@ -8,6 +8,7 @@ using EvenTransit.UI.Models.Home;
 
 namespace EvenTransit.UI.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HomeController : Controller
     {
         private readonly ILogService _logService;

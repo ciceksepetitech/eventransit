@@ -54,7 +54,6 @@ namespace EvenTransit.UI
             {
                 c.MapType<object>(() => new OpenApiSchema { Type = "object", Nullable = true });
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EvenTransit.Api", Version = "v1" });
-                c.DocumentFilter<SwaggerFilterOutControllers>();
                 c.ResolveConflictingActions(a => a.First());
             });
         }
