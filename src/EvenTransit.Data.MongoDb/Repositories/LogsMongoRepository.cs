@@ -26,7 +26,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
 
         public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page)
         {
-            const int perPage = 100;
+            const int perPage = 1;
 
             var count = await Collection.Find(predicate).CountDocumentsAsync();
             var totalPages = (int) Math.Ceiling((double) count / perPage);

@@ -51,16 +51,6 @@ async function getLogDetails(e) {
     logDetailModal.show();
 }
 
-function bindPagination() {
-    document.querySelectorAll('#logs-pagination button')
-        .forEach(button => button.addEventListener('click', changePage));
-}
-
-async function changePage(e) {
-    const page = parseInt(e.currentTarget.dataset.page);
-    await search(page);
-}
-
 async function search(page = 1) {
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
     const rowCount = tbodyRef.rows.length;
@@ -71,20 +61,17 @@ async function search(page = 1) {
 
     removePagination();
 
-    const data = {
-        LogDateFrom: getFieldValue("#LogDateFrom", null),
-        LogDateTo: getFieldValue("#LogDateTo", null),
-        LogType: parseInt(getFieldValue("#LogType", 0)),
-        EventName: getFieldValue("select#EventName", null),
-        ServiceName: getFieldValue("select#ServiceName", null),
-        Page: page
-    };
-    const response = await fetch('/Logs/Search', {
-        method: 'POST',
+    const logDateFrom = getFieldValue("#LogDateFrom", "");
+    const logDateTo = getFieldValue("#LogDateTo", "");
+    const logType = parseInt(getFieldValue("#LogType", 0));
+    const eventName = getFieldValue("select#EventName", "");
+    const serviceName = getFieldValue("select#ServiceName", "");
+     
+    const response = await fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        }
     });
     const result = await response.json();
 
@@ -127,22 +114,102 @@ async function search(page = 1) {
 
     let paginationRef = document.getElementById('logs-pagination');
 
-    for (let i = 1; i <= result.data.totalPages; i++) {
-        let numberButton = document.createElement("button");
-        numberButton.setAttribute("class", "page-link");
-        numberButton.setAttribute("data-page", i);
-        numberButton.innerHTML = i;
+    let totalPage = result.data.totalPages;
+    let firstPage = 1;
 
-        const cssClass = page === i ? "page-item active" : "page-item";
+    for (let i = 1; i <= totalPage; i++) {
+        let liElements = addPaginationItems(i, firstPage, totalPage, page);
 
-        let liElement = document.createElement("li");
-        liElement.setAttribute("class", cssClass);
-        liElement.appendChild(numberButton);
-
-        paginationRef.appendChild(liElement);
+        for (let j = 0; j < liElements.length; j++){
+            paginationRef.appendChild(liElements[j]);
+        }
     }
 
+    activePassivePrevNextItem(page, firstPage, totalPage);
+
     bindPagination();
+}
+
+function bindPagination() {
+    document.querySelectorAll('#logs-pagination button')
+        .forEach(button => button.addEventListener('click', changePage));
+}
+
+async function changePage(e) {
+    const page = parseInt(e.currentTarget.dataset.page);
+    await search(page);
+}
+
+function addPaginationItems(i, firstPage, totalPage, page){
+    let elementList = [];
+    let dots = "...";
+
+    //Add first page element and prev element
+    if (i === firstPage){
+        let prevElement = createPaginationElement(page - 1, page, "<<", true);
+        prevElement.setAttribute("id", "prev")
+        elementList.push(prevElement);
+
+        elementList.push(createPaginationElement(i, page, i, true));
+    }
+
+    //Add left dots element
+    if (i === page && page > firstPage + 1){
+        elementList.push(createPaginationElement(i, page, dots, false, true));
+    }
+
+    //Add active page element
+    if (i === page && page > firstPage && page < totalPage){
+        elementList.push(createPaginationElement(i, page, i, true));
+    }
+
+    //Add right dots element
+    if (i === page && page < totalPage - 1){
+        elementList.push(createPaginationElement(i, page, dots, false, true));
+    }
+
+    //Add last page element 
+    if (i === totalPage && totalPage > firstPage){
+        elementList.push(createPaginationElement(i, page, i, true));
+        console.log(i, " last element", page);
+    }
+
+    //Add next element
+    if (i === totalPage){
+        let nextElement = createPaginationElement(page + 1, page, ">>", true);
+        nextElement.setAttribute("id", "next");
+        elementList.push(nextElement);
+    }
+
+    return elementList;
+}
+
+function createPaginationElement(i, page, innerHtml, activeControl, isDisabled){
+    let numberButton = document.createElement("button");
+    numberButton.setAttribute("class", "page-link");
+    numberButton.setAttribute("data-page", i);
+    numberButton.innerHTML = innerHtml;
+
+    numberButton.disabled = isDisabled === true;
+
+    let cssClass = "page-item";
+    if (activeControl !== undefined && activeControl && page === i){
+        cssClass = "page-item active";
+    }
+
+    let liElement = document.createElement("li");
+    liElement.setAttribute("class", cssClass);
+    liElement.appendChild(numberButton);
+    return liElement;
+}
+
+function activePassivePrevNextItem(page, firstPage, totalPage){
+    let prev = document.querySelector("#prev button");
+    let next = document.querySelector("#next button");
+
+    prev.disabled = page <= firstPage;
+
+    next.disabled = page >= totalPage;
 }
 
 function clearServiceDropdown() {

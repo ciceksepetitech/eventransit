@@ -37,8 +37,8 @@ namespace EvenTransit.UI.Controllers
             return View(responseModel);
         }
         
-        [HttpPost]
-        public async Task<IActionResult> Search([FromBody] LogFilterModel model)
+        [HttpGet]
+        public async Task<IActionResult> Search(LogFilterModel model)
         {
             if (model.Page <= 0) model.Page = 1;
 
