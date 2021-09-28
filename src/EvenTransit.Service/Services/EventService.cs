@@ -41,10 +41,9 @@ namespace EvenTransit.Service.Services
             _logger = logger;
         }
         
-        public Task<bool> PublishAsync(EventRequestDto requestDto)
+        public void Publish(EventRequestDto requestDto)
         {
             _eventPublisher.Publish(requestDto.EventName, requestDto.Payload);
-            return Task.FromResult(true);
         }
 
         public async Task<List<EventDto>> GetAllAsync()
@@ -188,6 +187,14 @@ namespace EvenTransit.Service.Services
                 _logger.LogError(MessageConstants.ServiceDeleteOperationFailed, e);
                 return false;
             }
+        }
+
+        public async Task<EventDto> GetEventAsync(string eventName)
+        {
+            var @event = await _eventsRepository.GetEventAsync(x => x.Name == eventName);
+            var eventDto = _mapper.Map<EventDto>(@event);
+            
+            return eventDto;
         }
     }
 }

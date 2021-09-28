@@ -10,7 +10,7 @@ namespace EvenTransit.Service.Abstractions
 {
     public interface IEventService
     {
-        Task<bool> PublishAsync(EventRequestDto requestDto);
+        void Publish(EventRequestDto requestDto);
         Task<List<EventDto>> GetAllAsync();
         Task<EventDto> GetEventDetailsAsync(Guid id);
         Task<BaseResponseDto> SaveServiceAsync(SaveServiceDto model);
@@ -19,5 +19,6 @@ namespace EvenTransit.Service.Abstractions
         Task<bool> SaveEventAsync(SaveEventDto data);
         Task<bool> DeleteEventAsync(Guid id);
         Task<bool> DeleteServiceAsync(Guid id, string name);
+        Task<EventDto> GetEventAsync(string eventName);
     }
 }

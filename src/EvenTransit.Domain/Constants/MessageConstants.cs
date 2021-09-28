@@ -10,5 +10,6 @@ namespace EvenTransit.Domain.Constants
         public const string ServiceRequestProceeded = "Service request successfully proceeded";
         public const string ServiceNameAlreadyExist = "Service name already exists";
         public const string EventCreated = "Event successfully created";
+        public const string NotExistEventName = "Event name does not exist.";
     }
 }

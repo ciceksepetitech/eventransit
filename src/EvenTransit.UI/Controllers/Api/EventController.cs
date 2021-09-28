@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.UI.Models.Api;
@@ -26,15 +27,21 @@ namespace EvenTransit.UI.Controllers.Api
         /// <response code="400">Validation problems</response>
         [HttpPost]
         [ProducesResponseType(typeof(void), 200)]
-        [ProducesResponseType(typeof(void), 400)]
+        [ProducesResponseType(typeof(void), 404)]
         public async Task<IActionResult> PostAsync([FromBody] EventRequest request)
         {
-            var response = await _eventService.PublishAsync(new EventRequestDto
+            var @event = await _eventService.GetEventAsync(request.EventName);
+            if (@event == null)
+            {
+                return NotFound();
+            }
+            
+            _eventService.Publish(new EventRequestDto
             {
                 EventName = request.EventName,
                 Payload = request.Payload
             });
-            return response ? Ok() : BadRequest();
+            return Ok();
         }
     }
 }
