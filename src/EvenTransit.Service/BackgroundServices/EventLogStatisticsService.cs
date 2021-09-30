@@ -8,14 +8,13 @@ using Microsoft.Extensions.Hosting;
 
 namespace EvenTransit.Service.BackgroundServices
 {
-    public class EventLogStatisticsService : IHostedService, IDisposable
+    public class EventLogStatisticsService : IHostedService
     {
         private const string ServiceName = "EventLogStatisticsService";
         
         private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
         private readonly ILogsRepository _logsRepository;
         private readonly IDistributedLocker _distributedLocker;
-        private Timer _timer;
 
         public EventLogStatisticsService(IServiceScopeFactory serviceScopeFactory)
         {
@@ -25,13 +24,17 @@ namespace EvenTransit.Service.BackgroundServices
             _distributedLocker = scope.ServiceProvider.GetRequiredService<IDistributedLocker>();
         }
         
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(CalculateStatistics, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
-            return Task.CompletedTask;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                CalculateStatistics();
+
+                await Task.Delay(TimeSpan.FromMinutes(10), cancellationToken);
+            }
         }
         
-        private void CalculateStatistics(object state)
+        private void CalculateStatistics()
         {
             if (!_distributedLocker.Acquire(ServiceName)) return;
             
@@ -51,15 +54,9 @@ namespace EvenTransit.Service.BackgroundServices
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _timer?.Change(Timeout.Infinite, 0);
             _distributedLocker.Release();
             
             return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            _timer?.Dispose();
         }
     }
 }
