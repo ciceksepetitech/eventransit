@@ -26,12 +26,15 @@ namespace EvenTransit.Service.BackgroundServices
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            Task.Run(async () =>
             {
-                CalculateStatistics();
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    CalculateStatistics();
 
-                await Task.Delay(TimeSpan.FromMinutes(10), cancellationToken);
-            }
+                    await Task.Delay(TimeSpan.FromMinutes(10), cancellationToken);
+                }
+            }, cancellationToken);
         }
         
         private void CalculateStatistics()
