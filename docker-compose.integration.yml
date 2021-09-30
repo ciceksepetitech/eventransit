@@ -1,0 +1,42 @@
+version: "3"
+services:
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: EventTransitUI
+    ports:
+      - "5100:80"
+    depends_on:
+      - test
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=production
+    restart: always
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: EventTransitUI
+    ports:
+      - "5100:80"
+    depends_on:
+      - rabbitmq
+      - mongo
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Test
+    restart: always
+
+  rabbitmq:
+    container_name: eventransit_rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  mongo:
+    container_name: eventransit_mongo
+    image: mongo
+    ports:
+      - "27017:27107"

@@ -60,6 +60,7 @@ async function editService(eventId, serviceName) {
     document.querySelector("#ServiceName").value = result.name;
     document.querySelector("#Url").value = result.url;
     document.querySelector("#Timeout").value = result.timeout;
+    document.querySelector("#Method").value = result.method;
 
     const headers = result.headers;
     clearTable();

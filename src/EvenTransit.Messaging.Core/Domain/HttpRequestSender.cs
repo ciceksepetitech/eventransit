@@ -35,8 +35,8 @@ namespace EvenTransit.Messaging.Core.Domain
                     requestMessage.Headers.TryAddWithoutValidation(header.Key, ReplaceFieldsValue(request.Fields, header.Value));
                 }
             }
-            
-            requestMessage.Method = HttpMethod.Post;
+
+            requestMessage.Method = new HttpMethod(request.Method);
             
             var contentData = JsonSerializer.Serialize(request.Body);
             var content = new StringContent(contentData, Encoding.UTF8, "application/json");

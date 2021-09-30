@@ -26,6 +26,7 @@ namespace EvenTransit.Messaging.Core.Domain
                 Url = service.Url,
                 Timeout = service.Timeout,
                 Body = message.Payload,
+                Method = service.Method,
                 Headers = service.Headers,
                 Fields = message.Fields
             };
