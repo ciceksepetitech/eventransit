@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace EvenTransit.Messaging.Core.Dto
 {
     public class EventRequestDto
@@ -5,5 +7,7 @@ namespace EvenTransit.Messaging.Core.Dto
         public string EventName { get; set; }
 
         public dynamic Payload { get; set; }
+        
+        public Dictionary<string,string> Fields { get; set; }
     }
 }

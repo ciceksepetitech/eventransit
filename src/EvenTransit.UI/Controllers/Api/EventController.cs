@@ -42,7 +42,8 @@ namespace EvenTransit.UI.Controllers.Api
             _eventService.Publish(new EventRequestDto
             {
                 EventName = request.EventName,
-                Payload = request.Payload
+                Payload = request.Payload,
+                Fields = request.Fields
             });
             
             return Ok();

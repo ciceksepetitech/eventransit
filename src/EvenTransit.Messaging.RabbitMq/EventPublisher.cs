@@ -21,11 +21,17 @@ namespace EvenTransit.Messaging.RabbitMq
             _channel = channelFactory.Channel;
         }
 
-        public void Publish(string eventName, object payload)
+        public void Publish(string eventName, object payload, Dictionary<string, string> fields)
         {
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
+            var data = new EventPublishDto
+            {
+                Payload = payload,
+                Fields = fields
+            };
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
+            
             _channel.BasicPublish(eventName, eventName, false, properties, body);
         }
 

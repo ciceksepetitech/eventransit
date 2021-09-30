@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 
-namespace EvenTransit.UI.Models.Api
+namespace EvenTransit.Messaging.Core.Dto
 {
-    public class EventRequest
+    public class EventPublishDto
     {
-        public string EventName { get; set; }
-
         public object Payload { get; set; }
-
         public Dictionary<string, string> Fields { get; set; }
     }
 }

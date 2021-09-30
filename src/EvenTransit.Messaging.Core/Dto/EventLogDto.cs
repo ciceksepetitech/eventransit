@@ -12,7 +12,7 @@ namespace EvenTransit.Messaging.Core.Dto
 
     public class EventDetailDto
     {
-        public EventLogHttpRequestDto Request { get; set; }
+        public HttpRequestDto Request { get; set; }
         public EventLogHttpResponseDto Response { get; set; }
         public string Message { get; set; }
     }

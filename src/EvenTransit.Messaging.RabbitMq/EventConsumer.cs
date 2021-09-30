@@ -95,6 +95,7 @@ namespace EvenTransit.Messaging.RabbitMq
         private async Task OnReceiveMessageAsync(string eventName, Service serviceInfo, BasicDeliverEventArgs ea)
         {
             var bodyArray = ea.Body.ToArray();
+            var body = JsonSerializer.Deserialize<EventPublishDto>(Encoding.UTF8.GetString(bodyArray));
             var retryCount = GetRetryCount(ea.BasicProperties);
             var serviceData = _mapper.Map<ServiceDto>(serviceInfo);
             var serviceName = serviceData.Name;
@@ -102,7 +103,7 @@ namespace EvenTransit.Messaging.RabbitMq
 
             try
             {
-                var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, bodyArray);
+                var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, body);
                 
                 _channel.BasicAck(ea.DeliveryTag, false);
 
@@ -125,9 +126,10 @@ namespace EvenTransit.Messaging.RabbitMq
                     LogType = LogType.Fail,
                     Details = new EventDetailDto
                     {
-                        Request = new EventLogHttpRequestDto
+                        Request = new HttpRequestDto
                         {
-                            Body = Encoding.UTF8.GetString(bodyArray),
+                            Body = body.Payload,
+                            Fields = body.Fields,
                             Url = serviceData.Url,
                             Timeout = serviceData.Timeout
                         },
