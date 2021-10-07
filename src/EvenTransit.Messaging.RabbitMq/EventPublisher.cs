@@ -21,18 +21,19 @@ namespace EvenTransit.Messaging.RabbitMq
             _channel = channelFactory.Channel;
         }
 
-        public void Publish(string eventName, object payload, Dictionary<string, string> fields)
+        public void Publish(EventRequestDto request)
         {
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
             var data = new EventPublishDto
             {
-                Payload = payload,
-                Fields = fields
+                Payload = request.Payload,
+                Fields = request.Fields,
+                CorrelationId = request.CorrelationId
             };
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
             
-            _channel.BasicPublish(eventName, eventName, false, properties, body);
+            _channel.BasicPublish(request.EventName, request.EventName, false, properties, body);
         }
 
         public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)

@@ -1,3 +1,4 @@
+using System;
 using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Messaging.Core.Dto
@@ -15,5 +16,6 @@ namespace EvenTransit.Messaging.Core.Dto
         public HttpRequestDto Request { get; set; }
         public EventLogHttpResponseDto Response { get; set; }
         public string Message { get; set; }
+        public Guid CorrelationId { get; set; }
     }
 }

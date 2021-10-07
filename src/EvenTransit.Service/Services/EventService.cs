@@ -43,7 +43,7 @@ namespace EvenTransit.Service.Services
         
         public void Publish(EventRequestDto requestDto)
         {
-            _eventPublisher.Publish(requestDto.EventName, requestDto.Payload, requestDto.Fields);
+            _eventPublisher.Publish(requestDto);
         }
 
         public async Task<List<EventDto>> GetAllAsync()
