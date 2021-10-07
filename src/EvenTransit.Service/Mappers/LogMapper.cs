@@ -14,7 +14,8 @@ namespace EvenTransit.Service.Mappers
             CreateMap<LogDetailRequest, LogItemDetailRequestDto>();
             CreateMap<LogDetailResponse, LogItemDetailResponseDto>();
 
-            CreateMap<Logs, LogFilterItemDto>();
+            CreateMap<Logs, LogFilterItemDto>()
+                .ForMember(dest => dest.CorrelationId, cfg => cfg.MapFrom(src => src.Details.CorrelationId));
         }
     }
 }

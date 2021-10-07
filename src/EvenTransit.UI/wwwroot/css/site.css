@@ -2,6 +2,14 @@
     width: 4%;
 }
 
+.index-column-2x {
+    width: 8%;
+}
+
+.btn-cs {
+    background-color: #185aa3;
+}
+
 .code-preview {
     max-height: 400px;
 }

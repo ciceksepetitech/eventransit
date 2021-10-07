@@ -51,8 +51,24 @@ async function getLogDetails(e) {
     logDetailModal.show();
 }
 
-async function search(page = 1) {
+async function filterByCorrelationId(e){
+    const id = e.currentTarget.dataset.id;
+    const response = await fetch(`/Logs/SearchByCorrelationId/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const result = await response.json();
+
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
+
+    removeLogTableRows(tbodyRef);
+
+    fillLogTableRows(result, tbodyRef, 1);
+}
+
+function removeLogTableRows(tbodyRef){
     const rowCount = tbodyRef.rows.length;
 
     for (let i = 0; i < rowCount; i++) {
@@ -60,6 +76,12 @@ async function search(page = 1) {
     }
 
     removePagination();
+}
+
+async function search(page = 1) {
+    let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
+    
+    removeLogTableRows(tbodyRef);
 
     const logDateFrom = getFieldValue("#LogDateFrom", "");
     const logDateTo = getFieldValue("#LogDateTo", "");
@@ -75,6 +97,10 @@ async function search(page = 1) {
     });
     const result = await response.json();
 
+    fillLogTableRows(result, tbodyRef, page);
+}
+
+function fillLogTableRows(result, tbodyRef, page){
     document.getElementById("errors").classList.add("d-none");
 
     if (!result.isSuccess){
@@ -82,7 +108,7 @@ async function search(page = 1) {
         document.getElementById("errors").classList.remove("d-none");
         return;
     }
-    
+
     if (result.data.items) {
         result.data.items.forEach((item, index) => {
             let newRow = tbodyRef.insertRow();
@@ -96,13 +122,29 @@ async function search(page = 1) {
             let logDetailActionIcon = document.createElement("i");
             logDetailActionIcon.setAttribute('class', 'fa fa-search fa-fw');
 
+            let logFilterActionIcon = document.createElement("i");
+            logFilterActionIcon.setAttribute('class', 'fa fa-filter fa-fw');
+
             let logDetailButton = document.createElement("button");
             logDetailButton.addEventListener('click', getLogDetails);
             logDetailButton.setAttribute('type', 'button');
             logDetailButton.setAttribute('data-id', item.id);
-            logDetailButton.setAttribute('class', 'btn btn-sm btn-warning');
+            logDetailButton.setAttribute("title", "Log Details");
+            logDetailButton.setAttribute('class', 'btn btn-sm btn-warning me-1');
             logDetailButton.appendChild(logDetailActionIcon);
+
+            let logFilterButton = document.createElement("button");
+            logFilterButton.addEventListener('click', filterByCorrelationId);
+            logFilterButton.setAttribute('type', 'button');
+            logFilterButton.setAttribute('data-id', item.correlationId);
+            logFilterButton.setAttribute("title", "Filter by Correlation Id");
+            logFilterButton.setAttribute('class', 'btn btn-sm btn-cs text-white');
+            logFilterButton.appendChild(logFilterActionIcon);
+
             actionCell.appendChild(logDetailButton);
+            actionCell.appendChild(logFilterButton);
+
+            actionCell.setAttribute("class", "text-center");
 
             indexCell.innerHTML = index + 1;
             eventNameCell.innerHTML = item.eventName;

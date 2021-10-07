@@ -15,6 +15,7 @@ namespace EvenTransit.Service.Dto.Log
         public string Id { get; set; }
         public string EventName { get; set; }
         public string ServiceName { get; set; }
+        public Guid CorrelationId { get; set; }
         public LogType LogType { get; set; }
         public DateTime CreatedOn { get; set; }
     }

@@ -67,6 +67,21 @@ namespace EvenTransit.UI.Controllers
         }
 
         [HttpGet]
+        [Route("Logs/SearchByCorrelationId/{correlationId}")]
+        public async Task<IActionResult> SearchByCorrelationId(Guid correlationId)
+        {
+            var result = await _logService.SearchAsync(correlationId);
+            var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
+            var responseModel = new LogList
+            {
+                Items = response,
+                TotalPages = result.TotalPages
+            };
+
+            return StatusCode(StatusCodes.Status200OK, new { IsSuccess = true, Data = responseModel });
+        }
+
+        [HttpGet]
         [Route("Logs/GetServices/{eventName}")]
         public async Task<IActionResult> GetServices(string eventName)
         {
