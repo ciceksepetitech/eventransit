@@ -1,4 +1,4 @@
-using System.Text;
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EvenTransit.Domain.Entities;
@@ -33,12 +33,12 @@ namespace EvenTransit.Messaging.Core.Domain
 
             var result = await _httpRequestSender.SendAsync(request);
 
-            await LogResult(eventName, service, result, request);
+            await LogResult(eventName, service, result, request, message.CorrelationId);
 
             return result.IsSuccess;
         }
 
-        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result, HttpRequestDto request)
+        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result, HttpRequestDto request, Guid correlationId)
         {
             var body = JsonSerializer.Serialize(request.Body);
             var logData = new Logs
@@ -60,7 +60,8 @@ namespace EvenTransit.Messaging.Core.Domain
                         Response = result.Response,
                         IsSuccess = result.IsSuccess,
                         StatusCode = result.StatusCode
-                    }
+                    },
+                    CorrelationId = correlationId
                 }
             };
 

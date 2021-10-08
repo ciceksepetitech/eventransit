@@ -53,6 +53,17 @@ namespace EvenTransit.Service.Services
                 TotalPages = result.TotalPages
             };
         }
+        
+        public async Task<LogSearchResultDto> SearchAsync(Guid correlationId)
+        {
+            var result = await _logsRepository.GetLogsAsync(x=>x.Details.CorrelationId == correlationId, 1);
+
+            return new LogSearchResultDto
+            {
+                Items = _mapper.Map<List<LogFilterItemDto>>(result.Items),
+                TotalPages = result.TotalPages
+            };
+        }
 
         public async Task<LogItemDto> GetByIdAsync(Guid id)
         {

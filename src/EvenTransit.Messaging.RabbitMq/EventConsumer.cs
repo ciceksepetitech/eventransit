@@ -138,7 +138,8 @@ namespace EvenTransit.Messaging.RabbitMq
                             IsSuccess = false,
                             StatusCode = StatusCodes.Status500InternalServerError
                         },
-                        Message = e.Message
+                        Message = e.Message,
+                        CorrelationId = body.CorrelationId
                     }
                 };
 
