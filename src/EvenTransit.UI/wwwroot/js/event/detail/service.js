@@ -54,12 +54,25 @@ async function editService(eventId, serviceName) {
             'Content-Type': 'application/json'
         }
     });
+    
+    if (response.status === 404){
+        alert("Service not found!");
+        return;
+    }
+    
+    if (!(response.status >= 200 && response.status <= 299)) {
+        alert("Service update failed!");
+        return;
+    }
+    
     const result = await response.json();
+
+    const timeout = result.timeout === 0 ? "" : result.timeout;
 
     document.getElementById("HiddenServiceName").value = result.name;
     document.querySelector("#ServiceName").value = result.name;
     document.querySelector("#Url").value = result.url;
-    document.querySelector("#Timeout").value = result.timeout;
+    document.querySelector("#Timeout").value = timeout;
     document.querySelector("#Method").value = result.method;
 
     const headers = result.headers;

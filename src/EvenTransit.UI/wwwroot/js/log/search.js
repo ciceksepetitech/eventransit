@@ -33,6 +33,17 @@ async function getLogDetails(e) {
             'Content-Type': 'application/json'
         }
     });
+
+    if (response.status === 404){
+        alert("Log not found!");
+        return;
+    }
+
+    if (!(response.status >= 200 && response.status <= 299)) {
+        alert("Get log failed!");
+        return;
+    }
+    
     const result = await response.json();
 
     document.querySelector("#logDetailModal #EventName").value = result.eventName;

@@ -24,6 +24,14 @@ namespace EvenTransit.UI.Validators.Events
             RuleFor(x => x.ServiceName)
                 .Matches(@"^([a-zA-Z\-])+$")
                 .WithMessage(ValidationConstants.ServiceNameRegexError);
+
+            RuleFor(x => x.Timeout)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage(ValidationConstants.TimeoutMustBeGreaterThanZero);
+
+            RuleFor(x => x.Method)
+                .Must(x => !string.IsNullOrWhiteSpace(x))
+                .WithMessage(ValidationConstants.MethodCannotBeNotEmpty);
         }
     }
 }

@@ -79,7 +79,8 @@ namespace EvenTransit.UI.Controllers
             var data = await _logService.GetByIdAsync(id);
             var result = _mapper.Map<LogItemViewModel>(data);
 
-            return StatusCode(StatusCodes.Status200OK, result);
+            var statusCode = data == null ? StatusCodes.Status404NotFound : StatusCodes.Status200OK;
+            return StatusCode(statusCode, result);
         }
     }
 }

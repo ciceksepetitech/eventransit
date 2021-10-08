@@ -77,7 +77,8 @@ namespace EvenTransit.UI.Controllers
             var serviceData = await _eventService.GetServiceDetailsAsync(eventId, serviceName);
             var data = _mapper.Map<ServiceModel>(serviceData);
 
-            return StatusCode(StatusCodes.Status200OK, data);
+            var statusCode = data == null ? StatusCodes.Status404NotFound : StatusCodes.Status200OK;
+            return StatusCode(statusCode, data);
         }
 
         [HttpPost]

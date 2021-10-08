@@ -41,7 +41,16 @@
                 <td>
                     <kbd>@service.Url</kbd>
                 </td>
-                <td class="text-center">@service.Timeout</td>
+                @{
+                    if (service.Timeout == 0)
+                    {
+                        <td class="text-center"></td>
+                    }
+                    else
+                    {
+                        <td class="text-center">@service.Timeout</td>
+                    }
+                }
                 <td>
                     @if (service.Headers != null)
                     {
