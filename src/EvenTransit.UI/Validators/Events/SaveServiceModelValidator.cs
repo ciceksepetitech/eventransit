@@ -32,6 +32,11 @@ namespace EvenTransit.UI.Validators.Events
             RuleFor(x => x.Method)
                 .Must(x => !string.IsNullOrWhiteSpace(x))
                 .WithMessage(ValidationConstants.MethodCannotBeNotEmpty);
+            
+            RuleFor(x => x.Method)
+                .Must(x => x is "GET" or "POST" or "PUT" or "PATCH" or "DELETE" or "HEAD" or "OPTIONS")
+                .When(x => !string.IsNullOrWhiteSpace(x.Method))
+                .WithMessage(ValidationConstants.InvalidMethod);
         }
     }
 }
