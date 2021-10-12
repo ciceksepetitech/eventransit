@@ -38,7 +38,7 @@ namespace EvenTransit.Messaging.Core.Domain
             return result.IsSuccess;
         }
 
-        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result, HttpRequestDto request, Guid correlationId)
+        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result, HttpRequestDto request, string correlationId)
         {
             var body = JsonSerializer.Serialize(request.Body);
             var logData = new Logs

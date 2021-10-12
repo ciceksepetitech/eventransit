@@ -16,6 +16,6 @@ namespace EvenTransit.Messaging.Core.Dto
         public HttpRequestDto Request { get; set; }
         public EventLogHttpResponseDto Response { get; set; }
         public string Message { get; set; }
-        public Guid CorrelationId { get; set; }
+        public string CorrelationId { get; set; }
     }
 }

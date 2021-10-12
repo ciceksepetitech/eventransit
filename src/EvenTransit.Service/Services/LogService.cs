@@ -19,8 +19,8 @@ namespace EvenTransit.Service.Services
         private readonly ILogStatisticsRepository _logStatisticsRepository;
         private readonly IMapper _mapper;
 
-        public LogService(ILogsRepository logsRepository, 
-            IMapper mapper, 
+        public LogService(ILogsRepository logsRepository,
+            IMapper mapper,
             ILogStatisticsRepository logStatisticsRepository)
         {
             _logsRepository = logsRepository;
@@ -53,10 +53,10 @@ namespace EvenTransit.Service.Services
                 TotalPages = result.TotalPages
             };
         }
-        
-        public async Task<LogSearchResultDto> SearchAsync(Guid correlationId)
+
+        public async Task<LogSearchResultDto> SearchAsync(string correlationId)
         {
-            var result = await _logsRepository.GetLogsAsync(x=>x.Details.CorrelationId == correlationId, 1);
+            var result = await _logsRepository.GetLogsAsync(x => x.Details.CorrelationId == correlationId, 1);
 
             return new LogSearchResultDto
             {
@@ -85,10 +85,10 @@ namespace EvenTransit.Service.Services
             response.Dates = dates;
             response.SuccessCount = successCount;
             response.FailCount = failCount;
-            
+
             return response;
         }
-        
+
         private async Task<(long, long)> GetLogsCountByDay(DateTime day)
         {
             var startDate = new DateTime(day.Year, day.Month, day.Day, 0, 0, 0);

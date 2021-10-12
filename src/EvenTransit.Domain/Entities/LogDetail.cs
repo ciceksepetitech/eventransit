@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace EvenTransit.Domain.Entities
@@ -8,7 +7,7 @@ namespace EvenTransit.Domain.Entities
         public string Message { get; set; }
         public LogDetailRequest Request { get; set; }
         public LogDetailResponse Response { get; set; }
-        public Guid CorrelationId { get; set; }
+        public string CorrelationId { get; set; }
     }
 
     public class LogDetailRequest

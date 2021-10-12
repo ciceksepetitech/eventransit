@@ -1,9 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Api;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace EvenTransit.UI.Controllers.Api
 {
@@ -20,7 +22,7 @@ namespace EvenTransit.UI.Controllers.Api
         }
 
         /// <summary>
-        /// 
+        /// Publish an event to EvenTransit
         /// </summary>
         /// <param name="request">Event information</param>
         /// <returns></returns>
@@ -38,12 +40,16 @@ namespace EvenTransit.UI.Controllers.Api
             {
                 return NotFound();
             }
+
+            var requestId = HttpContext.Request.Headers["x-request-id"];
+            var correlationId = !StringValues.IsNullOrEmpty(requestId) ? requestId.ToString() : Guid.NewGuid().ToString();
             
             _eventService.Publish(new EventRequestDto
             {
                 EventName = request.EventName,
                 Payload = request.Payload,
-                Fields = request.Fields
+                Fields = request.Fields,
+                CorrelationId = correlationId
             });
             
             return Ok();

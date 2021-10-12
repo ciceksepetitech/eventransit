@@ -68,7 +68,7 @@ namespace EvenTransit.UI.Controllers
 
         [HttpGet]
         [Route("Logs/SearchByCorrelationId/{correlationId}")]
-        public async Task<IActionResult> SearchByCorrelationId(Guid correlationId)
+        public async Task<IActionResult> SearchByCorrelationId(string correlationId)
         {
             var result = await _logService.SearchAsync(correlationId);
             var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
