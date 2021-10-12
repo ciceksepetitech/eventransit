@@ -96,7 +96,7 @@ async function deleteService(eventId, serviceName) {
         });
         const result = await response.json();
         
-        if(!result.success){
+        if(!result.isSuccess){
             alert("Service not deleted!");
             return;
         }
