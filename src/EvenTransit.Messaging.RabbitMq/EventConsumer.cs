@@ -101,6 +101,16 @@ namespace EvenTransit.Messaging.RabbitMq
             var serviceName = serviceData.Name;
             var queueName = serviceName.GetQueueName(eventName);
 
+            serviceData.Url = serviceData.Url.ReplaceDynamicFieldValues(body.Fields);
+            
+            if (serviceData.Headers != null)
+            {
+                foreach (var header in serviceData.Headers)
+                {
+                    serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body.Fields);
+                }
+            }
+            
             try
             {
                 var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, body);
@@ -131,7 +141,8 @@ namespace EvenTransit.Messaging.RabbitMq
                             Body = body.Payload,
                             Fields = body.Fields,
                             Url = serviceData.Url,
-                            Timeout = serviceData.Timeout
+                            Timeout = serviceData.Timeout,
+                            Headers = serviceData.Headers
                         },
                         Response = new EventLogHttpResponseDto
                         {

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
@@ -38,7 +40,8 @@ namespace EvenTransit.Messaging.Core.Domain
             return result.IsSuccess;
         }
 
-        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result, HttpRequestDto request, string correlationId)
+        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result,
+            HttpRequestDto request, string correlationId)
         {
             var body = JsonSerializer.Serialize(request.Body);
             var logData = new Logs
