@@ -15,8 +15,19 @@ namespace EvenTransit.Data.MongoDb.Repositories
             {
                 GuidRepresentation = GuidRepresentation.Standard
             };
+
+            var mongoClientSettings = new MongoClientSettings
+            {
+                Server = new MongoServerAddress(mongoDbSettings.Value.Host)
+            };
+
+            if (!string.IsNullOrEmpty(mongoDbSettings.Value.UserName) &&
+                !string.IsNullOrEmpty(mongoDbSettings.Value.Password))
+            {
+                mongoClientSettings.Credential = MongoCredential.CreateCredential(mongoDbSettings.Value.Database, mongoDbSettings.Value.UserName, mongoDbSettings.Value.Password);
+            }
             
-            var client = new MongoClient(mongoDbSettings.Value.Host);
+            var client = new MongoClient(mongoClientSettings);
             var database = client.GetDatabase(mongoDbSettings.Value.Database);
             Collection = database.GetCollection<T>(typeof(T).Name, collectionSettings);
         }
