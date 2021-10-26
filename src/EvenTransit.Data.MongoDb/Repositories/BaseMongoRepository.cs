@@ -24,7 +24,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
             if (!string.IsNullOrEmpty(mongoDbSettings.Value.UserName) &&
                 !string.IsNullOrEmpty(mongoDbSettings.Value.Password))
             {
-                mongoClientSettings.Credential = MongoCredential.CreateCredential(mongoDbSettings.Value.Database, mongoDbSettings.Value.UserName, mongoDbSettings.Value.Password);
+                mongoClientSettings.Credential = MongoCredential.CreateCredential("admin", mongoDbSettings.Value.UserName, mongoDbSettings.Value.Password);
             }
             
             var client = new MongoClient(mongoClientSettings);
