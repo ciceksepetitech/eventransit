@@ -65,7 +65,7 @@ namespace EvenTransit.UI.Controllers
             var isSuccess = await _eventService.DeleteServiceAsync(eventId, serviceName);
             var message = isSuccess ? MessageConstants.ServiceDeleted : MessageConstants.ServiceDeleteOperationFailed;
             var response = new {isSuccess = isSuccess, Message =  message};
-            var statusCode = isSuccess ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest;
+            var statusCode = isSuccess ? StatusCodes.Status200OK : StatusCodes.Status404NotFound;
 
             return StatusCode(statusCode, response);
         }
