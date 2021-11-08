@@ -13,7 +13,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class EventsMongoRepository : BaseMongoRepository<Event>, IEventsRepository
     {
-        public EventsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
+        public EventsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
         {
         }
         

@@ -18,6 +18,8 @@ namespace EvenTransit.Data.MongoDb
 
             services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
             
+            services.AddSingleton<MongoDbConnectionStringBuilder>();
+            
             services.AddHealthChecks()
                 .AddCheck<MongoDbHealthCheck>("mongodb");
 

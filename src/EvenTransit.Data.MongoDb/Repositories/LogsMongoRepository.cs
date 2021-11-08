@@ -12,7 +12,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     {
-        public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
+        public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
         {
         }
 

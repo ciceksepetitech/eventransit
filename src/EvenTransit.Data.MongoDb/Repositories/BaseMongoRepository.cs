@@ -8,26 +8,17 @@ namespace EvenTransit.Data.MongoDb.Repositories
     public class BaseMongoRepository<T>
     {
         protected readonly IMongoCollection<T> Collection;
-
-        public BaseMongoRepository(IOptions<MongoDbSettings> mongoDbSettings)
+        private readonly MongoDbConnectionStringBuilder _mongoDbConnectionStringBuilder;
+        
+        public BaseMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, MongoDbConnectionStringBuilder mongoDbConnectionStringBuilder)
         {
+            var connectionString = mongoDbConnectionStringBuilder.ConnectionString;
             var collectionSettings = new MongoCollectionSettings
             {
                 GuidRepresentation = GuidRepresentation.Standard
             };
 
-            var mongoClientSettings = new MongoClientSettings
-            {
-                Server = new MongoServerAddress(mongoDbSettings.Value.Host)
-            };
-
-            if (!string.IsNullOrEmpty(mongoDbSettings.Value.UserName) &&
-                !string.IsNullOrEmpty(mongoDbSettings.Value.Password))
-            {
-                mongoClientSettings.Credential = MongoCredential.CreateCredential("admin", mongoDbSettings.Value.UserName, mongoDbSettings.Value.Password);
-            }
-            
-            var client = new MongoClient(mongoClientSettings);
+            var client = new MongoClient(connectionString);
             var database = client.GetDatabase(mongoDbSettings.Value.Database);
             Collection = database.GetCollection<T>(typeof(T).Name, collectionSettings);
         }

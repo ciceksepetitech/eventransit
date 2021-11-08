@@ -9,7 +9,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class ServiceLockMongoRepository : BaseMongoRepository<ServiceLock>, IServiceLockRepository
     {
-        public ServiceLockMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
+        public ServiceLockMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
         {
         }
 

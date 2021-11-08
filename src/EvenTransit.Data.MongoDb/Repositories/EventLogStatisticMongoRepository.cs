@@ -11,7 +11,7 @@ namespace EvenTransit.Data.MongoDb.Repositories
 {
     public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStatistic>, IEventLogStatisticRepository
     {
-        public EventLogStatisticMongoRepository(IOptions<MongoDbSettings> mongoDbSettings) : base(mongoDbSettings)
+        public EventLogStatisticMongoRepository(IOptions<MongoDbSettings> mongoDbSettings, MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
         {
         }
         
