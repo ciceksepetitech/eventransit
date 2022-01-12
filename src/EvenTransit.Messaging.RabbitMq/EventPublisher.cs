@@ -29,7 +29,8 @@ namespace EvenTransit.Messaging.RabbitMq
             {
                 Payload = request.Payload,
                 Fields = request.Fields,
-                CorrelationId = request.CorrelationId
+                CorrelationId = request.CorrelationId,
+                OutboxEventId = request.OutboxEventId
             };
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
             

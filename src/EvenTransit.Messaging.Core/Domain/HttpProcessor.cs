@@ -35,13 +35,13 @@ namespace EvenTransit.Messaging.Core.Domain
 
             var result = await _httpRequestSender.SendAsync(request);
 
-            await LogResult(eventName, service, result, request, message.CorrelationId);
+            await LogResult(eventName, service, result, request, message.CorrelationId, message.OutboxEventId);
 
             return result.IsSuccess;
         }
 
         private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result,
-            HttpRequestDto request, string correlationId)
+            HttpRequestDto request, string correlationId, string outboxEventId)
         {
             var body = JsonSerializer.Serialize(request.Body);
             var logData = new Logs
@@ -64,7 +64,8 @@ namespace EvenTransit.Messaging.Core.Domain
                         IsSuccess = result.IsSuccess,
                         StatusCode = result.StatusCode
                     },
-                    CorrelationId = correlationId
+                    CorrelationId = correlationId,
+                    OutboxEventId = outboxEventId
                 }
             };
 

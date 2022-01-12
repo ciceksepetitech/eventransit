@@ -9,6 +9,8 @@ namespace EvenTransit.Messaging.Core.Dto
         public dynamic Payload { get; set; }
 
         public string CorrelationId { get; set; }
+
+        public string OutboxEventId { get; set; }
         
         public Dictionary<string,string> Fields { get; set; }
     }

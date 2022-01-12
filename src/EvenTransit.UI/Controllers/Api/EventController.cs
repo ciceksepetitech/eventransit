@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.UI.Filters;
@@ -41,15 +42,21 @@ namespace EvenTransit.UI.Controllers.Api
                 return NotFound();
             }
 
-            var requestId = HttpContext.Request.Headers["x-request-id"];
+            var requestId = HttpContext.Request.Headers[HeaderConstants.RequestIdHeader];
+            var outboxEventIdHeader = HttpContext.Request.Headers[HeaderConstants.OutboxEventIdHeader];
             var correlationId = !StringValues.IsNullOrEmpty(requestId) ? requestId.ToString() : Guid.NewGuid().ToString();
+            string outboxEventId = null;
+
+            if (!StringValues.IsNullOrEmpty(outboxEventIdHeader))
+                outboxEventId = outboxEventIdHeader.ToString();
             
             _eventService.Publish(new EventRequestDto
             {
                 EventName = request.EventName,
                 Payload = request.Payload,
                 Fields = request.Fields,
-                CorrelationId = correlationId
+                CorrelationId = correlationId,
+                OutboxEventId = outboxEventId
             });
             
             return Ok();

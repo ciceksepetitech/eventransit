@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Constants;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
@@ -81,7 +82,7 @@ namespace EvenTransit.Messaging.RabbitMq
         {
             var queueName = serviceName.GetQueueName(eventName);
             var retryQueueName = serviceName.GetRetryQueueName(eventName);
-            
+
             _channel.QueueDelete(queueName, false, false);
             _channel.QueueDelete(retryQueueName, false, false);
         }
@@ -102,19 +103,25 @@ namespace EvenTransit.Messaging.RabbitMq
             var queueName = serviceName.GetQueueName(eventName);
 
             serviceData.Url = serviceData.Url.ReplaceDynamicFieldValues(body.Fields);
-            
-            if (serviceData.Headers != null)
+
+            serviceData.Headers ??= new Dictionary<string, string>();
+
+            if (!serviceData.Headers.ContainsKey(HeaderConstants.RequestIdHeader))
+                serviceData.Headers.Add(HeaderConstants.RequestIdHeader, body.CorrelationId);
+
+            if (!serviceData.Headers.ContainsKey(HeaderConstants.OutboxEventIdHeader) &&
+                !string.IsNullOrEmpty(body.OutboxEventId))
+                serviceData.Headers.Add(HeaderConstants.OutboxEventIdHeader, body.OutboxEventId);
+
+            foreach (var header in serviceData.Headers)
             {
-                foreach (var header in serviceData.Headers)
-                {
-                    serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body.Fields);
-                }
+                serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body.Fields);
             }
-            
+
             try
             {
                 var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, body);
-                
+
                 _channel.BasicAck(ea.DeliveryTag, false);
 
                 if (!processResult && retryCount < MessagingConstants.MaxRetryCount)
@@ -150,7 +157,8 @@ namespace EvenTransit.Messaging.RabbitMq
                             StatusCode = StatusCodes.Status500InternalServerError
                         },
                         Message = e.Message,
-                        CorrelationId = body.CorrelationId
+                        CorrelationId = body.CorrelationId,
+                        OutboxEventId = body.OutboxEventId
                     }
                 };
 
@@ -215,9 +223,9 @@ namespace EvenTransit.Messaging.RabbitMq
             var retryQueueName = serviceName.GetRetryQueueName(eventName);
             var retryQueueArguments = new Dictionary<string, object>
             {
-                {"x-dead-letter-exchange", eventName},
-                {"x-dead-letter-routing-key", queueName},
-                {"x-message-ttl", MessagingConstants.DeadLetterQueueTTL}
+                { "x-dead-letter-exchange", eventName },
+                { "x-dead-letter-routing-key", queueName },
+                { "x-message-ttl", MessagingConstants.DeadLetterQueueTTL }
             };
 
             _channel.QueueDeclare(queue: retryQueueName,
@@ -232,10 +240,10 @@ namespace EvenTransit.Messaging.RabbitMq
 
         private long GetRetryCount(IBasicProperties properties)
         {
-            if (properties?.Headers == null || !properties.Headers.ContainsKey(MessagingConstants.RetryHeaderName)) 
+            if (properties?.Headers == null || !properties.Headers.ContainsKey(MessagingConstants.RetryHeaderName))
                 return 0;
 
-            return (long) properties.Headers[MessagingConstants.RetryHeaderName];
+            return (long)properties.Headers[MessagingConstants.RetryHeaderName];
         }
     }
 }

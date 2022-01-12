@@ -17,5 +17,6 @@ namespace EvenTransit.Messaging.Core.Dto
         public EventLogHttpResponseDto Response { get; set; }
         public string Message { get; set; }
         public string CorrelationId { get; set; }
+        public string OutboxEventId { get; set; }
     }
 }
