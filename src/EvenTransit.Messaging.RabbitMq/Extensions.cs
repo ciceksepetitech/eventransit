@@ -1,3 +1,6 @@
+using System;
+using EvenTransit.Domain.Enums;
+
 namespace EvenTransit.Messaging.RabbitMq
 {
     public static class Extensions
@@ -6,7 +9,7 @@ namespace EvenTransit.Messaging.RabbitMq
         private const string RetryQueueSuffix = "retry";
 
         public static string GetRetryExchangeName(this string exchangeName) => $"{exchangeName}.{RetryExchangeSuffix}";
-        public static string GetRetryQueueName(this string queueName, string eventName) => $"{eventName}.{queueName}.{RetryQueueSuffix}";
+        public static string GetRetryQueueName(this string queueName, string eventName, RetryTimes retryTime) => $"{eventName}.{queueName}.{RetryQueueSuffix}.{Enum.GetName(typeof(RetryTimes), retryTime)?.ToLower()}";
         public static string GetQueueName(this string queueName, string eventName) => $"{eventName}.{queueName}";
     }
 }

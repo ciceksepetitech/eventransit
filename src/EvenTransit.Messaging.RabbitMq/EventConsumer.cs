@@ -11,6 +11,7 @@ using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +30,7 @@ namespace EvenTransit.Messaging.RabbitMq
         private readonly IMapper _mapper;
         private readonly IEventPublisher _eventPublisher;
         private readonly IModel _channel;
+        private readonly RetryQueueHelper _retryQueueHelper;
 
         public EventConsumer(
             IEnumerable<IRabbitMqChannelFactory> channelFactories,
@@ -37,7 +39,8 @@ namespace EvenTransit.Messaging.RabbitMq
             IEventLog eventLog,
             ILogger<EventConsumer> logger,
             IMapper mapper,
-            IEventPublisher eventPublisher)
+            IEventPublisher eventPublisher, 
+            RetryQueueHelper retryQueueHelper)
         {
             _httpProcessor = httpProcessor;
             _eventsRepository = eventsRepository;
@@ -45,6 +48,7 @@ namespace EvenTransit.Messaging.RabbitMq
             _logger = logger;
             _mapper = mapper;
             _eventPublisher = eventPublisher;
+            _retryQueueHelper = retryQueueHelper;
             var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Consumer);
             _channel = channelFactory.Channel;
         }
@@ -81,10 +85,14 @@ namespace EvenTransit.Messaging.RabbitMq
         public void DeleteQueue(string eventName, string serviceName)
         {
             var queueName = serviceName.GetQueueName(eventName);
-            var retryQueueName = serviceName.GetRetryQueueName(eventName);
 
             _channel.QueueDelete(queueName, false, false);
-            _channel.QueueDelete(retryQueueName, false, false);
+
+            foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
+            {
+                var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
+                _channel.QueueDelete(retryQueueName, false, false);
+            }
         }
 
         public void DeleteExchange(string eventName)
@@ -124,8 +132,8 @@ namespace EvenTransit.Messaging.RabbitMq
 
                 _channel.BasicAck(ea.DeliveryTag, false);
 
-                if (!processResult && retryCount < MessagingConstants.MaxRetryCount)
-                    _eventPublisher.PublishToRetry(eventName, queueName, bodyArray, retryCount);
+                if (!processResult)
+                    _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
             }
             catch (Exception e)
             {
@@ -133,8 +141,7 @@ namespace EvenTransit.Messaging.RabbitMq
 
                 _channel.BasicAck(ea.DeliveryTag, false);
 
-                if (retryCount < MessagingConstants.MaxRetryCount)
-                    _eventPublisher.PublishToRetry(eventName, queueName, bodyArray, retryCount);
+                _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
 
                 var logData = new EventLogDto
                 {
@@ -186,9 +193,14 @@ namespace EvenTransit.Messaging.RabbitMq
                 _channel.QueueDeclare(queueName, true, false, false, null);
 
                 var service = _eventsRepository.GetServiceByEvent(eventName, serviceInfo.ServiceName);
+                
                 BindQueue(eventName, service);
-                BindRetryQueue(eventName, service.Name);
 
+                foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
+                {
+                    BindRetryQueue(eventName, service.Name, retryQueue);
+                }
+                
                 _channel.BasicAck(ea.DeliveryTag, false);
             }
             catch (Exception e)
@@ -214,18 +226,18 @@ namespace EvenTransit.Messaging.RabbitMq
             _channel.BasicConsume(queueName, false, eventConsumer);
         }
 
-        private void BindRetryQueue(string eventName, string serviceName)
+        private void BindRetryQueue(string eventName, string serviceName, RetryQueueInfo retryQueue)
         {
             var queueName = serviceName.GetQueueName(eventName);
             var retryExchangeName = eventName.GetRetryExchangeName();
             _channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
-            var retryQueueName = serviceName.GetRetryQueueName(eventName);
+            var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
             var retryQueueArguments = new Dictionary<string, object>
             {
                 { "x-dead-letter-exchange", eventName },
                 { "x-dead-letter-routing-key", queueName },
-                { "x-message-ttl", MessagingConstants.DeadLetterQueueTTL }
+                { "x-message-ttl", retryQueue.TTL }
             };
 
             _channel.QueueDeclare(queue: retryQueueName,

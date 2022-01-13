@@ -5,6 +5,7 @@ using System.Text.Json;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
+using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
@@ -14,9 +15,11 @@ namespace EvenTransit.Messaging.RabbitMq
     public class EventPublisher : IEventPublisher
     {
         private readonly IModel _channel;
+        private readonly RetryQueueHelper _retryQueueHelper;
 
-        public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories)
+        public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories, RetryQueueHelper retryQueueHelper)
         {
+            _retryQueueHelper = retryQueueHelper;
             var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
             _channel = channelFactory.Channel;
         }
@@ -47,8 +50,9 @@ namespace EvenTransit.Messaging.RabbitMq
             {
                 {MessagingConstants.RetryHeaderName, newRetryCount}
             };
-            
-            _channel.BasicPublish(eventName.GetRetryExchangeName(), serviceName, false, properties, payload);
+
+            var retryQueueName = serviceName.GetRetryQueueName(eventName, _retryQueueHelper.GetRetryQueue(retryCount));
+            _channel.BasicPublish(eventName.GetRetryExchangeName(), retryQueueName, false, properties, payload);
         }
 
         public void RegisterNewService(NewServiceDto data)

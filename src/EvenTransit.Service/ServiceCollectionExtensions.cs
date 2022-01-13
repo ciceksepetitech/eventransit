@@ -16,6 +16,7 @@ namespace EvenTransit.Service
             services.AddScoped<IHttpRequestSender, HttpRequestSender>();
             services.AddScoped<IHttpProcessor, HttpProcessor>();
             services.AddScoped<IDistributedLocker, DistributedLocker>();
+            services.AddSingleton<RetryQueueHelper>();
 
             return services;
         }

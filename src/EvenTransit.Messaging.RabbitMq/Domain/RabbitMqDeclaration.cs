@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Messaging.Core;
+using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
 
@@ -10,10 +11,12 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
     public class RabbitMqDeclaration : IRabbitMqDeclaration
     {
         private readonly IEventsRepository _eventsRepository;
+        private readonly RetryQueueHelper _retryQueueHelper;
 
-        public RabbitMqDeclaration(IEventsRepository eventsRepository)
+        public RabbitMqDeclaration(IEventsRepository eventsRepository, RetryQueueHelper retryQueueHelper)
         {
             _eventsRepository = eventsRepository;
+            _retryQueueHelper = retryQueueHelper;
         }
 
         public async Task DeclareQueuesAsync(IModel channel)
@@ -35,19 +38,23 @@ namespace EvenTransit.Messaging.RabbitMq.Domain
                         null);
                     channel.QueueBind(queueName, @event.Name, @event.Name);
 
-                    var retryQueueName = service.Name.GetRetryQueueName(@event.Name);
-                    var retryQueueArguments = new Dictionary<string, object>
+                    foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
                     {
-                        {"x-dead-letter-exchange", @event.Name},
-                        {"x-dead-letter-routing-key", queueName},
-                        {"x-message-ttl", MessagingConstants.DeadLetterQueueTTL}
-                    };
-                    channel.QueueDeclare(queue: retryQueueName,
-                        true,
-                        false,
-                        false,
-                        retryQueueArguments);
-                    channel.QueueBind(retryQueueName, retryExchangeName, queueName);
+                        var retryQueueName = service.Name.GetRetryQueueName(@event.Name, retryQueue.RetryTime);
+                        var retryQueueArguments = new Dictionary<string, object>
+                        {
+                            {"x-dead-letter-exchange", @event.Name},
+                            {"x-dead-letter-routing-key", queueName},
+                            {"x-message-ttl", retryQueue.TTL}
+                        };
+                        channel.QueueDeclare(queue: retryQueueName,
+                            true,
+                            false,
+                            false,
+                            retryQueueArguments);
+                        channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
+                    }
+                    
                     channel.QueueBind(queueName, @event.Name, queueName);
                 }
             }
