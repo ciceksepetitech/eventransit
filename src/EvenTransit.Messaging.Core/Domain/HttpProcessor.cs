@@ -30,7 +30,6 @@ namespace EvenTransit.Messaging.Core.Domain
                 Body = message.Payload,
                 Method = service.Method,
                 Headers = service.Headers,
-                Fields = message.Fields
             };
 
             var result = await _httpRequestSender.SendAsync(request);

@@ -108,10 +108,8 @@ namespace EvenTransit.Messaging.RabbitMq
             var retryCount = GetRetryCount(ea.BasicProperties);
             var serviceData = _mapper.Map<ServiceDto>(serviceInfo);
             var serviceName = serviceData.Name;
-            var queueName = serviceName.GetQueueName(eventName);
-
+            
             serviceData.Url = serviceData.Url.ReplaceDynamicFieldValues(body.Fields);
-
             serviceData.Headers ??= new Dictionary<string, string>();
 
             if (!serviceData.Headers.ContainsKey(HeaderConstants.RequestIdHeader))
