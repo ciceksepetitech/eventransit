@@ -36,8 +36,17 @@ namespace EvenTransit.Messaging.Core.Domain
             }
 
             requestMessage.Method = new HttpMethod(request.Method);
+
             
-            var contentData = JsonSerializer.Serialize(request.Body);
+            var contentData = string.Empty;
+
+            if (request.Body is JsonElement convertedContent)
+            {
+                contentData = convertedContent.ValueKind != JsonValueKind.String 
+                    ? JsonSerializer.Serialize(request.Body) 
+                    : request.Body.ToString();
+            }
+
             var content = new StringContent(contentData, Encoding.UTF8, "application/json");
             requestMessage.Content = content;
 
