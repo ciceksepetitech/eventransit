@@ -6,10 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="11.0.1" />
-      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-      <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
+      <PackageReference Include="AutoMapper" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+      <PackageReference Include="Microsoft.Extensions.Logging" />
+      <PackageReference Include="RabbitMQ.Client" />
     </ItemGroup>
     
     <ItemGroup>
