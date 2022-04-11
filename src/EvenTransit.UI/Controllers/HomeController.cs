@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
-using System.Threading.Tasks;
 using EvenTransit.Service.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using EvenTransit.UI.Models;
