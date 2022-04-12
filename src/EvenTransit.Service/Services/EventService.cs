@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Constants;
@@ -103,7 +99,7 @@ public class EventService : IEventService
     public async Task<List<string>> GetServicesAsync(string eventName)
     {
         var queues = await _eventsRepository.GetEventAsync(x => x.Name == eventName);
-        var queueNames = queues.Services.Select(x => x.Name).ToList();
+        var queueNames = queues.Services.Select(x => x.Name).OrderBy(x => x).ToList();
 
         return queueNames;
     }

@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Domain.Extensions;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
 using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Logs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
