@@ -1,5 +1,4 @@
-using System.Threading;
-using System.Threading.Tasks;
+using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,10 +17,10 @@ public class QueueDeclarationService : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = _serviceScope.CreateScope();
-        var rabbitMqConnection = scope.ServiceProvider.GetRequiredService<IRabbitMqConnectionFactory>();
+        var rabbitMqChannelFactories = scope.ServiceProvider.GetRequiredService<IEnumerable<IRabbitMqChannelFactory>>();
         var rabbitMqDeclaration = scope.ServiceProvider.GetRequiredService<IRabbitMqDeclaration>();
 
-        using var channel = rabbitMqConnection.ProducerConnection.CreateModel();
+        using var channel = rabbitMqChannelFactories.Single(x => x.ChannelType == ChannelTypes.Producer).Channel;
         await rabbitMqDeclaration.DeclareQueuesAsync(channel);
     }
 
