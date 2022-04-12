@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
+using System.Net;
 
 namespace EvenTransit.Messaging.Core.Domain;
 
@@ -48,7 +49,7 @@ public class HttpRequestSender : IHttpRequestSender
 
         return new HttpResponseDto
         {
-            IsSuccess = response.IsSuccessStatusCode,
+            IsSuccess = response.StatusCode < HttpStatusCode.InternalServerError,
             StatusCode = (int)response.StatusCode,
             Response = await response.Content.ReadAsStringAsync()
         };
