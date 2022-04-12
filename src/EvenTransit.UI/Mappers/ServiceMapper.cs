@@ -2,14 +2,13 @@ using AutoMapper;
 using EvenTransit.Service.Dto.Event;
 using EvenTransit.UI.Models.Events;
 
-namespace EvenTransit.UI.Mappers
+namespace EvenTransit.UI.Mappers;
+
+public class ServiceMapper : Profile
 {
-    public class ServiceMapper : Profile
+    public ServiceMapper()
     {
-        public ServiceMapper()
-        {
-            CreateMap<ServiceDto, ServiceModel>();
-            CreateMap<SaveServiceModel, SaveServiceDto>();
-        }
+        CreateMap<ServiceDto, ServiceModel>();
+        CreateMap<SaveServiceModel, SaveServiceDto>();
     }
 }

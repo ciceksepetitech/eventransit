@@ -30,13 +30,13 @@ saveForm.addEventListener("submit", async e => {
     const result = await response.json();
     document.getElementById("service-errors").classList.add("d-none");
 
-    if (!result.isSuccess){
+    if (!result.isSuccess) {
         document.getElementById("service-errors").innerHTML = result.message;
         document.getElementById("service-errors").classList.remove("d-none");
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             document.getElementById("service-errors").classList.add("d-none");
-            document.getElementById("service-errors").innerHTML="";
+            document.getElementById("service-errors").innerHTML = "";
         }, 5000);
         return;
     }
@@ -54,17 +54,17 @@ async function editService(eventId, serviceName) {
             'Content-Type': 'application/json'
         }
     });
-    
-    if (response.status === 404){
+
+    if (response.status === 404) {
         alert("Service not found!");
         return;
     }
-    
+
     if (!(response.status >= 200 && response.status <= 299)) {
         alert("Service update failed!");
         return;
     }
-    
+
     const result = await response.json();
 
     const timeout = result.timeout === 0 ? "" : result.timeout;
@@ -77,7 +77,7 @@ async function editService(eventId, serviceName) {
 
     const headers = result.headers;
     clearTable();
-    
+
     for (const key in headers) {
         const value = headers[key];
         addNewHeaderItem(key, value);
@@ -95,8 +95,8 @@ async function deleteService(eventId, serviceName) {
             }
         });
         const result = await response.json();
-        
-        if(!result.isSuccess){
+
+        if (!result.isSuccess) {
             alert("Service not deleted!");
             return;
         }
@@ -144,12 +144,12 @@ function removeHeaderItem(e) {
     document.querySelector('#headers tbody').deleteRow(rowIndex);
 }
 
-function clearTable(){
+function clearTable() {
     let tbody = document.getElementById("headers").getElementsByTagName('tbody')[0];
     tbody.innerHTML = "";
 }
 
-function clearNewProcessModal(){
+function clearNewProcessModal() {
     document.getElementById("HiddenServiceName").value = "";
     saveForm.reset();
     clearTable();

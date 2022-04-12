@@ -1,8 +1,7 @@
-namespace EvenTransit.Domain.Enums
+namespace EvenTransit.Domain.Enums;
+
+public enum ChannelTypes
 {
-    public enum ChannelTypes
-    {
-        Producer,
-        Consumer
-    }
+    Producer,
+    Consumer
 }

@@ -1,7 +1,5 @@
-namespace EvenTransit.Messaging.RabbitMq.Settings
+namespace EvenTransit.Messaging.RabbitMq.Settings;
+
+public class RabbitMqSettings
 {
-    public class RabbitMqSettings
-    {
-        
-    }
 }

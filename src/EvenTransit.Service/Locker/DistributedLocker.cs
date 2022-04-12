@@ -1,43 +1,36 @@
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
 
-namespace EvenTransit.Service.Locker
+namespace EvenTransit.Service.Locker;
+
+public class DistributedLocker : IDistributedLocker
 {
-    public class DistributedLocker : IDistributedLocker
+    private string ServiceName { get; set; }
+
+    private readonly IServiceLockRepository _serviceLockRepository;
+
+    public DistributedLocker(IServiceLockRepository serviceLockRepository)
     {
-        private string ServiceName { get; set; }
+        _serviceLockRepository = serviceLockRepository;
+    }
 
-        private readonly IServiceLockRepository _serviceLockRepository;
+    public bool Acquire(string serviceName)
+    {
+        ServiceName = serviceName;
 
-        public DistributedLocker(IServiceLockRepository serviceLockRepository)
-        {
-            _serviceLockRepository = serviceLockRepository;
-        }
-        
-        public bool Acquire(string serviceName)
-        {
-            ServiceName = serviceName;
+        var lockInfo = _serviceLockRepository.GetByServiceName(serviceName);
 
-            var lockInfo = _serviceLockRepository.GetByServiceName(serviceName);
+        if (lockInfo != null) return false;
 
-            if (lockInfo != null) return false;
-            
-            _serviceLockRepository.Insert(new ServiceLock
-            {
-                ServiceName = serviceName
-            });                    
-                
-            return true;
-        }
+        _serviceLockRepository.Insert(new ServiceLock { ServiceName = serviceName });
 
-        public void Release()
-        {
-            var lockInfo = _serviceLockRepository.GetByServiceName(ServiceName);
+        return true;
+    }
 
-            if (lockInfo != null)
-            {
-                _serviceLockRepository.Delete(ServiceName);
-            }
-        }
+    public void Release()
+    {
+        var lockInfo = _serviceLockRepository.GetByServiceName(ServiceName);
+
+        if (lockInfo != null) _serviceLockRepository.Delete(ServiceName);
     }
 }

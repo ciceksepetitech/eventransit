@@ -3,7 +3,9 @@
     <ul class="pagination">
         @for (var i = 1; i <= Model; i++)
         {
-            <li class="page-item"><a class="page-link" asp-route-Page="@i">@i</a></li>
+            <li class="page-item">
+                <a class="page-link" asp-route-Page="@i">@i</a>
+            </li>
         }
     </ul>
 </nav>

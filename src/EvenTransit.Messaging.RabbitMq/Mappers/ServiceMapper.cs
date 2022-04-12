@@ -2,13 +2,12 @@ using AutoMapper;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Dto;
 
-namespace EvenTransit.Messaging.RabbitMq.Mappers
+namespace EvenTransit.Messaging.RabbitMq.Mappers;
+
+public class ServiceMapper : Profile
 {
-    public class ServiceMapper : Profile
+    public ServiceMapper()
     {
-        public ServiceMapper()
-        {
-            CreateMap<Service, ServiceDto>();
-        }
+        CreateMap<Service, ServiceDto>();
     }
 }

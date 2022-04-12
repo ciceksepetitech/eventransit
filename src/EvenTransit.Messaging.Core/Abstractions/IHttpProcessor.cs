@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Dto;
 
-namespace EvenTransit.Messaging.Core.Abstractions
+namespace EvenTransit.Messaging.Core.Abstractions;
+
+public interface IHttpProcessor
 {
-    public interface IHttpProcessor
-    {
-        Task<bool> ProcessAsync(string eventName, ServiceDto service, EventPublishDto message);
-    }
+    Task<bool> ProcessAsync(string eventName, ServiceDto service, EventPublishDto message);
 }

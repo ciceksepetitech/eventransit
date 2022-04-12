@@ -46,7 +46,7 @@
                 <span class="badge rounded-pill bg-danger">@eventDto.FailCount</span>
             </td>
             <td class="col-1 text-center">
-                <a class="btn btn-sm btn-warning" title="Edit" href="@Url.Action("Detail", "Events", new {id = eventDto.Id})">
+                <a class="btn btn-sm btn-warning" title="Edit" href="@Url.Action("Detail", "Events", new { id = eventDto.Id })">
                     <i class="fa fa-edit fa-fw"></i>
                 </a>
                 <button type="button" class="btn btn-sm btn-danger delete-event" title="Delete" data-id="@eventDto.Id">

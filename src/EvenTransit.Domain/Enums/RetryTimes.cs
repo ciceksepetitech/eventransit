@@ -1,11 +1,10 @@
 using System.ComponentModel;
 
-namespace EvenTransit.Domain.Enums
+namespace EvenTransit.Domain.Enums;
+
+public enum RetryTimes
 {
-    public enum RetryTimes
-    {
-        Five = 5,
-        Thirty = 30,
-        Sixty = 60
-    }
+    Five = 5,
+    Thirty = 30,
+    Sixty = 60
 }

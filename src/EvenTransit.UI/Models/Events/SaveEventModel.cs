@@ -1,7 +1,6 @@
-namespace EvenTransit.UI.Models.Events
+namespace EvenTransit.UI.Models.Events;
+
+public class SaveEventModel
 {
-    public class SaveEventModel
-    {
-        public string EventName { get; set; }
-    }
+    public string EventName { get; set; }
 }

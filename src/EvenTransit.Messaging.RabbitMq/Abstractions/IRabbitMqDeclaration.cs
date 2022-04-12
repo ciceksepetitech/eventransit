@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 
-namespace EvenTransit.Messaging.RabbitMq.Abstractions
+namespace EvenTransit.Messaging.RabbitMq.Abstractions;
+
+public interface IRabbitMqDeclaration
 {
-    public interface IRabbitMqDeclaration
-    {
-        Task DeclareQueuesAsync(IModel channel);
-    }
+    Task DeclareQueuesAsync(IModel channel);
 }

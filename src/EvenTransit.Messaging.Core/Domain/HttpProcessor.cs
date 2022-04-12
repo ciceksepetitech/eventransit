@@ -8,67 +8,61 @@ using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 
-namespace EvenTransit.Messaging.Core.Domain
+namespace EvenTransit.Messaging.Core.Domain;
+
+public class HttpProcessor : IHttpProcessor
 {
-    public class HttpProcessor : IHttpProcessor
+    private readonly IHttpRequestSender _httpRequestSender;
+    private readonly IEventLog _eventLog;
+
+    public HttpProcessor(IHttpRequestSender httpRequestSender, IEventLog eventLog)
     {
-        private readonly IHttpRequestSender _httpRequestSender;
-        private readonly IEventLog _eventLog;
+        _httpRequestSender = httpRequestSender;
+        _eventLog = eventLog;
+    }
 
-        public HttpProcessor(IHttpRequestSender httpRequestSender, IEventLog eventLog)
+    public async Task<bool> ProcessAsync(string eventName, ServiceDto service, EventPublishDto message)
+    {
+        var request = new HttpRequestDto
         {
-            _httpRequestSender = httpRequestSender;
-            _eventLog = eventLog;
-        }
+            Url = service.Url,
+            Timeout = service.Timeout,
+            Body = message.Payload,
+            Method = service.Method,
+            Headers = service.Headers
+        };
 
-        public async Task<bool> ProcessAsync(string eventName, ServiceDto service, EventPublishDto message)
+        var result = await _httpRequestSender.SendAsync(request);
+
+        await LogResult(eventName, service, result, request, message.CorrelationId, message.OutboxEventId);
+
+        return result.IsSuccess;
+    }
+
+    private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result,
+        HttpRequestDto request, string correlationId, string outboxEventId)
+    {
+        var body = JsonSerializer.Serialize(request.Body);
+        var logData = new Logs
         {
-            var request = new HttpRequestDto
+            EventName = eventName,
+            ServiceName = service.Name,
+            LogType = result.IsSuccess ? LogType.Success : LogType.Fail,
+            Details = new LogDetail
             {
-                Url = service.Url,
-                Timeout = service.Timeout,
-                Body = message.Payload,
-                Method = service.Method,
-                Headers = service.Headers,
-            };
-
-            var result = await _httpRequestSender.SendAsync(request);
-
-            await LogResult(eventName, service, result, request, message.CorrelationId, message.OutboxEventId);
-
-            return result.IsSuccess;
-        }
-
-        private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result,
-            HttpRequestDto request, string correlationId, string outboxEventId)
-        {
-            var body = JsonSerializer.Serialize(request.Body);
-            var logData = new Logs
-            {
-                EventName = eventName,
-                ServiceName = service.Name,
-                LogType = result.IsSuccess ? LogType.Success : LogType.Fail,
-                Details = new LogDetail
+                Request = new LogDetailRequest
                 {
-                    Request = new LogDetailRequest
-                    {
-                        Url = request.Url,
-                        Timeout = request.Timeout,
-                        Body = body,
-                        Headers = request.Headers
-                    },
-                    Response = new LogDetailResponse
-                    {
-                        Response = result.Response,
-                        IsSuccess = result.IsSuccess,
-                        StatusCode = result.StatusCode
-                    },
-                    CorrelationId = correlationId,
-                    OutboxEventId = outboxEventId
-                }
-            };
+                    Url = request.Url, Timeout = request.Timeout, Body = body, Headers = request.Headers
+                },
+                Response = new LogDetailResponse
+                {
+                    Response = result.Response, IsSuccess = result.IsSuccess, StatusCode = result.StatusCode
+                },
+                CorrelationId = correlationId,
+                OutboxEventId = outboxEventId
+            }
+        };
 
-            await _eventLog.LogAsync(logData);
-        }
+        await _eventLog.LogAsync(logData);
     }
 }

@@ -1,7 +1,6 @@
-namespace EvenTransit.Service.Dto.Event
+namespace EvenTransit.Service.Dto.Event;
+
+public class SaveEventDto
 {
-    public class SaveEventDto
-    {
-        public string EventName { get; set; }
-    }
+    public string EventName { get; set; }
 }

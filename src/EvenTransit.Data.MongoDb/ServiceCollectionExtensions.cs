@@ -4,26 +4,25 @@ using EvenTransit.Domain.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EvenTransit.Data.MongoDb
+namespace EvenTransit.Data.MongoDb;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddMongoDbDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddMongoDbDatabase(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddScoped<IEventsRepository, EventsMongoRepository>();
-            services.AddScoped<ILogsRepository, LogsMongoRepository>();
-            services.AddScoped<ILogStatisticsRepository, LogStatisticsMongoRepository>();
-            services.AddScoped<IEventLogStatisticRepository, EventLogStatisticMongoRepository>();
-            services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
+        services.AddScoped<IEventsRepository, EventsMongoRepository>();
+        services.AddScoped<ILogsRepository, LogsMongoRepository>();
+        services.AddScoped<ILogStatisticsRepository, LogStatisticsMongoRepository>();
+        services.AddScoped<IEventLogStatisticRepository, EventLogStatisticMongoRepository>();
+        services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
 
-            services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
-            
-            services.AddSingleton<MongoDbConnectionStringBuilder>();
-            
-            services.AddHealthChecks()
-                .AddCheck<MongoDbHealthCheck>("mongodb");
+        services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
 
-            return services;
-        }
+        services.AddSingleton<MongoDbConnectionStringBuilder>();
+
+        services.AddHealthChecks()
+            .AddCheck<MongoDbHealthCheck>("mongodb");
+
+        return services;
     }
 }

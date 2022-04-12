@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\EvenTransit.Data.MongoDb\EvenTransit.Data.MongoDb.csproj" />
-      <ProjectReference Include="..\EvenTransit.Messaging.RabbitMq\EvenTransit.Messaging.RabbitMq.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EvenTransit.Data.MongoDb\EvenTransit.Data.MongoDb.csproj"/>
+    <ProjectReference Include="..\EvenTransit.Messaging.RabbitMq\EvenTransit.Messaging.RabbitMq.csproj"/>
+  </ItemGroup>
 
 </Project>

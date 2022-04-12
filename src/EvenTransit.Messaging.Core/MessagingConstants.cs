@@ -1,8 +1,7 @@
-namespace EvenTransit.Messaging.Core
+namespace EvenTransit.Messaging.Core;
+
+public static class MessagingConstants
 {
-    public static class MessagingConstants
-    {
-        public const string NewServiceExchange = "NewService";
-        public const string RetryHeaderName = "x-retry-count";
-    }
+    public const string NewServiceExchange = "NewService";
+    public const string RetryHeaderName = "x-retry-count";
 }

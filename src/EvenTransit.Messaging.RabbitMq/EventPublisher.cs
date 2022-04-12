@@ -10,60 +10,56 @@ using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
 
-namespace EvenTransit.Messaging.RabbitMq
+namespace EvenTransit.Messaging.RabbitMq;
+
+public class EventPublisher : IEventPublisher
 {
-    public class EventPublisher : IEventPublisher
+    private readonly IModel _channel;
+    private readonly RetryQueueHelper _retryQueueHelper;
+
+    public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories, RetryQueueHelper retryQueueHelper)
     {
-        private readonly IModel _channel;
-        private readonly RetryQueueHelper _retryQueueHelper;
+        _retryQueueHelper = retryQueueHelper;
+        var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
+        _channel = channelFactory.Channel;
+    }
 
-        public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories, RetryQueueHelper retryQueueHelper)
+    public void Publish(EventRequestDto request)
+    {
+        var properties = _channel.CreateBasicProperties();
+        properties.Persistent = true;
+        var data = new EventPublishDto
         {
-            _retryQueueHelper = retryQueueHelper;
-            var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
-            _channel = channelFactory.Channel;
-        }
+            Payload = request.Payload,
+            Fields = request.Fields,
+            CorrelationId = request.CorrelationId,
+            OutboxEventId = request.OutboxEventId
+        };
+        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-        public void Publish(EventRequestDto request)
-        {
-            var properties = _channel.CreateBasicProperties();
-            properties.Persistent = true;
-            var data = new EventPublishDto
-            {
-                Payload = request.Payload,
-                Fields = request.Fields,
-                CorrelationId = request.CorrelationId,
-                OutboxEventId = request.OutboxEventId
-            };
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
-            
-            _channel.BasicPublish(request.EventName, request.EventName, false, properties, body);
-        }
+        _channel.BasicPublish(request.EventName, request.EventName, false, properties, body);
+    }
 
-        public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
-        {
-            var newRetryCount = retryCount + 1;
-            
-            var properties = _channel.CreateBasicProperties();
-            properties.Persistent = true;
-            properties.Headers = new Dictionary<string, object>
-            {
-                {MessagingConstants.RetryHeaderName, newRetryCount}
-            };
+    public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
+    {
+        var newRetryCount = retryCount + 1;
 
-            var retryQueueName = serviceName.GetRetryQueueName(eventName, _retryQueueHelper.GetRetryQueue(retryCount));
-            _channel.BasicPublish(eventName.GetRetryExchangeName(), retryQueueName, false, properties, payload);
-        }
+        var properties = _channel.CreateBasicProperties();
+        properties.Persistent = true;
+        properties.Headers = new Dictionary<string, object> { { MessagingConstants.RetryHeaderName, newRetryCount } };
 
-        public void RegisterNewService(NewServiceDto data)
-        {
-            var properties = _channel.CreateBasicProperties();
-            properties.Persistent = true;
-            
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
+        var retryQueueName = serviceName.GetRetryQueueName(eventName, _retryQueueHelper.GetRetryQueue(retryCount));
+        _channel.BasicPublish(eventName.GetRetryExchangeName(), retryQueueName, false, properties, payload);
+    }
 
-            _channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
-                properties, body);
-        }
+    public void RegisterNewService(NewServiceDto data)
+    {
+        var properties = _channel.CreateBasicProperties();
+        properties.Persistent = true;
+
+        var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
+
+        _channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false,
+            properties, body);
     }
 }

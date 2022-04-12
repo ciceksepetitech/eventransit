@@ -20,14 +20,14 @@ saveForm.addEventListener("submit", async e => {
     const result = await response.json();
     document.getElementById("event-errors").classList.add("d-none");
 
-    if (!result.isSuccess){
-        
+    if (!result.isSuccess) {
+
         document.getElementById("event-errors").innerHTML = result.message;
         document.getElementById("event-errors").classList.remove("d-none");
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById("event-errors").classList.add("d-none");
-            document.getElementById("event-errors").innerHTML="";
+            document.getElementById("event-errors").innerHTML = "";
         }, 5000);
         return;
     }
@@ -51,7 +51,7 @@ async function deleteEvent(e) {
             alert("Event not deleted!");
             return;
         }
-        
+
         window.location.reload();
     }
 }

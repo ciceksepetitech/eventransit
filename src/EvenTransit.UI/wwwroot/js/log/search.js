@@ -34,7 +34,7 @@ async function getLogDetails(e) {
         }
     });
 
-    if (response.status === 404){
+    if (response.status === 404) {
         alert("Log not found!");
         return;
     }
@@ -43,7 +43,7 @@ async function getLogDetails(e) {
         alert("Get log failed!");
         return;
     }
-    
+
     const result = await response.json();
 
     document.querySelector("#logDetailModal #EventName").value = result.eventName;
@@ -62,7 +62,7 @@ async function getLogDetails(e) {
     logDetailModal.show();
 }
 
-async function filterByCorrelationId(e){
+async function filterByCorrelationId(e) {
     const id = e.currentTarget.dataset.id;
     const response = await fetch(`/Logs/SearchByCorrelationId/${id}`, {
         method: 'GET',
@@ -79,7 +79,7 @@ async function filterByCorrelationId(e){
     fillLogTableRows(result, tbodyRef, 1);
 }
 
-function removeLogTableRows(tbodyRef){
+function removeLogTableRows(tbodyRef) {
     const rowCount = tbodyRef.rows.length;
 
     for (let i = 0; i < rowCount; i++) {
@@ -91,7 +91,7 @@ function removeLogTableRows(tbodyRef){
 
 async function search(page = 1) {
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
-    
+
     removeLogTableRows(tbodyRef);
 
     const logDateFrom = getFieldValue("#LogDateFrom", "");
@@ -99,7 +99,7 @@ async function search(page = 1) {
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
     const serviceName = getFieldValue("select#ServiceName", "");
-     
+
     const response = await fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
         method: 'GET',
         headers: {
@@ -111,10 +111,10 @@ async function search(page = 1) {
     fillLogTableRows(result, tbodyRef, page);
 }
 
-function fillLogTableRows(result, tbodyRef, page){
+function fillLogTableRows(result, tbodyRef, page) {
     document.getElementById("errors").classList.add("d-none");
 
-    if (!result.isSuccess){
+    if (!result.isSuccess) {
         document.getElementById("errors").innerHTML = result.message;
         document.getElementById("errors").classList.remove("d-none");
         return;
@@ -173,7 +173,7 @@ function fillLogTableRows(result, tbodyRef, page){
     for (let i = 1; i <= totalPage; i++) {
         let liElements = addPaginationItems(i, firstPage, totalPage, page);
 
-        for (let j = 0; j < liElements.length; j++){
+        for (let j = 0; j < liElements.length; j++) {
             paginationRef.appendChild(liElements[j]);
         }
     }
@@ -193,12 +193,12 @@ async function changePage(e) {
     await search(page);
 }
 
-function addPaginationItems(i, firstPage, totalPage, page){
+function addPaginationItems(i, firstPage, totalPage, page) {
     let elementList = [];
     let dots = "...";
 
     //Add first page element and prev element
-    if (i === firstPage){
+    if (i === firstPage) {
         let prevElement = createPaginationElement(page - 1, page, "<<", true);
         prevElement.setAttribute("id", "prev")
         elementList.push(prevElement);
@@ -207,28 +207,28 @@ function addPaginationItems(i, firstPage, totalPage, page){
     }
 
     //Add left dots element
-    if (i === page && page > firstPage + 1){
+    if (i === page && page > firstPage + 1) {
         elementList.push(createPaginationElement(i, page, dots, false, true));
     }
 
     //Add active page element
-    if (i === page && page > firstPage && page < totalPage){
+    if (i === page && page > firstPage && page < totalPage) {
         elementList.push(createPaginationElement(i, page, i, true));
     }
 
     //Add right dots element
-    if (i === page && page < totalPage - 1){
+    if (i === page && page < totalPage - 1) {
         elementList.push(createPaginationElement(i, page, dots, false, true));
     }
 
     //Add last page element 
-    if (i === totalPage && totalPage > firstPage){
+    if (i === totalPage && totalPage > firstPage) {
         elementList.push(createPaginationElement(i, page, i, true));
         console.log(i, " last element", page);
     }
 
     //Add next element
-    if (i === totalPage){
+    if (i === totalPage) {
         let nextElement = createPaginationElement(page + 1, page, ">>", true);
         nextElement.setAttribute("id", "next");
         elementList.push(nextElement);
@@ -237,7 +237,7 @@ function addPaginationItems(i, firstPage, totalPage, page){
     return elementList;
 }
 
-function createPaginationElement(i, page, innerHtml, activeControl, isDisabled){
+function createPaginationElement(i, page, innerHtml, activeControl, isDisabled) {
     let numberButton = document.createElement("button");
     numberButton.setAttribute("class", "page-link");
     numberButton.setAttribute("data-page", i);
@@ -246,7 +246,7 @@ function createPaginationElement(i, page, innerHtml, activeControl, isDisabled){
     numberButton.disabled = isDisabled === true;
 
     let cssClass = "page-item";
-    if (activeControl !== undefined && activeControl && page === i){
+    if (activeControl !== undefined && activeControl && page === i) {
         cssClass = "page-item active";
     }
 
@@ -256,7 +256,7 @@ function createPaginationElement(i, page, innerHtml, activeControl, isDisabled){
     return liElement;
 }
 
-function activePassivePrevNextItem(page, firstPage, totalPage){
+function activePassivePrevNextItem(page, firstPage, totalPage) {
     let prev = document.querySelector("#prev button");
     let next = document.querySelector("#next button");
 

@@ -4,23 +4,22 @@ using EvenTransit.Messaging.Core.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace EvenTransit.Service.BackgroundServices
+namespace EvenTransit.Service.BackgroundServices;
+
+public class ConsumerBinderService : BackgroundService
 {
-    public class ConsumerBinderService : BackgroundService
+    private readonly IServiceScopeFactory _serviceScope;
+
+    public ConsumerBinderService(IServiceScopeFactory serviceScope)
     {
-        private readonly IServiceScopeFactory _serviceScope;
+        _serviceScope = serviceScope;
+    }
 
-        public ConsumerBinderService(IServiceScopeFactory serviceScope)
-        {
-            _serviceScope = serviceScope;
-        }
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using var scope = _serviceScope.CreateScope();
+        var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            using var scope = _serviceScope.CreateScope();
-            var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
-            
-            await eventConsumer.ConsumeAsync();
-        }
+        await eventConsumer.ConsumeAsync();
     }
 }

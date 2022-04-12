@@ -1,11 +1,10 @@
 using EvenTransit.Domain.Enums;
 using RabbitMQ.Client;
 
-namespace EvenTransit.Messaging.RabbitMq.Abstractions
+namespace EvenTransit.Messaging.RabbitMq.Abstractions;
+
+public interface IRabbitMqChannelFactory
 {
-    public interface IRabbitMqChannelFactory
-    {
-        ChannelTypes ChannelType { get; }
-        IModel Channel { get; }
-    }
+    ChannelTypes ChannelType { get; }
+    IModel Channel { get; }
 }

@@ -1,33 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <RazorCompileOnBuild>false</RazorCompileOnBuild>
-        <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RazorCompileOnBuild>false</RazorCompileOnBuild>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\js\site.js" />
-    </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\site.js"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="wwwroot\css" />
-      <Folder Include="wwwroot\js" />
-      <Folder Include="wwwroot\lib\fontawesome" />
-    </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\css"/>
+    <Folder Include="wwwroot\js"/>
+    <Folder Include="wwwroot\lib\fontawesome"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\EvenTransit.Service\EvenTransit.Service.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EvenTransit.Service\EvenTransit.Service.csproj"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="FluentValidation.AspNetCore" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
-      <PackageReference Include="Serilog" />
-      <PackageReference Include="Serilog.AspNetCore" />
-      <PackageReference Include="Serilog.Sinks.Console" />
-      <PackageReference Include="Swashbuckle.AspNetCore" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"/>
+    <PackageReference Include="Serilog"/>
+    <PackageReference Include="Serilog.AspNetCore"/>
+    <PackageReference Include="Serilog.Sinks.Console"/>
+    <PackageReference Include="Swashbuckle.AspNetCore"/>
+  </ItemGroup>
 
 </Project>

@@ -4,30 +4,32 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RabbitMQ.Client;
 
-namespace EvenTransit.Messaging.RabbitMq
-{
-    public class RabbitMqHealthCheck : IHealthCheck
-    {
-        private readonly IConnectionFactory _connectionFactory;
+namespace EvenTransit.Messaging.RabbitMq;
 
-        public RabbitMqHealthCheck(IConnectionFactory connectionFactory)
+public class RabbitMqHealthCheck : IHealthCheck
+{
+    private readonly IConnectionFactory _connectionFactory;
+
+    public RabbitMqHealthCheck(IConnectionFactory connectionFactory)
+    {
+        _connectionFactory = connectionFactory;
+    }
+
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+        CancellationToken cancellationToken = new())
+    {
+        try
         {
-            _connectionFactory = connectionFactory;
+            var connection = _connectionFactory.CreateConnection();
+            var isConnected = connection.IsOpen;
+
+            return isConnected
+                ? Task.FromResult(HealthCheckResult.Healthy())
+                : Task.FromResult(HealthCheckResult.Unhealthy());
         }
-        
-        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
+        catch (Exception ex)
         {
-            try
-            {
-                var connection = _connectionFactory.CreateConnection();
-                var isConnected = connection.IsOpen;
-                
-                return isConnected ? Task.FromResult(HealthCheckResult.Healthy()) : Task.FromResult(HealthCheckResult.Unhealthy());
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(new HealthCheckResult(HealthStatus.Unhealthy, exception: ex));
-            }
+            return Task.FromResult(new HealthCheckResult(HealthStatus.Unhealthy, exception: ex));
         }
     }
 }

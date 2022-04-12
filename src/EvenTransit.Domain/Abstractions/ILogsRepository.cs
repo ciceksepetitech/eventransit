@@ -4,15 +4,14 @@ using System.Threading.Tasks;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 
-namespace EvenTransit.Domain.Abstractions
+namespace EvenTransit.Domain.Abstractions;
+
+public interface ILogsRepository
 {
-    public interface ILogsRepository
-    {
-        Task InsertLogAsync(Logs model);
-        Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page);
-        Task<Logs> GetByIdAsync(Guid id);
-        Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type);
-        long GetLogsCount(DateTime startDate, DateTime endDate, LogType type);
-        (long, long) GetLogsCountByEvent(string eventName);
-    }
+    Task InsertLogAsync(Logs model);
+    Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page);
+    Task<Logs> GetByIdAsync(Guid id);
+    Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type);
+    long GetLogsCount(DateTime startDate, DateTime endDate, LogType type);
+    (long, long) GetLogsCountByEvent(string eventName);
 }

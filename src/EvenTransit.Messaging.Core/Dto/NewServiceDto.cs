@@ -1,8 +1,7 @@
-namespace EvenTransit.Messaging.Core.Dto
+namespace EvenTransit.Messaging.Core.Dto;
+
+public class NewServiceDto
 {
-    public class NewServiceDto
-    {
-        public string EventName { get; set; }
-        public string ServiceName { get; set; }
-    }
+    public string EventName { get; set; }
+    public string ServiceName { get; set; }
 }

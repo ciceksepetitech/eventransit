@@ -1,9 +1,8 @@
-namespace EvenTransit.UI.Models.Logs
+namespace EvenTransit.UI.Models.Logs;
+
+public class HttpResponseViewModel
 {
-    public class HttpResponseViewModel
-    {
-        public bool IsSuccess { get; set; }
-        public int StatusCode { get; set; }
-        public string Response { get; set; }
-    }
+    public bool IsSuccess { get; set; }
+    public int StatusCode { get; set; }
+    public string Response { get; set; }
 }

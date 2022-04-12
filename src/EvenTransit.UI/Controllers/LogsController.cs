@@ -11,91 +11,79 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace EvenTransit.UI.Controllers
+namespace EvenTransit.UI.Controllers;
+
+[ValidateModel]
+[ApiExplorerSettings(IgnoreApi = true)]
+public class LogsController : Controller
 {
-    [ValidateModel]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public class LogsController : Controller
+    private readonly ILogService _logService;
+    private readonly IMapper _mapper;
+    private readonly IEventService _eventService;
+
+    public LogsController(ILogService logService, IMapper mapper, IEventService eventService)
     {
-        private readonly ILogService _logService;
-        private readonly IMapper _mapper;
-        private readonly IEventService _eventService;
+        _logService = logService;
+        _mapper = mapper;
+        _eventService = eventService;
+    }
 
-        public LogsController(ILogService logService, IMapper mapper, IEventService eventService)
+    public async Task<IActionResult> Index()
+    {
+        var events = await _eventService.GetAllAsync();
+        var responseModel = new LogsViewModel { Events = _mapper.Map<List<SelectListItem>>(events) };
+
+        return View(responseModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Search(LogFilterModel model)
+    {
+        if (model.Page <= 0) model.Page = 1;
+
+        var request = new LogSearchRequestDto
         {
-            _logService = logService;
-            _mapper = mapper;
-            _eventService = eventService;
-        }
+            EventName = model.EventName,
+            ServiceName = model.ServiceName,
+            LogType = model.LogType,
+            Page = model.Page,
+            LogDateFrom = model.LogDateFrom.ConvertToDateTime(),
+            LogDateTo = model.LogDateTo.ConvertToDateTime()
+        };
 
-        public async Task<IActionResult> Index()
-        {
-            var events = await _eventService.GetAllAsync();
-            var responseModel = new LogsViewModel
-            {
-                Events = _mapper.Map<List<SelectListItem>>(events)
-            };
+        var result = await _logService.SearchAsync(request);
+        var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
 
-            return View(responseModel);
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> Search(LogFilterModel model)
-        {
-            if (model.Page <= 0) model.Page = 1;
+        var responseModel = new LogList { Items = response, TotalPages = result.TotalPages };
 
-            var request = new LogSearchRequestDto
-            {
-                EventName = model.EventName,
-                ServiceName = model.ServiceName,
-                LogType = model.LogType,
-                Page = model.Page,
-                LogDateFrom = model.LogDateFrom.ConvertToDateTime(),
-                LogDateTo = model.LogDateTo.ConvertToDateTime()
-            };
-            
-            var result = await _logService.SearchAsync(request);
-            var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
+        return StatusCode(StatusCodes.Status200OK, new { IsSuccess = true, Data = responseModel });
+    }
 
-            var responseModel = new LogList
-            {
-                Items = response,
-                TotalPages = result.TotalPages
-            };
+    [HttpGet]
+    [Route("Logs/SearchByCorrelationId/{correlationId}")]
+    public async Task<IActionResult> SearchByCorrelationId(string correlationId)
+    {
+        var result = await _logService.SearchAsync(correlationId);
+        var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
+        var responseModel = new LogList { Items = response, TotalPages = result.TotalPages };
 
-            return StatusCode(StatusCodes.Status200OK, new {IsSuccess = true, Data = responseModel});
-        }
+        return StatusCode(StatusCodes.Status200OK, new { IsSuccess = true, Data = responseModel });
+    }
 
-        [HttpGet]
-        [Route("Logs/SearchByCorrelationId/{correlationId}")]
-        public async Task<IActionResult> SearchByCorrelationId(string correlationId)
-        {
-            var result = await _logService.SearchAsync(correlationId);
-            var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
-            var responseModel = new LogList
-            {
-                Items = response,
-                TotalPages = result.TotalPages
-            };
+    [HttpGet]
+    [Route("Logs/GetServices/{eventName}")]
+    public async Task<IActionResult> GetServices(string eventName)
+    {
+        var services = await _eventService.GetServicesAsync(eventName);
+        return StatusCode(StatusCodes.Status200OK, services);
+    }
 
-            return StatusCode(StatusCodes.Status200OK, new { IsSuccess = true, Data = responseModel });
-        }
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var data = await _logService.GetByIdAsync(id);
+        var result = _mapper.Map<LogItemViewModel>(data);
 
-        [HttpGet]
-        [Route("Logs/GetServices/{eventName}")]
-        public async Task<IActionResult> GetServices(string eventName)
-        {
-            var services = await _eventService.GetServicesAsync(eventName);
-            return StatusCode(StatusCodes.Status200OK, services);
-        }
-
-        public async Task<IActionResult> GetById(Guid id)
-        {
-            var data = await _logService.GetByIdAsync(id);
-            var result = _mapper.Map<LogItemViewModel>(data);
-
-            var statusCode = data == null ? StatusCodes.Status404NotFound : StatusCodes.Status200OK;
-            return StatusCode(statusCode, result);
-        }
+        var statusCode = data == null ? StatusCodes.Status404NotFound : StatusCodes.Status200OK;
+        return StatusCode(statusCode, result);
     }
 }

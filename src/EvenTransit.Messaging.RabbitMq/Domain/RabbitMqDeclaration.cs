@@ -6,60 +6,59 @@ using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using RabbitMQ.Client;
 
-namespace EvenTransit.Messaging.RabbitMq.Domain
+namespace EvenTransit.Messaging.RabbitMq.Domain;
+
+public class RabbitMqDeclaration : IRabbitMqDeclaration
 {
-    public class RabbitMqDeclaration : IRabbitMqDeclaration
+    private readonly IEventsRepository _eventsRepository;
+    private readonly RetryQueueHelper _retryQueueHelper;
+
+    public RabbitMqDeclaration(IEventsRepository eventsRepository, RetryQueueHelper retryQueueHelper)
     {
-        private readonly IEventsRepository _eventsRepository;
-        private readonly RetryQueueHelper _retryQueueHelper;
+        _eventsRepository = eventsRepository;
+        _retryQueueHelper = retryQueueHelper;
+    }
 
-        public RabbitMqDeclaration(IEventsRepository eventsRepository, RetryQueueHelper retryQueueHelper)
+    public async Task DeclareQueuesAsync(IModel channel)
+    {
+        var events = await _eventsRepository.GetEventsAsync();
+        foreach (var @event in events)
         {
-            _eventsRepository = eventsRepository;
-            _retryQueueHelper = retryQueueHelper;
-        }
+            var retryExchangeName = @event.Name.GetRetryExchangeName();
+            channel.ExchangeDeclare(@event.Name, ExchangeType.Direct, true, false, null);
+            channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
-        public async Task DeclareQueuesAsync(IModel channel)
-        {
-            var events = await _eventsRepository.GetEventsAsync();
-            foreach (var @event in events)
+            foreach (var service in @event.Services)
             {
-                var retryExchangeName = @event.Name.GetRetryExchangeName();
-                channel.ExchangeDeclare(@event.Name, ExchangeType.Direct, true, false, null);
-                channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
+                var queueName = service.Name.GetQueueName(@event.Name);
+                channel.QueueDeclare(queueName,
+                    true,
+                    false,
+                    false,
+                    null);
+                channel.QueueBind(queueName, @event.Name, @event.Name);
 
-                foreach (var service in @event.Services)
+                foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
                 {
-                    var queueName = service.Name.GetQueueName(@event.Name);
-                    channel.QueueDeclare(queue: queueName,
+                    var retryQueueName = service.Name.GetRetryQueueName(@event.Name, retryQueue.RetryTime);
+                    var retryQueueArguments = new Dictionary<string, object>
+                    {
+                        { "x-dead-letter-exchange", @event.Name },
+                        { "x-dead-letter-routing-key", queueName },
+                        { "x-message-ttl", retryQueue.TTL }
+                    };
+                    channel.QueueDeclare(retryQueueName,
                         true,
                         false,
                         false,
-                        null);
-                    channel.QueueBind(queueName, @event.Name, @event.Name);
-
-                    foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
-                    {
-                        var retryQueueName = service.Name.GetRetryQueueName(@event.Name, retryQueue.RetryTime);
-                        var retryQueueArguments = new Dictionary<string, object>
-                        {
-                            {"x-dead-letter-exchange", @event.Name},
-                            {"x-dead-letter-routing-key", queueName},
-                            {"x-message-ttl", retryQueue.TTL}
-                        };
-                        channel.QueueDeclare(queue: retryQueueName,
-                            true,
-                            false,
-                            false,
-                            retryQueueArguments);
-                        channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
-                    }
-                    
-                    channel.QueueBind(queueName, @event.Name, queueName);
+                        retryQueueArguments);
+                    channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
                 }
-            }
 
-            channel.ExchangeDeclare(MessagingConstants.NewServiceExchange, ExchangeType.Fanout, false, false, null);
+                channel.QueueBind(queueName, @event.Name, queueName);
+            }
         }
+
+        channel.ExchangeDeclare(MessagingConstants.NewServiceExchange, ExchangeType.Fanout, false, false, null);
     }
 }

@@ -1,21 +1,20 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace EvenTransit.UI.Models.Logs
+namespace EvenTransit.UI.Models.Logs;
+
+public class LogsViewModel
 {
-    public class LogsViewModel
+    public List<SelectListItem> Events { get; set; }
+}
+
+public class LogList
+{
+    public LogList()
     {
-        public List<SelectListItem> Events { get; set; }
+        Items = new List<LogSearchResultViewModel>();
     }
 
-    public class LogList
-    {
-        public LogList()
-        {
-            Items = new List<LogSearchResultViewModel>();
-        }
-        
-        public List<LogSearchResultViewModel> Items { get; set; }
-        public int TotalPages { get; set; }
-    }
+    public List<LogSearchResultViewModel> Items { get; set; }
+    public int TotalPages { get; set; }
 }

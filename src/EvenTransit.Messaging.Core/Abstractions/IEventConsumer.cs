@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
 
-namespace EvenTransit.Messaging.Core.Abstractions
+namespace EvenTransit.Messaging.Core.Abstractions;
+
+public interface IEventConsumer
 {
-    public interface IEventConsumer
-    {
-        Task ConsumeAsync();
+    Task ConsumeAsync();
 
-        void DeleteQueue(string eventName, string serviceName);
+    void DeleteQueue(string eventName, string serviceName);
 
-        void DeleteExchange(string eventName);
-    }
+    void DeleteExchange(string eventName);
 }

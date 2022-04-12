@@ -1,10 +1,9 @@
 using System;
 
-namespace EvenTransit.Service.Locker
+namespace EvenTransit.Service.Locker;
+
+public interface IDistributedLocker
 {
-    public interface IDistributedLocker
-    {
-        bool Acquire(string serviceName);
-        void Release();
-    }
+    bool Acquire(string serviceName);
+    void Release();
 }

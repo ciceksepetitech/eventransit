@@ -1,8 +1,7 @@
-namespace EvenTransit.Domain.Constants
+namespace EvenTransit.Domain.Constants;
+
+public static class HeaderConstants
 {
-    public static class HeaderConstants
-    {
-        public const string RequestIdHeader = "x-request-id";
-        public const string OutboxEventIdHeader = "x-outboxevent-id";
-    }
+    public const string RequestIdHeader = "x-request-id";
+    public const string OutboxEventIdHeader = "x-outboxevent-id";
 }

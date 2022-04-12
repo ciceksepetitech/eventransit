@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace EvenTransit.Api.Tests
+namespace EvenTransit.Api.Tests;
+
+public class Class1
 {
-    public class Class1
-    {
-    }
 }

@@ -1,9 +1,8 @@
-namespace EvenTransit.Domain.Enums
+namespace EvenTransit.Domain.Enums;
+
+public enum LogType
 {
-    public enum LogType
-    {
-        None,
-        Success,
-        Fail
-    }
+    None,
+    Success,
+    Fail
 }

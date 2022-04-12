@@ -2,16 +2,15 @@ using AutoMapper;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Dto;
 
-namespace EvenTransit.Messaging.RabbitMq.Mappers
+namespace EvenTransit.Messaging.RabbitMq.Mappers;
+
+public class EventLogMapper : Profile
 {
-    public class EventLogMapper : Profile
+    public EventLogMapper()
     {
-        public EventLogMapper()
-        {
-            CreateMap<EventLogDto, Logs>();
-            CreateMap<EventDetailDto, LogDetail>();
-            CreateMap<HttpRequestDto, LogDetailRequest>();
-            CreateMap<EventLogHttpResponseDto, LogDetailResponse>();
-        }
+        CreateMap<EventLogDto, Logs>();
+        CreateMap<EventDetailDto, LogDetail>();
+        CreateMap<HttpRequestDto, LogDetailRequest>();
+        CreateMap<EventLogHttpResponseDto, LogDetailResponse>();
     }
 }
