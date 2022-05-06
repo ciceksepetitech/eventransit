@@ -46,10 +46,14 @@ public class HttpRequestSender : IHttpRequestSender
         requestMessage.Content = content;
 
         var response = await httpClient.SendAsync(requestMessage);
+        
+        var isSuccess = response.StatusCode < HttpStatusCode.InternalServerError && 
+                        response.StatusCode != HttpStatusCode.TooManyRequests &&
+                        response.StatusCode != HttpStatusCode.RequestTimeout;
 
         return new HttpResponseDto
         {
-            IsSuccess = response.StatusCode < HttpStatusCode.InternalServerError,
+            IsSuccess = isSuccess,
             StatusCode = (int)response.StatusCode,
             Response = await response.Content.ReadAsStringAsync()
         };

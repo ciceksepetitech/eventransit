@@ -12,9 +12,11 @@ namespace EvenTransit.Data.MongoDb;
 public class MongoDbHealthCheck : IHealthCheck
 {
     private readonly MongoDbSettings _settings;
+    private readonly MongoDbConnectionStringBuilder _mongoDbConnectionStringBuilder;
 
-    public MongoDbHealthCheck(IOptions<MongoDbSettings> settings)
+    public MongoDbHealthCheck(IOptions<MongoDbSettings> settings, MongoDbConnectionStringBuilder mongoDbConnectionStringBuilder)
     {
+        _mongoDbConnectionStringBuilder = mongoDbConnectionStringBuilder;
         _settings = settings.Value;
     }
 
@@ -23,7 +25,7 @@ public class MongoDbHealthCheck : IHealthCheck
     {
         try
         {
-            var client = new MongoClient(_settings.Host);
+            var client = new MongoClient(_mongoDbConnectionStringBuilder.ConnectionString);
             var database = client.GetDatabase(_settings.Database);
             var isConnected = database
                 .RunCommandAsync((Command<BsonDocument>)"{ping:1}", cancellationToken: cancellationToken).Wait(1000);

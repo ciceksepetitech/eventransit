@@ -22,6 +22,9 @@ public class RabbitMqHealthCheck : IHealthCheck
         {
             var connection = _connectionFactory.CreateConnection();
             var isConnected = connection.IsOpen;
+            
+            if(connection.IsOpen)
+                connection.Close();
 
             return isConnected
                 ? Task.FromResult(HealthCheckResult.Healthy())
