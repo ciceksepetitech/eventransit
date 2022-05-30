@@ -1,4 +1,3 @@
-using System;
 using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Messaging.Core.Dto;
@@ -17,5 +16,4 @@ public class EventDetailDto
     public EventLogHttpResponseDto Response { get; set; }
     public string Message { get; set; }
     public string CorrelationId { get; set; }
-    public string OutboxEventId { get; set; }
 }

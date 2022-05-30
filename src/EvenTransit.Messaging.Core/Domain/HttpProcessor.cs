@@ -34,13 +34,13 @@ public class HttpProcessor : IHttpProcessor
 
         var result = await _httpRequestSender.SendAsync(request);
 
-        await LogResult(eventName, service, result, request, message.CorrelationId, message.OutboxEventId);
+        await LogResult(eventName, service, result, request, message.CorrelationId);
 
         return result.IsSuccess;
     }
 
     private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result,
-        HttpRequestDto request, string correlationId, string outboxEventId)
+        HttpRequestDto request, string correlationId)
     {
         var body = JsonSerializer.Serialize(request.Body);
         var logData = new Logs
@@ -58,8 +58,7 @@ public class HttpProcessor : IHttpProcessor
                 {
                     Response = result.Response, IsSuccess = result.IsSuccess, StatusCode = result.StatusCode
                 },
-                CorrelationId = correlationId,
-                OutboxEventId = outboxEventId
+                CorrelationId = correlationId
             }
         };
 

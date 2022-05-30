@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
@@ -40,20 +38,15 @@ public class EventController : ControllerBase
         if (@event == null) return NotFound();
 
         var requestId = HttpContext.Request.Headers[HeaderConstants.RequestIdHeader];
-        var outboxEventIdHeader = HttpContext.Request.Headers[HeaderConstants.OutboxEventIdHeader];
         var correlationId = !StringValues.IsNullOrEmpty(requestId) ? requestId.ToString() : Guid.NewGuid().ToString();
         string outboxEventId = null;
-
-        if (!StringValues.IsNullOrEmpty(outboxEventIdHeader))
-            outboxEventId = outboxEventIdHeader.ToString();
 
         _eventService.Publish(new EventRequestDto
         {
             EventName = request.EventName,
             Payload = request.Payload,
             Fields = request.Fields,
-            CorrelationId = correlationId,
-            OutboxEventId = outboxEventId
+            CorrelationId = correlationId
         });
 
         return Ok();

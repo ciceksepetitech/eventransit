@@ -112,10 +112,6 @@ public class EventConsumer : IEventConsumer
         if (!serviceData.Headers.ContainsKey(HeaderConstants.RequestIdHeader))
             serviceData.Headers.Add(HeaderConstants.RequestIdHeader, body.CorrelationId);
 
-        if (!serviceData.Headers.ContainsKey(HeaderConstants.OutboxEventIdHeader) &&
-            !string.IsNullOrEmpty(body.OutboxEventId))
-            serviceData.Headers.Add(HeaderConstants.OutboxEventIdHeader, body.OutboxEventId);
-
         foreach (var header in serviceData.Headers)
             serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body.Fields);
 
@@ -156,8 +152,7 @@ public class EventConsumer : IEventConsumer
                         IsSuccess = false, StatusCode = StatusCodes.Status500InternalServerError
                     },
                     Message = e.Message,
-                    CorrelationId = body.CorrelationId,
-                    OutboxEventId = body.OutboxEventId
+                    CorrelationId = body.CorrelationId
                 }
             };
 
@@ -208,7 +203,6 @@ public class EventConsumer : IEventConsumer
         // TODO Map Service Entity to ServiceDto
         eventConsumer.Received += (_, ea) =>
         {
-            _logger.LogInformation($"EventName: {eventName} ServiceName: {queueName}");
             OnReceiveMessageAsync(eventName, service, ea);
         };
 

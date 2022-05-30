@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvenTransit.Domain.Entities;
 
 public class LogDetail
@@ -8,7 +6,6 @@ public class LogDetail
     public LogDetailRequest Request { get; set; }
     public LogDetailResponse Response { get; set; }
     public string CorrelationId { get; set; }
-    public string OutboxEventId { get; set; }
 }
 
 public class LogDetailRequest
