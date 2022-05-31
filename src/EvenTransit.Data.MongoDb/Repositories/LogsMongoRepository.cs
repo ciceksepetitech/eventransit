@@ -1,11 +1,10 @@
-using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace EvenTransit.Data.MongoDb.Repositories;
@@ -15,6 +14,11 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings,
         MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
     {
+        BsonClassMap.RegisterClassMap<LogDetail>(cm => 
+        {
+            cm.AutoMap();
+            cm.SetIgnoreExtraElements(true);
+        });
     }
 
     public async Task InsertLogAsync(Logs model)
