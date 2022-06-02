@@ -15,7 +15,7 @@ TAG=$BRANCHNAME-$BUILDNUMBER
 #AWS image push
 eval $(aws ecr get-login --region eu-central-1)
 
-docker tag -f $NAME $REMOTE/$NAME:$TAG
+docker tag $NAME $REMOTE/$NAME:$TAG
 
 docker push $REMOTE/$NAME:$TAG
 
@@ -32,7 +32,7 @@ gcloud auth configure-docker
 if [[ $(docker --version | awk '{print $3}')  == 17* ]]; then
 	docker tag $NAME $GCR_REGISTRY/$NAME:$TAG
 else
-	docker tag -f $NAME $GCR_REGISTRY/$NAME:$TAG
+	docker tag $NAME $GCR_REGISTRY/$NAME:$TAG
 fi
 
 docker push $GCR_REGISTRY/$NAME:$TAG
