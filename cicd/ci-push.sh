@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -e
 IFS=$'\n\t'
 
 AWS_REGISTRY=$AWS_REGISTRY_ID
