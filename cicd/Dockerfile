@@ -7,8 +7,8 @@ COPY /test /test
 COPY /src /src
 COPY /.editorconfig /.editorconfig
 
-RUN ["sh", "./.build/src/build.sh", "Release"]
-RUN ["sh", "./.build/src/ci-test.sh", "Release"]
+RUN ["sh", "./cicd/build.sh", "Release"]
+RUN ["sh", "./cicd/ci-test.sh", "Release"]
 
 WORKDIR /src/EvenTransit.UI
 
@@ -27,7 +27,7 @@ WORKDIR /app
 
 COPY --from=build-env /artifacts .
 
-ADD /.build/src/ci-docker-entrypoint.sh ./ci-docker-entrypoint.sh
+ADD /cicd/ci-docker-entrypoint.sh ./ci-docker-entrypoint.sh
 RUN chmod +x ./ci-docker-entrypoint.sh
 
 RUN apt-get update && \
