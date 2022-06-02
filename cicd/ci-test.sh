@@ -4,4 +4,7 @@ set -e
 # variables
 configuration=${1:-Debug}
 
-/bin/bash ./.build/src/test.sh $configuration
+# test
+for path in test/*/; do
+    (cd $path; dotnet test -c $configuration --no-restore --no-build)
+done
