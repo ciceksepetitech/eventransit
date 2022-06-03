@@ -12,6 +12,7 @@ TAG=$BRANCH-$BUILDNUMBER
 
 if [ "$BRANCH" = "main"  ]; then
 	
+    TAG="master-$BUILDNUMBER"
     echo "dockerhub login"
     docker login --username $DOCKER_LOGIN_USER --password $DOCKER_LOGIN_PASS
     echo "docker tag for dockerhub image"
