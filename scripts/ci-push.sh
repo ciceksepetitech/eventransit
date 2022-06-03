@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-IFS=$'\n\t'
 
 GCR_REGISTRY=$GCR_REGISTRY_ID
 NAME=ciceksepeti/eventransit
