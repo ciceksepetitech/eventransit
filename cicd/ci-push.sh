@@ -2,7 +2,6 @@
 set -e
 IFS=$'\n\t'
 
-AWS_REGISTRY=$AWS_REGISTRY_ID
 GCR_REGISTRY=$GCR_REGISTRY_ID
 NAME=ciceksepeti/eventransit
 BRANCHNAME=$(git branch | grep \* | cut -d ' ' -f2 | tr '/' '-' | tr '[:upper:]' '[:lower:]' )
@@ -11,17 +10,6 @@ BUILDNUMBER=$BUILD_NUMBER
 
 
 TAG=$BRANCHNAME-$BUILDNUMBER
-
-#AWS image push
-echo "ecr login"
-eval $(aws ecr get-login --region eu-central-1)
-echo "docker tag for ecr image"
-docker tag $NAME $REMOTE/$NAME:$TAG
-echo "docker push to ecr"
-docker push $REMOTE/$NAME:$TAG
-echo "ecr logout"
-docker logout https://$REMOTE
-
 
 #GCP image push
 echo "gcr login"

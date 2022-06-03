@@ -19,9 +19,6 @@ jobs:
 
       - name: Push image
         env:
-          AWS_REGISTRY_ID: ${{ secrets.AWS_REGISTRY_ID }}
           GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
         run: sh ./cicd/ci-push.sh
