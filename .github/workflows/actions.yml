@@ -23,6 +23,6 @@ jobs:
 
       - name: Push image
         env:
-          GCR_REGISTRY_ID: "${{ secrets.GCR_REGISTRY_ID }}"
-          GCLOUD_SERVICE_KEY: "${{ secrets.GCLOUD_SERVICE_KEY }}"
+          GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
+          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
         run: sh ./scripts/ci-push.sh
