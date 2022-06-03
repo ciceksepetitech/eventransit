@@ -13,9 +13,9 @@ TAG=$BRANCHNAME-$BUILDNUMBER
 #GCP image push
 echo "gcr login"
 
-CRED_PATH="${PWD}/credentials.json"
-printf "%s" $GCLOUD_SERVICE_KEY > $CRED_PATH
-gcloud auth activate-service-account --key-file=$CRED_PATH
+echo $GCLOUD_SERVICE_KEY | base64 -di > /tmp/keyfile.json
+
+gcloud auth activate-service-account --key-file=/tmp/keyfile.json
 
 gcloud auth configure-docker
 echo "docker tag for gcr image"
