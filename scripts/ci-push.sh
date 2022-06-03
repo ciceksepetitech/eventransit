@@ -5,10 +5,9 @@ set -e
 AWS_REGISTRY=$ECR_REGISTRY_ID
 GCR_REGISTRY=$GCR_REGISTRY_ID
 NAME=ciceksepeti/eventransit
-BRANCHNAME=$(git branch | grep \* | cut -d ' ' -f2 | tr '/' '-' | tr '[:upper:]' '[:lower:]' )
 BRANCH=$GITHUB_REF_NAME
 BUILDNUMBER=$GITHUB_RUN_NUMBER
-TAG=$BRANCHNAME-$BUILDNUMBER
+TAG=$BRANCH-$BUILDNUMBER
 
 
 #AWS image push

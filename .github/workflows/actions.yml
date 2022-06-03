@@ -19,8 +19,8 @@ jobs:
       - name: Build image
         run: sh ./scripts/ci-build.sh
 
-      - name: Compose up
-        run: docker-compose up -d ui
+      # - name: Compose up
+      #   run: docker-compose up -d ui
 
       # - name: Integration tests
       #   run: |
