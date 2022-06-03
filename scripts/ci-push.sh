@@ -10,6 +10,20 @@ BUILDNUMBER=$GITHUB_RUN_NUMBER
 TAG=$BRANCH-$BUILDNUMBER
 
 
+if [[ $BRANCH = "main"  ]]; then
+	
+    echo "dockerhub login"
+    docker login --username $DOCKER_LOGIN_USER --password $DOCKER_LOGIN_PASS
+    echo "docker tag for dockerhub image"
+    docker tag $NAME $NAME:$TAG
+    echo "docker push to dockerhub"
+    docker push $NAME:$TAG
+    echo "dockerhub logout"
+    docker logout
+
+fi
+
+
 #AWS image push
 echo "ecr login"
 eval $(aws ecr get-login --region eu-central-1)

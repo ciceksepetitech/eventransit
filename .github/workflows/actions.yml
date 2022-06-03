@@ -34,4 +34,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           ECR_REGISTRY_ID: ${{ secrets.ECR_REGISTRY_ID }}
+          DOCKER_LOGIN_USER: ${{ secrets.DOCKER_LOGIN_USER }}
+          DOCKER_LOGIN_PASS: ${{ secrets.DOCKER_LOGIN_PASS }}
         run: sh ./scripts/ci-push.sh
