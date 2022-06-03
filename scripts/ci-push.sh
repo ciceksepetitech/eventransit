@@ -10,7 +10,7 @@ BUILDNUMBER=$GITHUB_RUN_NUMBER
 TAG=$BRANCH-$BUILDNUMBER
 
 
-if [[ $BRANCH = "develop"  ]]; then
+if [[ "$BRANCH" == "develop"  ]]; then
 	
     echo "dockerhub login"
     docker login --username $DOCKER_LOGIN_USER --password $DOCKER_LOGIN_PASS
