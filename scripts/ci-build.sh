@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DOCKERFILE="./cicd/Dockerfile"
+DOCKERFILE="./Dockerfile"
 
 echo "Build starting"
 
