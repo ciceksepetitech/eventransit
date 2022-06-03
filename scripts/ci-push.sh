@@ -14,7 +14,7 @@ TAG=$BRANCHNAME-$BUILDNUMBER
 
 #AWS image push
 echo "ecr login"
-aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $AWS_REGISTRY
+eval $(aws ecr get-login --region eu-central-1)
 echo "docker tag for ecr image"
 docker tag $NAME $AWS_REGISTRY/$NAME:$TAG
 echo "docker push to ecr"
