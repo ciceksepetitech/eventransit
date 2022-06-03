@@ -21,10 +21,10 @@ jobs:
       - name: Compose up
         run: docker-compose up -d ui
 
-      - name: Integration tests
-        run: |
-          docker run --network container:EventTransitUI \
-              postman/newman_ubuntu1404 run https://www.getpostman.com/collections/a45fa2176aa788827619
+      # - name: Integration tests
+      #   run: |
+      #     docker run --network container:EventTransitUI \
+      #         postman/newman_ubuntu1404 run https://www.getpostman.com/collections/a45fa2176aa788827619
 
       - name: Push image
         env:
