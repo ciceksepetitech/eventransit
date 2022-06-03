@@ -15,9 +15,9 @@ if [ "$BRANCH" = "develop"  ]; then
     echo "dockerhub login"
     docker login --username $DOCKER_LOGIN_USER --password $DOCKER_LOGIN_PASS
     echo "docker tag for dockerhub image"
-    docker tag $NAME $DOCKER_LOGIN_USER/eventransit:$TAG
+    docker tag $NAME techciceksepeti/eventransit:$TAG
     echo "docker push to dockerhub"
-    docker push $DOCKER_LOGIN_USER/eventransit:$TAG
+    docker push techciceksepeti/eventransit:$TAG
     echo "dockerhub logout"
     docker logout
 
