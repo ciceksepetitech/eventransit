@@ -23,7 +23,7 @@ WORKDIR /app
 
 COPY --from=build-env /artifacts .
 
-ADD /cicd/ci-docker-entrypoint.sh ./ci-docker-entrypoint.sh
+ADD /scripts/ci-docker-entrypoint.sh ./ci-docker-entrypoint.sh
 RUN chmod +x ./ci-docker-entrypoint.sh
 
 RUN apt-get update && \
