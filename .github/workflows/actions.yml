@@ -15,14 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # - name: Build image
-      #   run: sh ./scripts/ci-build.sh
+      - name: Build image
+        run: sh ./scripts/ci-build.sh
 
-      # - name: Compose up
-      #   run: docker-compose up -d ui
+      - name: Compose up
+        run: docker-compose up -d ui
+
+      - name: Integration tests
+        run: |
+          docker run --network container:EventTransitUI \
+              postman/newman_ubuntu1404 run https://www.getpostman.com/collections/a45fa2176aa788827619
 
       - name: Push image
         env:
           GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ECR_REGISTRY_ID: ${{ secrets.ECR_REGISTRY_ID }}
         run: sh ./scripts/ci-push.sh
