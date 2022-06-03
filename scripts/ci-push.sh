@@ -14,7 +14,7 @@ TAG=$BRANCHNAME-$BUILDNUMBER
 echo "gcr login"
 
 CRED_PATH="${PWD}/credentials.json"
-echo $GCLOUD_SERVICE_KEY > $CRED_PATH
+printf "%s" $GCLOUD_SERVICE_KEY > $CRED_PATH
 gcloud auth activate-service-account --key-file=$CRED_PATH
 
 gcloud auth configure-docker
