@@ -15,11 +15,9 @@ TAG=$BRANCHNAME-$BUILDNUMBER
 echo "gcr login"
 echo $GCLOUD_SERVICE_KEY
 
+echo $GCLOUD_SERVICE_KEY  > /tmp/keyfile.json
 
-echo $GCLOUD_SERVICE_KEY | base64 -di
-
-
-echo $GCLOUD_SERVICE_KEY | base64 -di > /tmp/keyfile.json
+cat /tmp/keyfile.json
 
 gcloud auth activate-service-account --key-file=/tmp/keyfile.json
 

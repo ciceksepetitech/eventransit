@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - 'feature/**'
 
   workflow_dispatch:
 
@@ -13,12 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build image
-        run: sh ./cicd/ci-build.sh
-
-
-      - name: Push image
+      - name: echo
         env:
           GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
-        run: sh ./cicd/ci-push.sh
+        run: sh ./scripts/ci-push.sh
+
+      # - name: Build image
+      #   run: sh ./scripts/ci-build.sh
+
+      # - name: Compose up
+      #   run: docker-compose up -d ui
+
+      # - name: Push image
+      #   env:
+      #     GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
+      #     GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+      #   run: sh ./scripts/ci-push.sh
