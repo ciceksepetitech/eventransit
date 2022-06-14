@@ -1,20 +1,41 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS builder
-WORKDIR /source
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 
-COPY . .
+COPY /scripts /scripts
+COPY /Directory.Build.targets .
+COPY /EvenTransit.sln .
+COPY /test /test
+COPY /src /src
+COPY /.editorconfig /.editorconfig
 
-# Change the Directory
-WORKDIR /source/
+RUN dotnet build -c Release
+RUN dotnet test -c Release --no-restore --no-build
 
-# aspnet-core
-RUN dotnet restore src/EvenTransit.UI/EvenTransit.UI.csproj
-RUN dotnet publish src/EvenTransit.UI/EvenTransit.UI.csproj --output /eventransitui/ --configuration Release
+WORKDIR /src/EvenTransit.UI
 
-## Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+RUN ["dotnet", "publish", "--configuration", "Release", "--no-build", "--no-restore", "-v", "m", "-o", "../../artifacts"]
 
-# Change the Directory
-WORKDIR /eventransitui
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
-COPY --from=builder /eventransitui .
-ENTRYPOINT ["dotnet", "EvenTransit.UI.dll"]
+RUN sed -i 's/MinProtocol = TLSv1.2/MinProtocol = TLSv1/' /etc/ssl/openssl.cnf \
+    && sed -i 's/CipherString = DEFAULT@SECLEVEL=2/CipherString = DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf
+
+WORKDIR /app
+
+COPY --from=build-env /artifacts .
+
+ADD /scripts/ci-docker-entrypoint.sh ./ci-docker-entrypoint.sh
+RUN chmod +x ./ci-docker-entrypoint.sh
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV ENVTPL_VERSION=0.2.3
+RUN \
+   curl -Ls https://github.com/arschles/envtpl/releases/download/${ENVTPL_VERSION}/envtpl_linux_amd64 > /usr/local/bin/envtpl &&\
+   chmod +x /usr/local/bin/envtpl;
+
+ENV ASPNETCORE_URLS=http://*:5000
+EXPOSE 5000
+
+ENTRYPOINT ["bash", "ci-docker-entrypoint.sh"]

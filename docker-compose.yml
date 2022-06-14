@@ -1,9 +1,7 @@
 version: "3"
 services:
   ui:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ciceksepeti/eventransit
     container_name: EventTransitUI
     ports:
       - "5100:80"
