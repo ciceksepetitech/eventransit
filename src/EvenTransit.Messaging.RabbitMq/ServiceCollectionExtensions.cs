@@ -26,7 +26,9 @@ public static class ServiceCollectionExtensions
         {
             var connectionFactory = new ConnectionFactory
             {
-                Uri = new Uri(configuration["RabbitMq:Endpoint"]), AutomaticRecoveryEnabled = true
+                Uri = new Uri(configuration["RabbitMq:Endpoint"]), 
+                AutomaticRecoveryEnabled = true,
+                DispatchConsumersAsync = true
             };
 
             return connectionFactory;

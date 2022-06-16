@@ -9,4 +9,5 @@ public class ServiceDto
     public int Timeout { get; set; }
     public string Method { get; set; }
     public Dictionary<string, string> Headers { get; set; }
+    public Dictionary<string, string> CustomBodyMap { get; set; }
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvenTransit.Domain.Entities;
 
 public class Event : BaseEntity

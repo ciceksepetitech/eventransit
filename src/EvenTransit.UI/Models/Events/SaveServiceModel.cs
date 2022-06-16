@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace EvenTransit.UI.Models.Events;
 
 public class SaveServiceModel
@@ -12,4 +9,5 @@ public class SaveServiceModel
     public string Method { get; set; }
     public int Timeout { get; set; }
     public Dictionary<string, string> Headers { get; set; }
+    public Dictionary<string, string> CustomBodyMap { get; set; }
 }

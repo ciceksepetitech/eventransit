@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Constants;
@@ -31,6 +27,7 @@ public class EventConsumer : IEventConsumer
     private readonly IEventPublisher _eventPublisher;
     private readonly IModel _channel;
     private readonly RetryQueueHelper _retryQueueHelper;
+    private readonly ICustomObjectMapper _customObjectMapper;
 
     public EventConsumer(
         IEnumerable<IRabbitMqChannelFactory> channelFactories,
@@ -40,7 +37,8 @@ public class EventConsumer : IEventConsumer
         ILogger<EventConsumer> logger,
         IMapper mapper,
         IEventPublisher eventPublisher,
-        RetryQueueHelper retryQueueHelper)
+        RetryQueueHelper retryQueueHelper,
+        ICustomObjectMapper customObjectMapper)
     {
         _httpProcessor = httpProcessor;
         _eventsRepository = eventsRepository;
@@ -49,6 +47,7 @@ public class EventConsumer : IEventConsumer
         _mapper = mapper;
         _eventPublisher = eventPublisher;
         _retryQueueHelper = retryQueueHelper;
+        _customObjectMapper = customObjectMapper;
         var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Consumer);
         _channel = channelFactory.Channel;
     }
@@ -57,7 +56,7 @@ public class EventConsumer : IEventConsumer
     {
         #region New Service Registration Queue
 
-        var newServiceConsumer = new EventingBasicConsumer(_channel);
+        var newServiceConsumer = new AsyncEventingBasicConsumer(_channel);
         newServiceConsumer.Received += OnNewServiceCreated;
 
         var queueName = _channel.QueueDeclare().QueueName;
@@ -98,25 +97,29 @@ public class EventConsumer : IEventConsumer
         _channel.ExchangeDelete(eventName.GetRetryExchangeName());
     }
 
-    private async Task OnReceiveMessageAsync(string eventName, Service serviceInfo, BasicDeliverEventArgs ea)
+    private async Task OnReceiveMessageAsync(string eventName, ServiceDto serviceData, BasicDeliverEventArgs ea)
     {
         var bodyArray = ea.Body.ToArray();
         var body = JsonSerializer.Deserialize<EventPublishDto>(Encoding.UTF8.GetString(bodyArray));
         var retryCount = GetRetryCount(ea.BasicProperties);
-        var serviceData = _mapper.Map<ServiceDto>(serviceInfo);
         var serviceName = serviceData.Name;
 
-        serviceData.Url = serviceData.Url.ReplaceDynamicFieldValues(body.Fields);
+        serviceData.Url = serviceData.Url.ReplaceDynamicFieldValues(body?.Fields);
         serviceData.Headers ??= new Dictionary<string, string>();
 
         if (!serviceData.Headers.ContainsKey(HeaderConstants.RequestIdHeader))
-            serviceData.Headers.Add(HeaderConstants.RequestIdHeader, body.CorrelationId);
+            serviceData.Headers.Add(HeaderConstants.RequestIdHeader, body?.CorrelationId);
 
         foreach (var header in serviceData.Headers)
-            serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body.Fields);
+            serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body?.Fields);
 
         try
         {
+            if (serviceData.CustomBodyMap != null && serviceData.CustomBodyMap.Any() && body is {Payload: JsonElement element})
+            {
+                body.Payload = _customObjectMapper.Map(element, serviceData.CustomBodyMap);
+            }
+            
             var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, body);
 
             _channel.BasicAck(ea.DeliveryTag, false);
@@ -135,14 +138,14 @@ public class EventConsumer : IEventConsumer
             var logData = new EventLogDto
             {
                 EventName = eventName,
-                ServiceName = serviceInfo.Name,
+                ServiceName = serviceData.Name,
                 LogType = LogType.Fail,
                 Details = new EventDetailDto
                 {
                     Request = new HttpRequestDto
                     {
-                        Body = body.Payload,
-                        Fields = body.Fields,
+                        Body = body?.Payload,
+                        Fields = body?.Fields,
                         Url = serviceData.Url,
                         Timeout = serviceData.Timeout,
                         Headers = serviceData.Headers
@@ -152,7 +155,7 @@ public class EventConsumer : IEventConsumer
                         IsSuccess = false, StatusCode = StatusCodes.Status500InternalServerError
                     },
                     Message = e.Message,
-                    CorrelationId = body.CorrelationId
+                    CorrelationId = body?.CorrelationId
                 }
             };
 
@@ -160,16 +163,16 @@ public class EventConsumer : IEventConsumer
         }
     }
 
-    private void OnNewServiceCreated(object sender, BasicDeliverEventArgs ea)
+    private Task OnNewServiceCreated(object sender, BasicDeliverEventArgs ea)
     {
         var messageBody = ea.Body;
         var message = Encoding.UTF8.GetString(messageBody.ToArray());
 
-        if (string.IsNullOrEmpty(message)) return;
+        if (string.IsNullOrEmpty(message)) return Task.CompletedTask;
 
         var serviceInfo = JsonSerializer.Deserialize<NewServiceDto>(message);
 
-        if (serviceInfo == null) return;
+        if (serviceInfo == null) return Task.CompletedTask;
 
         var eventName = serviceInfo.EventName;
         var queueName = serviceInfo.ServiceName.GetQueueName(eventName);
@@ -194,16 +197,20 @@ public class EventConsumer : IEventConsumer
 
             _channel.BasicNack(ea.DeliveryTag, false, false);
         }
+
+        return Task.CompletedTask;
     }
 
     private void BindQueue(string eventName, Service service)
     {
+        var serviceData = _mapper.Map<ServiceDto>(service);
+        
         var queueName = service.Name.GetQueueName(eventName);
-        var eventConsumer = new EventingBasicConsumer(_channel);
-        // TODO Map Service Entity to ServiceDto
-        eventConsumer.Received += (_, ea) =>
+        var eventConsumer = new AsyncEventingBasicConsumer(_channel);
+        
+        eventConsumer.Received  += async (_, ea) =>
         {
-            OnReceiveMessageAsync(eventName, service, ea);
+            await OnReceiveMessageAsync(eventName, serviceData, ea);
         };
 
         _channel.QueueBind(queueName, eventName, eventName);
