@@ -26,14 +26,6 @@ COPY --from=build-env /artifacts .
 ADD /scripts/ci-docker-entrypoint.sh ./ci-docker-entrypoint.sh
 RUN chmod +x ./ci-docker-entrypoint.sh
 
-RUN apt-get update && \
-    apt-get install -y curl && \
-    rm -rf /var/lib/apt/lists/*
-
-ENV ENVTPL_VERSION=0.2.3
-RUN \
-   curl -Ls https://github.com/arschles/envtpl/releases/download/${ENVTPL_VERSION}/envtpl_linux_amd64 > /usr/local/bin/envtpl &&\
-   chmod +x /usr/local/bin/envtpl;
 
 ENV ASPNETCORE_URLS=http://*:5000
 EXPOSE 5000
