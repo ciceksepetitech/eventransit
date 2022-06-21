@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{8532
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{F3E70725-4F06-430A-A4B6-8B1FD29A408B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvenTransit.Logging.Serilog", "src\EvenTransit.Logging.Serilog\EvenTransit.Logging.Serilog.csproj", "{1C329E75-BA41-40E1-8778-DF7565A0ADEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,7 @@ Global
 		{8BC48A9E-E944-4637-A7F8-41FD713034E5} = {3CCF2FC4-C7EC-4E8E-93A6-446ACAF1DC89}
 		{F3E70725-4F06-430A-A4B6-8B1FD29A408B} = {C9DE5015-7164-484A-A8AB-40FF137FA192}
 		{E5BFCB8D-3F4A-4369-82ED-8A786E7B65C4} = {F3E70725-4F06-430A-A4B6-8B1FD29A408B}
+		{1C329E75-BA41-40E1-8778-DF7565A0ADEC} = {F3E70725-4F06-430A-A4B6-8B1FD29A408B}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E5BFCB8D-3F4A-4369-82ED-8A786E7B65C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -83,5 +86,9 @@ Global
 		{8BC48A9E-E944-4637-A7F8-41FD713034E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BC48A9E-E944-4637-A7F8-41FD713034E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BC48A9E-E944-4637-A7F8-41FD713034E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C329E75-BA41-40E1-8778-DF7565A0ADEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C329E75-BA41-40E1-8778-DF7565A0ADEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C329E75-BA41-40E1-8778-DF7565A0ADEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C329E75-BA41-40E1-8778-DF7565A0ADEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
