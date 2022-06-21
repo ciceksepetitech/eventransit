@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvenTransit.Messaging.Core.Dto;
 
 public class ServiceDto
@@ -10,4 +8,5 @@ public class ServiceDto
     public string Body { get; set; }
     public string Method { get; set; }
     public Dictionary<string, string> Headers { get; set; }
+    public Dictionary<string, string> CustomBodyMap { get; set; }
 }

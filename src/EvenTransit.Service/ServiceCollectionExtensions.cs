@@ -3,6 +3,7 @@ using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Locker;
+using EvenTransit.Service.Mappers;
 using EvenTransit.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<ILogService, LogService>();
+        services.AddTransient<ICustomObjectMapper, CustomObjectMapper>();
 
         return services;
     }

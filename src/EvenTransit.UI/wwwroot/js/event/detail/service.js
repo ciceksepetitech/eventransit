@@ -10,6 +10,7 @@ saveForm.addEventListener("submit", async e => {
 
     formData.Timeout = timeout;
     formData.Headers = {};
+    formData.CustomBodyMap = {};
 
     let headerItems = document.querySelectorAll("#headers tbody tr");
 
@@ -17,6 +18,14 @@ saveForm.addEventListener("submit", async e => {
         let row = headerItems[i];
         let keyInput = row.querySelector("input.header-key").value;
         formData.Headers[keyInput] = row.querySelector("input.header-value").value;
+    }
+
+    let customBodyMapItems = document.querySelectorAll("#body-map tbody tr");
+
+    for (let i = 0; i < customBodyMapItems.length; i++) {
+        let row = customBodyMapItems[i];
+        let keyInput = row.querySelector("input.header-key").value;
+        formData.CustomBodyMap[keyInput] = row.querySelector("input.header-value").value;
     }
 
     const response = await fetch('/Events/SaveService', {
@@ -76,11 +85,19 @@ async function editService(eventId, serviceName) {
     document.querySelector("#Method").value = result.method;
 
     const headers = result.headers;
-    clearTable();
+    clearTable("headers");
 
     for (const key in headers) {
         const value = headers[key];
-        addNewHeaderItem(key, value);
+        addNewKVItem(key, value, "headers");
+    }
+
+    const customBodyMap = result.customBodyMap;
+    clearTable("body-map");
+
+    for (const key in customBodyMap) {
+        const value = customBodyMap[key];
+        addNewKVItem(key, value, "body-map");
     }
 
     serviceModal.show();
@@ -106,11 +123,15 @@ async function deleteService(eventId, serviceName) {
 }
 
 document.querySelector("#add-header").addEventListener("click", e => {
-    addNewHeaderItem('', '');
+    addNewKVItem('', '', 'headers');
 });
 
-function addNewHeaderItem(key, value) {
-    let tbodyRef = document.getElementById('headers').getElementsByTagName('tbody')[0];
+document.querySelector("#add-body-map").addEventListener("click", e => {
+    addNewKVItem('', '', 'body-map');
+});
+
+function addNewKVItem(key, value, id) {
+    let tbodyRef = document.getElementById(id).getElementsByTagName('tbody')[0];
     let newRow = tbodyRef.insertRow();
     let actionCell = newRow.insertCell();
     let keyCell = newRow.insertCell();
@@ -120,7 +141,7 @@ function addNewHeaderItem(key, value) {
     removeActionIcon.setAttribute('class', 'fa fa-times');
 
     let removeActionButton = document.createElement("button");
-    removeActionButton.addEventListener('click', removeHeaderItem);
+    removeActionButton.addEventListener('click', removeKVItem(id));
     removeActionButton.setAttribute('type', 'button');
     removeActionButton.setAttribute('class', 'btn btn-sm btn-danger');
     removeActionButton.appendChild(removeActionIcon);
@@ -139,18 +160,21 @@ function addNewHeaderItem(key, value) {
     valueCell.appendChild(valueInput);
 }
 
-function removeHeaderItem(e) {
-    const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex - 1;
-    document.querySelector('#headers tbody').deleteRow(rowIndex);
+function removeKVItem(id) {
+    return function (e) {
+        const rowIndex = e.target.parentElement.parentElement.parentElement.rowIndex - 1;
+        document.querySelector('#' + id + ' tbody').deleteRow(rowIndex);
+    }
 }
 
-function clearTable() {
-    let tbody = document.getElementById("headers").getElementsByTagName('tbody')[0];
+function clearTable(id) {
+    let tbody = document.getElementById(id).getElementsByTagName('tbody')[0];
     tbody.innerHTML = "";
 }
 
 function clearNewProcessModal() {
     document.getElementById("HiddenServiceName").value = "";
     saveForm.reset();
-    clearTable();
+    clearTable("headers");
+    clearTable("body-map");
 }

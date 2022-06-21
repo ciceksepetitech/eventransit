@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EvenTransit.Data.MongoDb\EvenTransit.Data.MongoDb.csproj"/>
-    <ProjectReference Include="..\EvenTransit.Messaging.RabbitMq\EvenTransit.Messaging.RabbitMq.csproj"/>
+    <ProjectReference Include="..\EvenTransit.Data.MongoDb\EvenTransit.Data.MongoDb.csproj" />
+    <ProjectReference Include="..\EvenTransit.Messaging.RabbitMq\EvenTransit.Messaging.RabbitMq.csproj" />
   </ItemGroup>
 
 </Project>

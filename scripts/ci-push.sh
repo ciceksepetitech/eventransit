@@ -17,8 +17,10 @@ if [ "$BRANCH" = "main"  ]; then
     docker login --username $DOCKER_LOGIN_USER --password $DOCKER_LOGIN_PASS
     echo "docker tag for dockerhub image"
     docker tag $NAME techciceksepeti/eventransit:$TAG
+    docker tag $NAME techciceksepeti/eventransit:latest
     echo "docker push to dockerhub"
     docker push techciceksepeti/eventransit:$TAG
+    docker push techciceksepeti/eventransit:latest
     echo "dockerhub logout"
     docker logout
 
