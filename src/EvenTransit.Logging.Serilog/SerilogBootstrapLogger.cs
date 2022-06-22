@@ -26,7 +26,7 @@ public class SerilogBootstrapLogger : IBootstrapLogger
     public void Configure<TConfiguration>(Action<TConfiguration> config)
     {
         var configuration = new LoggerConfiguration()
-            .SetDefaultLogLevel("CS_LOG_LEVEL")
+            .SetDefaultLogLevel("LOG_LEVEL")
             .MinimumLevel.Override("Microsoft", "LOG_LEVEL_MICROSOFT".GetLogLevel())
             .MinimumLevel.Override("Microsoft.Hosting.Lifetime", "LOG_LEVEL_MICROSOFT_HOSTING_LIFETIME".GetLogLevel())
             .MinimumLevel.Override("System", "LOG_LEVEL_SYSTEM".GetLogLevel())
