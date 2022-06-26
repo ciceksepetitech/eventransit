@@ -1,18 +1,18 @@
 version: "3"
 services:
-#   ui:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     container_name: EventTransitUI
-#     ports:
-#       - "5100:80"
-#     depends_on:
-#       - rabbitmq
-#       - mongo
-#     environment: 
-#       - ASPNETCORE_ENVIRONMENT=production
-#     restart: always
+   ui:
+     build:
+       context: .
+       dockerfile: Dockerfile
+     container_name: EventTransitUI
+     ports:
+       - "5100:80"
+     depends_on:
+       - rabbitmq
+       - mongo
+     environment: 
+       - ASPNETCORE_ENVIRONMENT=production
+     restart: always
 
   rabbitmq:
     container_name: eventransit_rabbitmq
