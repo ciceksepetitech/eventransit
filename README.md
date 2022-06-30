@@ -47,6 +47,7 @@ To get started locally, follow these instructions:
 ## Usage
 
 Publish an event with below command
+
 ```bash 
 curl -X POST "https://localhost:5010/api/v1/event" \ 
 -H  "accept: */*" \
