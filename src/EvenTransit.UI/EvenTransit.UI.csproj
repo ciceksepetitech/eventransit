@@ -8,26 +8,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\site.js"/>
+    <_ContentIncludedByDefault Remove="wwwroot\js\site.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css"/>
-    <Folder Include="wwwroot\js"/>
-    <Folder Include="wwwroot\lib\fontawesome"/>
+    <Folder Include="wwwroot\css" />
+    <Folder Include="wwwroot\js" />
+    <Folder Include="wwwroot\lib\fontawesome" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EvenTransit.Service\EvenTransit.Service.csproj"/>
+    <ProjectReference Include="..\EvenTransit.Logging.Serilog\EvenTransit.Logging.Serilog.csproj" />
+    <ProjectReference Include="..\EvenTransit.Service\EvenTransit.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore"/>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"/>
-    <PackageReference Include="Serilog"/>
-    <PackageReference Include="Serilog.AspNetCore"/>
-    <PackageReference Include="Serilog.Sinks.Console"/>
-    <PackageReference Include="Swashbuckle.AspNetCore"/>
+    <PackageReference Include="FluentValidation.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
 </Project>
