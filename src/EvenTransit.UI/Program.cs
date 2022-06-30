@@ -13,13 +13,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEnvironmentVariables("EvenTransit_");
+
 var services = builder.Services;
 var configuration = builder.Configuration;
 var env = builder.Environment;
 
 // Add services to the container.
 services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-services.Configure<EvenTransitConfig>(configuration.GetSection("EvenTransit"));
+services.Configure<EvenTransitConfig>(configuration.GetSection("EvenTransit_"));
 services.AddScoped<ValidateModelAttribute>();
 services.AddRabbitMq(configuration);
 services.AddHttpClient();
