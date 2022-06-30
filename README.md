@@ -11,7 +11,7 @@ EvenTransit is a solution which transfers events into relevant service(s) in a d
 - Fully compatible with containerized environments such as Kubernetes.
 
 ## Dependencies
-- [.Net 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [.Net 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 - [RabbitMq](https://www.rabbitmq.com/download.html)
 - [MongoDB](https://www.mongodb.com/try/download/community)
 
