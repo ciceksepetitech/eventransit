@@ -136,6 +136,9 @@ function fillLogTableRows(result, tbodyRef, page) {
             let logFilterActionIcon = document.createElement("i");
             logFilterActionIcon.setAttribute('class', 'fa fa-filter fa-fw');
 
+            let resendRequestActionIcon = document.createElement("i");
+            resendRequestActionIcon.setAttribute('class', 'fa fa-paper-plane fa-fw');
+
             let logDetailButton = document.createElement("button");
             logDetailButton.addEventListener('click', getLogDetails);
             logDetailButton.setAttribute('type', 'button');
@@ -149,11 +152,20 @@ function fillLogTableRows(result, tbodyRef, page) {
             logFilterButton.setAttribute('type', 'button');
             logFilterButton.setAttribute('data-id', item.correlationId);
             logFilterButton.setAttribute("title", "Filter by Correlation Id");
-            logFilterButton.setAttribute('class', 'btn btn-sm btn-cs text-white');
+            logFilterButton.setAttribute('class', 'btn btn-sm btn-cs text-white me-1');
             logFilterButton.appendChild(logFilterActionIcon);
+
+            let resendRequestButton = document.createElement("button");
+            resendRequestButton.addEventListener('click', resendRequest);
+            resendRequestButton.setAttribute('type', 'button');
+            resendRequestButton.setAttribute('data-id', item.id);
+            resendRequestButton.setAttribute("title", "Resend Request");
+            resendRequestButton.setAttribute('class', 'btn btn-sm btn-success text-white');
+            resendRequestButton.appendChild(resendRequestActionIcon);
 
             actionCell.appendChild(logDetailButton);
             actionCell.appendChild(logFilterButton);
+            actionCell.appendChild(resendRequestButton);
 
             actionCell.setAttribute("class", "text-center");
 
@@ -292,4 +304,22 @@ function getLogType(logType) {
     if (logType === 0) return "None";
     if (logType === 1) return "Success";
     if (logType === 2) return "Fail";
+}
+
+async function resendRequest(e) {
+    const id = e.currentTarget.dataset.id;
+    const response = await fetch('/Logs/ResendRequest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ Id: id })
+    });
+
+    if (!(response.status >= 200 && response.status <= 299)) {
+        alert("Request could not be sent!");
+        return;
+    } else {
+        alert("Request sent!");
+    }
 }

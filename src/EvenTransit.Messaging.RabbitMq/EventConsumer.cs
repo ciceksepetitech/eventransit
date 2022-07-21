@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
@@ -148,7 +148,8 @@ public class EventConsumer : IEventConsumer
                         Fields = body?.Fields,
                         Url = serviceData.Url,
                         Timeout = serviceData.Timeout,
-                        Headers = serviceData.Headers
+                        Headers = serviceData.Headers,
+                        Method = serviceData.Method
                     },
                     Response = new EventLogHttpResponseDto
                     {

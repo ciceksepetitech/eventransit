@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
@@ -48,7 +48,7 @@ public class HttpProcessor : IHttpProcessor
             {
                 Request = new LogDetailRequest
                 {
-                    Url = request.Url, Timeout = request.Timeout, Body = body, Headers = request.Headers
+                    Url = request.Url, Timeout = request.Timeout, Body = body, Headers = request.Headers, Method = service.Method
                 },
                 Response = new LogDetailResponse
                 {
