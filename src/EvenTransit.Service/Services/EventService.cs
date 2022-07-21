@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Constants;
 using EvenTransit.Domain.Entities;
@@ -93,6 +93,13 @@ public class EventService : IEventService
         var serviceDetails = eventDetails?.Services?.FirstOrDefault(x => x.Name == serviceName);
         var data = _mapper.Map<ServiceDto>(serviceDetails);
 
+        return data;
+    }
+
+    public async Task<ServiceDto> GetServiceDetailsAsync(string eventName, string serviceName)
+    {
+        var serviceDetails = await _eventsRepository.GetServiceByEventAsync(eventName,serviceName);
+        var data = _mapper.Map<ServiceDto>(serviceDetails);
         return data;
     }
 

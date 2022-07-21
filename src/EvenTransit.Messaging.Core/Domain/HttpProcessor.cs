@@ -48,7 +48,7 @@ public class HttpProcessor : IHttpProcessor
             {
                 Request = new LogDetailRequest
                 {
-                    Url = request.Url, Timeout = request.Timeout, Body = body, Headers = request.Headers, Method = service.Method
+                    Url = request.Url, Timeout = request.Timeout, Body = body, Headers = request.Headers
                 },
                 Response = new LogDetailResponse
                 {

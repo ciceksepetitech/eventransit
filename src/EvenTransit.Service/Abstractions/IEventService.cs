@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Dto;
@@ -15,6 +15,7 @@ public interface IEventService
     Task<EventDto> GetEventDetailsAsync(Guid id);
     Task<BaseResponseDto> SaveServiceAsync(SaveServiceDto model);
     Task<ServiceDto> GetServiceDetailsAsync(Guid eventId, string serviceName);
+    Task<ServiceDto> GetServiceDetailsAsync(string eventName, string serviceName);
     Task<List<string>> GetServicesAsync(string eventName);
     Task<bool> SaveEventAsync(SaveEventDto data);
     Task<bool> DeleteEventAsync(Guid id);

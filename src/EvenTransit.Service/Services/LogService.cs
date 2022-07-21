@@ -10,9 +10,11 @@ using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
+using EvenTransit.Service.Dto.Event;
 using EvenTransit.Service.Dto.Log;
 using EvenTransit.Service.Rules.Log;
 using System.Text.Json;
+using ServiceDto = EvenTransit.Messaging.Core.Dto.ServiceDto;
 
 namespace EvenTransit.Service.Services;
 
@@ -95,17 +97,14 @@ public class LogService : ILogService
         return response;
     }
 
-    public async Task<bool> ResendRequest(LogItemDto data)
+    public async Task<bool> ResendRequest(LogItemDto data, Dto.Event.ServiceDto eventService)
     {
-        if (string.IsNullOrEmpty(data.Details.Request.Method))
-            return false;
-
         var serviceDto = new ServiceDto()
         {
             Name = data.ServiceName,
             Url = data.Details.Request.Url,
             Timeout = data.Details.Request.Timeout,
-            Method = data.Details.Request.Method,
+            Method = eventService.Method,
             Headers = data.Details.Request.Headers
         };
 

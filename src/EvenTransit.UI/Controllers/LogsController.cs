@@ -86,14 +86,20 @@ public class LogsController : Controller
 
     [HttpPost]
     [Route("Logs/ResendRequest")]
-    public async Task<IActionResult> ResendRequest([FromBody]LogsResendRequestModel request)
+    public async Task<IActionResult> ResendRequest([FromBody] LogsResendRequestModel request)
     {
         var data = await _logService.GetByIdAsync(new Guid(request.Id));
 
         if (data == null)
             return StatusCode(StatusCodes.Status404NotFound);
 
-        var sendRequest = await _logService.ResendRequest(data);
+        var eventService = await _eventService.GetServiceDetailsAsync(data.EventName, data.ServiceName);
+
+        if (eventService == null)
+            return StatusCode(StatusCodes.Status404NotFound);
+
+
+        var sendRequest = await _logService.ResendRequest(data, eventService);
 
         return StatusCode(sendRequest ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest);
     }
