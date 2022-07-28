@@ -41,6 +41,8 @@ public class HttpRequestSender : IHttpRequestSender
             contentData = convertedContent.ValueKind != JsonValueKind.String
                 ? JsonSerializer.Serialize(request.Body)
                 : request.Body.ToString();
+        else if (request.Body is Dictionary<string, object>)
+            contentData = JsonSerializer.Serialize(request.Body);
 
         var content = new StringContent(contentData, Encoding.UTF8, "application/json");
         requestMessage.Content = content;
