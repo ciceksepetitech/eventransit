@@ -4,7 +4,7 @@ namespace EvenTransit.Messaging.Core;
 
 public static class Extensions
 {
-    private static readonly Regex FieldNameRegex = new ("{{([a-zA-Z0-9]+)}}", RegexOptions.Compiled);
+    private static readonly Regex FieldNameRegex = new ("{{([a-zA-Z0-9-]+)}}", RegexOptions.Compiled);
 
     public static string ReplaceDynamicFieldValues(this string value, Dictionary<string, string> fields)
     {
