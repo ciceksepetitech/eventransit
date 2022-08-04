@@ -30,19 +30,19 @@ public class HttpProcessor : IHttpProcessor
 
         var result = await _httpRequestSender.SendAsync(request);
 
-        await LogResult(eventName, service, result, request, message.CorrelationId);
+        await LogResult(eventName, service.Name, result, request, message.CorrelationId);
 
         return result.IsSuccess;
     }
 
-    private async Task LogResult(string eventName, ServiceDto service, HttpResponseDto result,
+    private async Task LogResult(string eventName, string serviceName, HttpResponseDto result,
         HttpRequestDto request, string correlationId)
     {
         var body = JsonSerializer.Serialize(request.Body);
         var logData = new Logs
         {
             EventName = eventName,
-            ServiceName = service.Name,
+            ServiceName = serviceName,
             LogType = result.IsSuccess ? LogType.Success : LogType.Fail,
             Details = new LogDetail
             {

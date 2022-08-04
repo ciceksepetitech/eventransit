@@ -103,15 +103,17 @@ public class EventConsumer : IEventConsumer
         var body = JsonSerializer.Deserialize<EventPublishDto>(Encoding.UTF8.GetString(bodyArray));
         var retryCount = GetRetryCount(ea.BasicProperties);
         var serviceName = serviceData.Name;
-
-        serviceData.Url = serviceData.Url.ReplaceDynamicFieldValues(body?.Fields);
-        serviceData.Headers ??= new Dictionary<string, string>();
-
-        if (!serviceData.Headers.ContainsKey(HeaderConstants.RequestIdHeader))
-            serviceData.Headers.Add(HeaderConstants.RequestIdHeader, body?.CorrelationId);
-
+        
+        var replacedUrl = serviceData.Url.ReplaceDynamicFieldValues(body?.Fields);
+        var requestHeaders = new Dictionary<string, string>();
         foreach (var header in serviceData.Headers)
-            serviceData.Headers[header.Key] = header.Value.ReplaceDynamicFieldValues(body?.Fields);
+            requestHeaders.Add(header.Key, header.Value);
+
+        if (!requestHeaders.ContainsKey(HeaderConstants.RequestIdHeader))
+            requestHeaders.Add(HeaderConstants.RequestIdHeader, body?.CorrelationId);
+
+        foreach (var header in requestHeaders)
+            requestHeaders[header.Key] = header.Value.ReplaceDynamicFieldValues(body?.Fields);
 
         try
         {
@@ -120,7 +122,8 @@ public class EventConsumer : IEventConsumer
                 body.Payload = _customObjectMapper.Map(element, serviceData.CustomBodyMap);
             }
             
-            var processResult = await _httpProcessor.ProcessAsync(eventName, serviceData, body);
+            var requestData = serviceData with { Url = replacedUrl, Headers = requestHeaders };
+            var processResult = await _httpProcessor.ProcessAsync(eventName, requestData, body);
 
             _channel.BasicAck(ea.DeliveryTag, false);
 
