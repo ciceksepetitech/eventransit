@@ -63,7 +63,7 @@ We are grateful to the community for contributing bugfixes and improvements. Rea
 
 ### Contribution Prerequisites
 You have installed below prerequisites.
-- .Net 5.0
+- .Net 6.0
 - RabbitMq
 - MongoDB
 
