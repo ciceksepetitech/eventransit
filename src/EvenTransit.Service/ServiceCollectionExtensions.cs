@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHttpRequestSender, HttpRequestSender>();
         services.AddScoped<IHttpProcessor, HttpProcessor>();
         services.AddScoped<IDistributedLocker, DistributedLocker>();
-        services.AddSingleton<RetryQueueHelper>();
+        services.AddSingleton<IRetryQueueHelper, RetryQueueHelper>();
 
         return services;
     }

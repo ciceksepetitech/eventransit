@@ -1,9 +1,8 @@
-using System;
 using EvenTransit.Domain.Enums;
 
-namespace EvenTransit.Messaging.RabbitMq;
+namespace EvenTransit.Messaging.RabbitMq.Extensions;
 
-public static class Extensions
+public static class NamingExtensions
 {
     private const string RetryExchangeSuffix = "retry";
     private const string RetryQueueSuffix = "retry";

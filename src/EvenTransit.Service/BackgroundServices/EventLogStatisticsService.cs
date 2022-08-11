@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Service.Locker;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +21,7 @@ public class EventLogStatisticsService : IHostedService
         _distributedLocker = scope.ServiceProvider.GetRequiredService<IDistributedLocker>();
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         Task.Run(async () =>
         {
@@ -35,6 +32,8 @@ public class EventLogStatisticsService : IHostedService
                 await Task.Delay(TimeSpan.FromMinutes(10), cancellationToken);
             }
         }, cancellationToken);
+        
+        return Task.CompletedTask;
     }
 
     private void CalculateStatistics()

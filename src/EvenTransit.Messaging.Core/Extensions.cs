@@ -8,6 +8,8 @@ public static class Extensions
 
     public static string ReplaceDynamicFieldValues(this string value, Dictionary<string, string> fields)
     {
+        if (fields == null || !fields.Any()) return value;
+        
         var valueFields = FieldNameRegex.Matches(value);
         var newValue = value;
 

@@ -28,7 +28,8 @@ public class MongoDbHealthCheck : IHealthCheck
             var client = new MongoClient(_mongoDbConnectionStringBuilder.ConnectionString);
             var database = client.GetDatabase(_settings.Database);
             var isConnected = database
-                .RunCommandAsync((Command<BsonDocument>)"{ping:1}", cancellationToken: cancellationToken).Wait(1000);
+                .RunCommandAsync((Command<BsonDocument>) "{ping:1}", cancellationToken: cancellationToken)
+                .Wait(1000, cancellationToken);
 
             return isConnected
                 ? Task.FromResult(HealthCheckResult.Healthy())

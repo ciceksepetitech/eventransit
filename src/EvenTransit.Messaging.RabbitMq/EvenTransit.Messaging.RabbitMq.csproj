@@ -6,19 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper"/>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection"/>
-    <PackageReference Include="Microsoft.Extensions.Logging"/>
-    <PackageReference Include="RabbitMQ.Client"/>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="RabbitMQ.Client" />
   </ItemGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EvenTransit.Domain\EvenTransit.Domain.csproj"/>
-    <ProjectReference Include="..\EvenTransit.Messaging.Core\EvenTransit.Messaging.Core.csproj"/>
+    <ProjectReference Include="..\EvenTransit.Domain\EvenTransit.Domain.csproj" />
+    <ProjectReference Include="..\EvenTransit.Messaging.Core\EvenTransit.Messaging.Core.csproj" />
   </ItemGroup>
 
 </Project>

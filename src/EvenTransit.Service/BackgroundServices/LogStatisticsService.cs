@@ -23,7 +23,7 @@ public class LogStatisticsService : IHostedService
         _distributedLocker = scope.ServiceProvider.GetRequiredService<IDistributedLocker>();
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         Task.Run(async () =>
         {
@@ -34,6 +34,8 @@ public class LogStatisticsService : IHostedService
                 await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
             }
         }, cancellationToken);
+        
+        return Task.CompletedTask;
     }
 
     private void CalculateStatistics()

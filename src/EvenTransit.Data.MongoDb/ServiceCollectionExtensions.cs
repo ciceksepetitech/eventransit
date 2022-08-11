@@ -3,6 +3,9 @@ using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace EvenTransit.Data.MongoDb;
 
@@ -16,6 +19,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventLogStatisticRepository, EventLogStatisticMongoRepository>();
         services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
 
+        BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+        
         services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
 
         services.AddSingleton<MongoDbConnectionStringBuilder>();

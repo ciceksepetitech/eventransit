@@ -33,7 +33,6 @@ services.AddMessaging();
 services.AddHealthChecks();
 
 services.AddScoped<IEventService, EventService>();
-services.AddHostedService<QueueDeclarationService>();
 services.AddHostedService<ConsumerBinderService>();
 services.AddHostedService<LogStatisticsService>();
 services.AddHostedService<EventLogStatisticsService>();
@@ -55,7 +54,7 @@ void App()
 
     app.ConfigureSerilogLogger();
 
-// Configure the HTTP request pipeline.
+    // Configure the HTTP request pipeline.
     if (env.IsDevelopment())
         app.UseDeveloperExceptionPage();
     else
@@ -77,8 +76,25 @@ void App()
     app.MapControllerRoute(
         "default",
         "{controller=Home}/{action=Index}/{id?}");
+
+    ConfigureMinThreads();
     
     app.Run();
 }
 
 Bootstrapper.Run<SerilogBootstrapLogger>(App);
+
+static void ConfigureMinThreads()
+{
+    const string minCopThreads = "MIN_IOC_THREAD";
+    const string minWorkerThreads = "MIN_WORKER_THREAD";
+    const string defaultValue = "100";
+            
+    var envMinWorker = Environment.GetEnvironmentVariable(minWorkerThreads);
+    var envMinIoc = Environment.GetEnvironmentVariable(minCopThreads);
+
+    if (string.IsNullOrEmpty(envMinWorker)) envMinWorker = defaultValue;
+    if (string.IsNullOrEmpty(envMinIoc)) envMinIoc = defaultValue;
+
+    ThreadPool.SetMinThreads(Convert.ToInt32(envMinWorker), Convert.ToInt32(envMinIoc));
+}

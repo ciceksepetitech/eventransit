@@ -14,10 +14,13 @@ namespace EvenTransit.UI.Controllers.Api;
 public class EventController : ControllerBase
 {
     private readonly IEventService _eventService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public EventController(IEventService eventService)
+    public EventController(IEventService eventService,
+        IHttpContextAccessor httpContextAccessor)
     {
         _eventService = eventService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     /// <summary>
@@ -32,21 +35,19 @@ public class EventController : ControllerBase
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(void), 400)]
     [ProducesResponseType(typeof(void), 404)]
-    public async Task<IActionResult> PostAsync([FromBody] EventRequest request)
+    public IActionResult PostAsync([FromBody] EventRequest request)
     {
-        var @event = await _eventService.GetEventAsync(request.EventName);
-        if (@event == null) return NotFound();
-
-        var requestId = HttpContext.Request.Headers[HeaderConstants.RequestIdHeader];
-        var correlationId = !StringValues.IsNullOrEmpty(requestId) ? requestId.ToString() : Guid.NewGuid().ToString();
-        string outboxEventId = null;
+        var requestId = StringValues.Empty;
+        
+        _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(HeaderConstants.RequestIdHeader,
+            out requestId);
 
         _eventService.Publish(new EventRequestDto
         {
             EventName = request.EventName,
             Payload = request.Payload,
             Fields = request.Fields,
-            CorrelationId = correlationId
+            CorrelationId = requestId
         });
 
         return Ok();

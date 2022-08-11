@@ -7,6 +7,7 @@ using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
+using EvenTransit.Service.Extensions;
 using Microsoft.Extensions.Logging;
 using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 
@@ -39,6 +40,11 @@ public class EventService : IEventService
 
     public void Publish(EventRequestDto requestDto)
     {
+        if (string.IsNullOrEmpty(requestDto.CorrelationId))
+        {
+            requestDto.CorrelationId = Guid.NewGuid().ToString();
+        }
+        
         _eventPublisher.Publish(requestDto);
     }
 
@@ -142,7 +148,7 @@ public class EventService : IEventService
         }
         catch (Exception e)
         {
-            _logger.LogError(MessageConstants.EventNotDeleted, e);
+            _logger.EventApiOperationFailed(e, MessageConstants.EventNotDeleted);
             return false;
         }
     }
@@ -171,7 +177,7 @@ public class EventService : IEventService
         }
         catch (Exception e)
         {
-            _logger.LogError(MessageConstants.ServiceDeleteOperationFailed, e);
+            _logger.EventApiOperationFailed(e, MessageConstants.ServiceDeleteOperationFailed);
             return false;
         }
     }

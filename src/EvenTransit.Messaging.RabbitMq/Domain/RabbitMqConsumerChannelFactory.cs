@@ -1,7 +1,7 @@
-using System;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
+using EvenTransit.Messaging.RabbitMq.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -10,35 +10,33 @@ namespace EvenTransit.Messaging.RabbitMq.Domain;
 
 public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposable
 {
-    private bool _disposed;
-    private Lazy<IModel> _channel;
+    private IModel _channel;
     private readonly object _guard = new();
     private readonly IRabbitMqConnectionFactory _connection;
     private readonly IList<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<RabbitMqConsumerChannelFactory> _logger;
     
-    private const int _retryToConnectAfterSeconds = 5;
-    private const ushort _disposeReasonCodeSuccess = 200;
+    private const int RetryToConnectAfterSeconds = 5;
+    private const ushort DisposeReasonCodeSuccess = 200;
 
-    public ChannelTypes ChannelType
-    {
-        get => ChannelTypes.Consumer;
-    }
+    public ChannelTypes ChannelType => ChannelTypes.Consumer;
 
     public IModel Channel
     {
         get
         {
+            if (_channel is {IsOpen: true}) return _channel;
+            
             lock (_guard)
             {
-                if (_channel.IsValueCreated && _channel.Value.IsOpen) return _channel.Value;
+                if (_channel is {IsOpen: true}) return _channel;
 
-                _channel = new Lazy<IModel>(_connection.ConsumerConnection.CreateModel());
+                _channel = _connection.ConsumerConnection.CreateModel();
                 
-                ChannelFailureScenario(_channel.Value);
+                ChannelFailureScenario(_channel);
 
-                return _channel.Value;
+                return _channel;
             }
         }
     }
@@ -50,18 +48,15 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
         _connection = connection;
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
-        _channel = new Lazy<IModel>(connection.ConsumerConnection.CreateModel());
-        
-        ChannelFailureScenario(_channel.Value);
     }
     
     private void ChannelFailureScenario(IModel channel)
     {
         channel.ModelShutdown += (sender, args) =>
         {
-            if (args.ReplyCode == _disposeReasonCodeSuccess) return;
-
-            _logger.LogError($"Channel lost. {args.ReplyText}", args.Cause);
+            if (args.ReplyCode == DisposeReasonCodeSuccess) return;
+            
+            _logger.ChannelStateFailed($"Channel lost. {args.ReplyText}", args.Cause, null);
 
             var cts = new CancellationTokenSource();
             var token = cts.Token;
@@ -82,48 +77,34 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
                                 
                                 break;
                             }
-                            _logger.LogError("Channel waiting...", args.Cause);
+                            _logger.ChannelStateFailed("Channel waiting...", args.Cause, null);
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(new EventId(), ex, ex.Message);
+                            _logger.ChannelStateFailed(ex.Message, string.Empty, ex);
                         }
                     }
 
-                    _logger.LogError("Connection waiting...", args.Cause);
+                    _logger.ChannelStateFailed("Connection waiting...", args.Cause, null);
                     
-                    Thread.Sleep(1000 * _retryToConnectAfterSeconds);
+                    Thread.Sleep(1000 * RetryToConnectAfterSeconds);
                 }
             }, token);
         };
     }
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed && disposing)
-        {
-            if (!_channel.IsValueCreated) return;
-
-            if (!Channel.IsOpen) return;
-
-            Channel.Close();
-            
-            foreach (var source in _cancellationTokenSources)
-            {
-                source.Cancel();
-            }
-            
-            _disposed = true;
-            GC.SuppressFinalize(this);
-
-            _logger.LogInformation("Consumer channel closed successfully.");
-        }
-    }
 
     public void Dispose()
     {
-        Dispose(true);
+        _channel?.Close();
+        
+        foreach (var source in _cancellationTokenSources)
+        {
+            source.Cancel();
+        }
+        
+        GC.SuppressFinalize(this);
+
+        _logger.ChannelState("Consumer channel closed successfully.");
     }
-    
-    
 }

@@ -1,5 +1,5 @@
-using System;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
+using EvenTransit.Messaging.RabbitMq.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
@@ -8,26 +8,13 @@ namespace EvenTransit.Messaging.RabbitMq.Domain;
 
 public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
 {
-    private readonly object _guard = new();
     private readonly Lazy<IConnection> _producerConnection;
     private readonly Lazy<IConnection> _consumerConnection;
     private readonly ILogger<RabbitMqConnectionFactory> _logger;
 
-    public IConnection ProducerConnection
-    {
-        get
-        {
-            lock (_guard) return _producerConnection.Value;
-        }
-    }
+    public IConnection ProducerConnection => _producerConnection.Value;
 
-    public IConnection ConsumerConnection
-    {
-        get
-        {
-            lock (_guard) return _consumerConnection.Value;
-        }
-    }
+    public IConnection ConsumerConnection => _consumerConnection.Value;
 
     public RabbitMqConnectionFactory(IServiceScopeFactory scopeFactory,
         ILogger<RabbitMqConnectionFactory> logger)
@@ -44,6 +31,8 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
     {
         if (_producerConnection.IsValueCreated) TryCloseConnection(() => ProducerConnection);
         if (_consumerConnection.IsValueCreated) TryCloseConnection(() => ConsumerConnection);
+        
+        GC.SuppressFinalize(this);
     }
 
     private void TryCloseConnection(Func<IConnection> connection)
@@ -54,7 +43,7 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Connection close error!");
+            _logger.ConnectionStateFailed("Connection close error!", ex);
         }
     }
 }

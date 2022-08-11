@@ -21,7 +21,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IRabbitMqChannelFactory, RabbitMqProducerChannelFactory>();
         services.AddSingleton<IRabbitMqChannelFactory, RabbitMqConsumerChannelFactory>();
 
-        services.AddScoped<IRabbitMqDeclaration, RabbitMqDeclaration>();
         services.AddScoped(typeof(IConnectionFactory), _ =>
         {
             var connectionFactory = new ConnectionFactory

@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using EvenTransit.Domain.Enums;
+using EvenTransit.Messaging.Core.Abstractions;
 
 namespace EvenTransit.Messaging.Core.Domain;
 
-public class RetryQueueHelper
+public class RetryQueueHelper : IRetryQueueHelper
 {
     public List<RetryQueueInfo> RetryQueueInfo { get; }
 
