@@ -7,7 +7,7 @@ public class Bootstrapper
         Run<TLogger, object>(action, null);
     }
 
-    public static void Run<TLogger, TConfiguration>(Action action, Action<TConfiguration> config)
+    public static void Run<TLogger, TConfiguration>(Action action, Action<TConfiguration>? config)
         where TLogger : IBootstrapLogger, new()
     {
         var logger = new TLogger();

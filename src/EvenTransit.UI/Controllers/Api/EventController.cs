@@ -13,13 +13,13 @@ namespace EvenTransit.UI.Controllers.Api;
 [Route("api/v1/event")]
 public class EventController : ControllerBase
 {
-    private readonly IEventService _eventService;
+    private readonly IEventPublisherService _eventPublisherService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public EventController(IEventService eventService,
+    public EventController(IEventPublisherService eventPublisherService,
         IHttpContextAccessor httpContextAccessor)
     {
-        _eventService = eventService;
+        _eventPublisherService = eventPublisherService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -42,7 +42,7 @@ public class EventController : ControllerBase
         _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(HeaderConstants.RequestIdHeader,
             out requestId);
 
-        _eventService.Publish(new EventRequestDto
+        _eventPublisherService.Publish(new EventRequestDto
         {
             EventName = request.EventName,
             Payload = request.Payload,

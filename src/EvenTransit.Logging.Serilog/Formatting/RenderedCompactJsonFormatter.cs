@@ -9,7 +9,7 @@ public class RenderedCompactJsonFormatter : ITextFormatter
 {
     private readonly JsonValueFormatter _valueFormatter;
 
-    public RenderedCompactJsonFormatter(JsonValueFormatter valueFormatter = null)
+    public RenderedCompactJsonFormatter(JsonValueFormatter? valueFormatter = null)
     {
         _valueFormatter = valueFormatter ?? new JsonValueFormatter("$type");
     }

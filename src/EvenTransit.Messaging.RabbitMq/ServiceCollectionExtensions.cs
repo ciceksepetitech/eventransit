@@ -10,17 +10,21 @@ namespace EvenTransit.Messaging.RabbitMq;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
+    public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration, bool modeConsumer)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-        services.AddScoped<IEventConsumer, EventConsumer>();
+        
         services.AddScoped<IEventPublisher, EventPublisher>();
-        services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
-
         services.AddSingleton<IRabbitMqChannelFactory, RabbitMqProducerChannelFactory>();
-        services.AddSingleton<IRabbitMqChannelFactory, RabbitMqConsumerChannelFactory>();
 
+        if (modeConsumer)
+        {
+            services.AddScoped<IEventConsumer, EventConsumer>();
+            services.AddSingleton<IRabbitMqChannelFactory, RabbitMqConsumerChannelFactory>();    
+        }
+
+        services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+        
         services.AddScoped(typeof(IConnectionFactory), _ =>
         {
             var connectionFactory = new ConnectionFactory

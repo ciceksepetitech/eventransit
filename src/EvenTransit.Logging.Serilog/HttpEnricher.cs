@@ -11,7 +11,7 @@ public class HttpEnricher : ILogEventEnricher
 {
     private const string LogItemsKey = "LogItems";
 
-    private IHttpContextAccessor _httpContextAccessor;
+    private IHttpContextAccessor? _httpContextAccessor;
 
     public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
     {
@@ -20,20 +20,21 @@ public class HttpEnricher : ILogEventEnricher
             var context = _httpContextAccessor?.HttpContext;
             var request = context?.Request;
             if (request == null) return;
-
+            if (context == null) return;
+            
             if (!context.Items.TryGetValue(LogItemsKey, out var items))
             {
                 var config =
-                    _httpContextAccessor.HttpContext?.RequestServices.GetRequiredService<EvenTransitConfig>();
+                    context.RequestServices.GetRequiredService<EvenTransitConfig>();
 
                 items = GetLogItems(config, request.Headers);
 
-                FilterCookiesToBeLogged(config, request.Cookies, (Dictionary<string, string>)items);
+                FilterCookiesToBeLogged(config, request.Cookies, (Dictionary<string, string?>)items);
 
                 context.Items.Add(LogItemsKey, items);
             }
 
-            foreach (var item in ((Dictionary<string, string>)items)!)
+            foreach (var item in (Dictionary<string, string>)items!)
             {
                 logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(item.Key, item.Value));
             }
@@ -44,14 +45,14 @@ public class HttpEnricher : ILogEventEnricher
         }
     }
 
-    public void SetHttpContextAccessor(IHttpContextAccessor httpContextAccessor)
+    public void SetHttpContextAccessor(IHttpContextAccessor? httpContextAccessor)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
     }
 
-    private Dictionary<string, string> GetLogItems(EvenTransitConfig config, IHeaderDictionary headers)
+    private static Dictionary<string, string> GetLogItems(EvenTransitConfig config, IHeaderDictionary headers)
     {
-        if (config?.Logging?.Headers == null || !config.Logging.Headers.Any())
+        if (config.Logging?.Headers == null || !config.Logging.Headers.Any())
         {
             return headers.ToDictionary(x => x.Key, x => x.Value.ToString());
         }
@@ -69,12 +70,12 @@ public class HttpEnricher : ILogEventEnricher
         return result;
     }
 
-    private void FilterCookiesToBeLogged(EvenTransitConfig config, IRequestCookieCollection cookies,
-        Dictionary<string, string> items)
+    private static void FilterCookiesToBeLogged(EvenTransitConfig config, IRequestCookieCollection? cookies,
+        Dictionary<string, string?> items)
     {
         if (cookies == null || !cookies.Any()) return;
 
-        if (config?.Logging?.Cookies == null || !config.Logging.Cookies.Any()) return;
+        if (config.Logging?.Cookies == null || !config.Logging.Cookies.Any()) return;
 
         items.Remove(HeaderNames.Cookie);
 

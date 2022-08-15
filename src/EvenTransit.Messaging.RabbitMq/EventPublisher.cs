@@ -16,7 +16,8 @@ public class EventPublisher : IEventPublisher
     private readonly IRetryQueueHelper _retryQueueHelper;
     private readonly IRabbitMqChannelFactory _channelFactory;
 
-    public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories, IRetryQueueHelper retryQueueHelper)
+    public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories, 
+        IRetryQueueHelper retryQueueHelper)
     {
         _retryQueueHelper = retryQueueHelper;
         _channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);

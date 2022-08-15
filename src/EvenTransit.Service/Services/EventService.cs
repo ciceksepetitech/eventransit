@@ -3,7 +3,6 @@ using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Constants;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Messaging.Core.Abstractions;
-using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
@@ -17,7 +16,6 @@ public class EventService : IEventService
 {
     private readonly IEventsRepository _eventsRepository;
     private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
-    private readonly IEventPublisher _eventPublisher;
     private readonly IMapper _mapper;
     private readonly IEventConsumer _eventConsumer;
     private readonly ILogger<EventService> _logger;
@@ -25,27 +23,15 @@ public class EventService : IEventService
     public EventService(
         IEventsRepository eventsRepository,
         IEventLogStatisticRepository eventLogStatisticRepository,
-        IEventPublisher eventPublisher,
         IMapper mapper,
         IEventConsumer eventConsumer,
         ILogger<EventService> logger)
     {
         _eventsRepository = eventsRepository;
         _eventLogStatisticRepository = eventLogStatisticRepository;
-        _eventPublisher = eventPublisher;
         _mapper = mapper;
         _eventConsumer = eventConsumer;
         _logger = logger;
-    }
-
-    public void Publish(EventRequestDto requestDto)
-    {
-        if (string.IsNullOrEmpty(requestDto.CorrelationId))
-        {
-            requestDto.CorrelationId = Guid.NewGuid().ToString();
-        }
-        
-        _eventPublisher.Publish(requestDto);
     }
 
     public async Task<List<EventDto>> GetAllAsync()

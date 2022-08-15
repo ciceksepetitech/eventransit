@@ -18,6 +18,6 @@ internal class EmailSanitizingFormatRule : RegexMaskingOperator
 
     protected override bool ShouldMaskInput(string input)
     {
-        return input.Contains("@");
+        return input.Contains('@');
     }
 }

@@ -21,9 +21,10 @@ public class SerilogBootstrapLogger : IBootstrapLogger
     public void Dispose()
     {
         Log.CloseAndFlush();
+        GC.SuppressFinalize(this);
     }
 
-    public void Configure<TConfiguration>(Action<TConfiguration> config)
+    public void Configure<TConfiguration>(Action<TConfiguration>? config)
     {
         var configuration = new LoggerConfiguration()
             .SetDefaultLogLevel("LOG_LEVEL")
