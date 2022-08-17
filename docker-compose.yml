@@ -6,12 +6,14 @@ services:
       dockerfile: Dockerfile
     container_name: EventTransitUI
     ports:
-      - "5100:80"
+      - "5000:5000"
     depends_on:
       - rabbitmq
       - mongo
     environment: 
       - ASPNETCORE_ENVIRONMENT=production
+      - MongoDb__Host=mongo
+      - RabbitMq__Endpoint=amqp://guest:guest@rabbitmq:5672/
     restart: always
 
   rabbitmq:
