@@ -18,21 +18,25 @@ jobs:
       - name: Build image
         run: sh ./scripts/ci-build.sh
 
-      - name: Compose up
-        run: docker-compose up -d ui
-
-      # - name: Integration tests
-      #   run: |
-      #     docker run --network container:EventTransitUI \
-      #         postman/newman_ubuntu1404 run https://www.getpostman.com/collections/a45fa2176aa788827619
+     # - name: Compose up
+     #   run: | 
+     #     docker build -t mountebank -f ./ci-test/imposters/Dockerfile.mountebank . 
+     #     docker-compose up -d rabbitmq
+     #     docker-compose up -d ui 
+     #     docker-compose up wait-for-it
+          
+     # - name: Integration tests
+     #   run: |
+     #     docker run --network container:EventTransitUI \
+     #         postman/newman_ubuntu1404 run https://www.getpostman.com/collections/a45fa2176aa788827619
 
       - name: Push image
         env:
           GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ECR_REGISTRY_ID: ${{ secrets.ECR_REGISTRY_ID }}
           DOCKER_LOGIN_USER: ${{ secrets.DOCKER_LOGIN_USER }}
           DOCKER_LOGIN_PASS: ${{ secrets.DOCKER_LOGIN_PASS }}
+          TRIGGER_FUNCTION: ${{ secrets.TRIGGER_FUNCTION }} 
+          TRIGGER_REGION: ${{ secrets.TRIGGER_REGION }}
+          GCR_PROJECT_ID: ${{ secrets.GCR_PROJECT_ID }}
         run: sh ./scripts/ci-push.sh
