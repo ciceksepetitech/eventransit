@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -16,6 +16,7 @@ public class EventPublisher : IEventPublisher
 {
     private readonly IModel _channel;
     private readonly RetryQueueHelper _retryQueueHelper;
+    private const int _maxRetryCount = 5;
 
     public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories, RetryQueueHelper retryQueueHelper)
     {
@@ -41,6 +42,8 @@ public class EventPublisher : IEventPublisher
 
     public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
     {
+        if (retryCount > _maxRetryCount) return;
+
         var newRetryCount = retryCount + 1;
 
         var properties = _channel.CreateBasicProperties();

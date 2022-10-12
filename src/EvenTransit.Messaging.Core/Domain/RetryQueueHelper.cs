@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EvenTransit.Domain.Enums;
 
@@ -18,8 +18,8 @@ public class RetryQueueHelper
     {
         return retryCount switch
         {
-            >= 0 and <= 5 => RetryTimes.Five,
-            > 5 and <= 10 => RetryTimes.Thirty,
+            >= 0 and <= 2 => RetryTimes.Five,
+            > 2 and <= 4 => RetryTimes.Thirty,
             _ => RetryTimes.Sixty
         };
     }
