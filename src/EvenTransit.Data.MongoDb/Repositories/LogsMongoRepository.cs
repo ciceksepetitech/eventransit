@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
@@ -18,7 +18,7 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     public async Task InsertLogAsync(Logs model)
     {
         model.Id = Guid.NewGuid();
-        model.CreatedOn = DateTime.UtcNow;
+        model.CreatedOn = DateTime.Now;
 
         await Collection.InsertOneAsync(model);
     }
