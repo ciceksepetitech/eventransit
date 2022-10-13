@@ -1,4 +1,4 @@
-using Serilog;
+﻿using Serilog;
 using Serilog.Events;
 
 namespace EvenTransit.Logging.Serilog;
@@ -38,6 +38,9 @@ internal static class SerilogLogLevelExtensions
 
     internal static LogEventLevel GetLogLevel(this string key)
     {
+        //TODO:Murat
+        return LogEventLevel.Error;
+
         return Environment.GetEnvironmentVariable(key) switch
         {
             "Trace" => LogEventLevel.Verbose,
