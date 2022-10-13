@@ -18,7 +18,7 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     public async Task InsertLogAsync(Logs model)
     {
         model.Id = Guid.NewGuid();
-        model.CreatedOn = DateTime.Now;
+        model.CreatedOn = DateTime.UtcNow;
 
         await Collection.InsertOneAsync(model);
     }

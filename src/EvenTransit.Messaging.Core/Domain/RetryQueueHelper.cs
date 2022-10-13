@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Messaging.Core.Domain;
 
@@ -18,8 +16,11 @@ public class RetryQueueHelper
     {
         return retryCount switch
         {
-            >= 0 and <= 2 => RetryTimes.Five,
-            > 2 and <= 4 => RetryTimes.Thirty,
+            //0,1 --> 5 sec
+            >= 0 and <= 1 => RetryTimes.Five,
+            //2,3 --> 30 sec
+            > 1 and <= 3 => RetryTimes.Thirty,
+            //4,5 --> 60 sec
             _ => RetryTimes.Sixty
         };
     }

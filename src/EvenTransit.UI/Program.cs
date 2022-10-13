@@ -1,4 +1,4 @@
-using EvenTransit.Data.MongoDb;
+﻿using EvenTransit.Data.MongoDb;
 using EvenTransit.Domain.Configuration;
 using EvenTransit.Logging.Serilog;
 using EvenTransit.Messaging.RabbitMq;
@@ -11,8 +11,11 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Configuration.AddEnvironmentVariables("EvenTransit_");
 
@@ -55,7 +58,7 @@ void App()
 
     app.ConfigureSerilogLogger();
 
-// Configure the HTTP request pipeline.
+    // Configure the HTTP request pipeline.
     if (env.IsDevelopment())
         app.UseDeveloperExceptionPage();
     else
@@ -77,7 +80,7 @@ void App()
     app.MapControllerRoute(
         "default",
         "{controller=Home}/{action=Index}/{id?}");
-    
+
     app.Run();
 }
 

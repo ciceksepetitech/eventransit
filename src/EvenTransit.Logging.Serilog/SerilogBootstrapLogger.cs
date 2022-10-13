@@ -1,4 +1,4 @@
-using EvenTransit.Logging.Serilog.Formatting;
+﻿using EvenTransit.Logging.Serilog.Formatting;
 using EvenTransit.Logging.Serilog.Sanitazing;
 using Serilog;
 
@@ -33,7 +33,7 @@ public class SerilogBootstrapLogger : IBootstrapLogger
             .Enrich.With(HttpEnricher);
 
         if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() == "development")
-            configuration.WriteTo.Console();
+            configuration.WriteTo.Console(new SanitizerFormatter(new List<ISanitizingFormatRule>(), new RenderedCompactJsonFormatter()));
         else
             configuration.WriteTo.Console(new SanitizerFormatter(new List<ISanitizingFormatRule>
             {

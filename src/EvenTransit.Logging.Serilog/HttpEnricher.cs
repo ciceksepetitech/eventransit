@@ -1,6 +1,7 @@
-using EvenTransit.Domain.Configuration;
+﻿using EvenTransit.Domain.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Serilog.Core;
 using Serilog.Events;
@@ -19,16 +20,15 @@ public class HttpEnricher : ILogEventEnricher
         {
             var context = _httpContextAccessor?.HttpContext;
             var request = context?.Request;
-            if (request == null) return;
+            if (request == null)
+                return;
 
             if (!context.Items.TryGetValue(LogItemsKey, out var items))
             {
-                var config =
-                    _httpContextAccessor.HttpContext?.RequestServices.GetRequiredService<EvenTransitConfig>();
+                var config = context.RequestServices.GetRequiredService<IOptions<EvenTransitConfig>>();
+                items = GetLogItems(config.Value, request.Headers);
 
-                items = GetLogItems(config, request.Headers);
-
-                FilterCookiesToBeLogged(config, request.Cookies, (Dictionary<string, string>)items);
+                FilterCookiesToBeLogged(config.Value, request.Cookies, (Dictionary<string, string>)items);
 
                 context.Items.Add(LogItemsKey, items);
             }
@@ -72,9 +72,11 @@ public class HttpEnricher : ILogEventEnricher
     private void FilterCookiesToBeLogged(EvenTransitConfig config, IRequestCookieCollection cookies,
         Dictionary<string, string> items)
     {
-        if (cookies == null || !cookies.Any()) return;
+        if (cookies == null || !cookies.Any())
+            return;
 
-        if (config?.Logging?.Cookies == null || !config.Logging.Cookies.Any()) return;
+        if (config?.Logging?.Cookies == null || !config.Logging.Cookies.Any())
+            return;
 
         items.Remove(HeaderNames.Cookie);
 
