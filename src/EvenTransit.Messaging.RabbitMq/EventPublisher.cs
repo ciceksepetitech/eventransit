@@ -6,20 +6,25 @@ using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace EvenTransit.Messaging.RabbitMq;
 
 public class EventPublisher : IEventPublisher
 {
-    private readonly IModel _channel;
-    private readonly RetryQueueHelper _retryQueueHelper;
     private const int _maxRetryCount = 5;
 
+    private readonly IModel _channel;
+    private readonly RetryQueueHelper _retryQueueHelper;
+    private readonly ILogger<EventPublisher> _logger;
+
     public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories,
-        RetryQueueHelper retryQueueHelper)
+        RetryQueueHelper retryQueueHelper,
+        ILogger<EventPublisher> logger)
     {
         _retryQueueHelper = retryQueueHelper;
+        _logger = logger;
         var channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
         _channel = channelFactory.Channel;
     }
@@ -41,7 +46,10 @@ public class EventPublisher : IEventPublisher
 
     public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
     {
-        if (retryCount > _maxRetryCount) return;
+        _logger.LogError($"Message retry started! --> event : {eventName} -- retry {retryCount}");
+
+        if (retryCount > _maxRetryCount)
+            return;
 
         var newRetryCount = retryCount + 1;
 

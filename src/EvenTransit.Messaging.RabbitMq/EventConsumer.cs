@@ -133,7 +133,7 @@ public class EventConsumer : IEventConsumer
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Message consume fail! --> event :  ${eventName} -- data : {serviceData.Serialize()}");
+            _logger.LogError(e, $"Message consume fail! --> event :  {eventName} -- retry {retryCount} -- data : {serviceData.Serialize()}");
 
             _channel.BasicAck(ea.DeliveryTag, false);
 
