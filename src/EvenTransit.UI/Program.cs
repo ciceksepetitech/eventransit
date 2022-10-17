@@ -25,7 +25,7 @@ var env = builder.Environment;
 
 // Add services to the container.
 services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-services.Configure<EvenTransitConfig>(configuration.GetSection("EvenTransit_"));
+services.Configure<EvenTransitConfig>(configuration.GetSection("EvenTransit"));
 services.AddScoped<ValidateModelAttribute>();
 services.AddRabbitMq(configuration);
 services.AddHttpClient();

@@ -1,5 +1,5 @@
-using System;
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
+using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +17,7 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     private readonly IList<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<RabbitMqConsumerChannelFactory> _logger;
-    
+
     private const int _retryToConnectAfterSeconds = 5;
     private const ushort _disposeReasonCodeSuccess = 200;
 
@@ -32,10 +32,11 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
         {
             lock (_guard)
             {
-                if (_channel.IsValueCreated && _channel.Value.IsOpen) return _channel.Value;
+                if (_channel.IsValueCreated && _channel.Value.IsOpen)
+                    return _channel.Value;
 
                 _channel = new Lazy<IModel>(_connection.ConsumerConnection.CreateModel());
-                
+
                 ChannelFailureScenario(_channel.Value);
 
                 return _channel.Value;
@@ -44,24 +45,25 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     }
 
     public RabbitMqConsumerChannelFactory(IRabbitMqConnectionFactory connection,
-        ILogger<RabbitMqConsumerChannelFactory> logger, 
+        ILogger<RabbitMqConsumerChannelFactory> logger,
         IServiceScopeFactory serviceScopeFactory)
     {
         _connection = connection;
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
         _channel = new Lazy<IModel>(connection.ConsumerConnection.CreateModel());
-        
+
         ChannelFailureScenario(_channel.Value);
     }
-    
+
     private void ChannelFailureScenario(IModel channel)
     {
         channel.ModelShutdown += (sender, args) =>
         {
-            if (args.ReplyCode == _disposeReasonCodeSuccess) return;
+            if (args.ReplyCode == _disposeReasonCodeSuccess)
+                return;
 
-            _logger.LogError($"Channel lost. {args.ReplyText}", args.Cause);
+            _logger.LogError($"Channel lost --> {args.ReplyText} -- {args.Cause.Serialize()}");
 
             var cts = new CancellationTokenSource();
             var token = cts.Token;
@@ -74,24 +76,32 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
                     {
                         try
                         {
+                            //todo:check it 
+                            if (channel.IsClosed)
+                            {
+                                channel = _connection.ConsumerConnection.CreateModel();
+                                _logger.LogError("Channel opened...");
+                            }
+                            //todo:check it 
+
                             if (channel.IsOpen)
                             {
                                 using var scope = _serviceScopeFactory.CreateScope();
                                 var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
                                 eventConsumer.ConsumeAsync().GetAwaiter().GetResult();
-                                
+
                                 break;
                             }
-                            _logger.LogError("Channel waiting...", args.Cause);
+                            _logger.LogError($"Channel waiting --> ${args.Cause.Serialize()}");
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(new EventId(), ex, ex.Message);
+                            _logger.LogError(ex, $"{ex.Message} --> ${args.Cause.Serialize()}");
                         }
                     }
 
-                    _logger.LogError("Connection waiting...", args.Cause);
-                    
+                    _logger.LogError($"Connection waiting --> ${args.Cause.Serialize()}");
+
                     Thread.Sleep(1000 * _retryToConnectAfterSeconds);
                 }
             }, token);
@@ -102,17 +112,19 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     {
         if (!_disposed && disposing)
         {
-            if (!_channel.IsValueCreated) return;
+            if (!_channel.IsValueCreated)
+                return;
 
-            if (!Channel.IsOpen) return;
+            if (!Channel.IsOpen)
+                return;
 
             Channel.Close();
-            
+
             foreach (var source in _cancellationTokenSources)
             {
                 source.Cancel();
             }
-            
+
             _disposed = true;
             GC.SuppressFinalize(this);
 
@@ -124,6 +136,6 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     {
         Dispose(true);
     }
-    
-    
+
+
 }

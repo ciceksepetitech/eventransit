@@ -1,13 +1,16 @@
+﻿using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace EvenTransit.Messaging.Core;
 
 public static class Extensions
 {
-    private static readonly Regex FieldNameRegex = new ("{{([a-zA-Z0-9-]+)}}", RegexOptions.Compiled);
+    private static readonly Regex FieldNameRegex = new("{{([a-zA-Z0-9-]+)}}", RegexOptions.Compiled);
 
     public static string ReplaceDynamicFieldValues(this string value, Dictionary<string, string> fields)
     {
+        fields ??= new Dictionary<string, string>();
+
         var valueFields = FieldNameRegex.Matches(value);
         var newValue = value;
 
@@ -24,5 +27,10 @@ public static class Extensions
         }
 
         return newValue;
+    }
+
+    public static string Serialize(this object obj)
+    {
+        return obj == null ? string.Empty : JsonSerializer.Serialize(obj);
     }
 }
