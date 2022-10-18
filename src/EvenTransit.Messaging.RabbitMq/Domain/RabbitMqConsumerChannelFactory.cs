@@ -76,14 +76,6 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
                     {
                         try
                         {
-                            //todo:check it 
-                            if (channel.IsClosed)
-                            {
-                                channel = _connection.ConsumerConnection.CreateModel();
-                                _logger.LogError("Channel opened...");
-                            }
-                            //todo:check it 
-
                             if (channel.IsOpen)
                             {
                                 using var scope = _serviceScopeFactory.CreateScope();
