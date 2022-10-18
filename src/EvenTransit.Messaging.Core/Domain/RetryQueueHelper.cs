@@ -1,4 +1,4 @@
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
 
 namespace EvenTransit.Messaging.Core.Domain;
@@ -17,8 +17,11 @@ public class RetryQueueHelper : IRetryQueueHelper
     {
         return retryCount switch
         {
-            >= 0 and <= 5 => RetryTimes.Five,
-            > 5 and <= 10 => RetryTimes.Thirty,
+            //0,1 --> 5 sec
+            >= 0 and <= 1 => RetryTimes.Five,
+            //2,3 --> 30 sec
+            > 1 and <= 3 => RetryTimes.Thirty,
+            //4,5 --> 60 sec
             _ => RetryTimes.Sixty
         };
     }

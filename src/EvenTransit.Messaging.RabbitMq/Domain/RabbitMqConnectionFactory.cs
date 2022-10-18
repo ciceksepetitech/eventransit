@@ -1,4 +1,4 @@
-using EvenTransit.Messaging.RabbitMq.Abstractions;
+﻿using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

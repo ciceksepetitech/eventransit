@@ -1,15 +1,16 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace EvenTransit.Messaging.Core;
 
 public static class Extensions
 {
-    private static readonly Regex FieldNameRegex = new ("{{([a-zA-Z0-9-]+)}}", RegexOptions.Compiled);
+    private static readonly Regex FieldNameRegex = new("{{([a-zA-Z0-9-]+)}}", RegexOptions.Compiled);
 
     public static string ReplaceDynamicFieldValues(this string value, Dictionary<string, string> fields)
     {
-        if (fields == null || !fields.Any()) return value;
-        
+        if (fields == null || !fields.Any())
+            return value;
+
         var valueFields = FieldNameRegex.Matches(value);
         var newValue = value;
 

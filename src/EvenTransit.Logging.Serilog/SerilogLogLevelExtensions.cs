@@ -1,4 +1,4 @@
-using Serilog;
+﻿using Serilog;
 using Serilog.Events;
 
 namespace EvenTransit.Logging.Serilog;

@@ -2,7 +2,6 @@
 set -e
 
 
-AWS_REGISTRY=$ECR_REGISTRY_ID
 GCR_REGISTRY=$GCR_REGISTRY_ID
 NAME=ciceksepeti/eventransit
 BRANCH=$GITHUB_REF_NAME
@@ -27,18 +26,6 @@ if [ "$BRANCH" = "main"  ]; then
 fi
 
 
-#AWS image push
-echo "ecr login"
-eval $(aws ecr get-login --region eu-central-1)
-echo "docker tag for ecr image"
-docker tag $NAME $AWS_REGISTRY/$NAME:$TAG
-echo "docker push to ecr"
-docker push $AWS_REGISTRY/$NAME:$TAG
-echo "ecr logout"
-docker logout https://$REMOTE
-
-
-
 #GCP image push
 echo "gcr login"
 echo $GCLOUD_SERVICE_KEY | base64 -di > /tmp/keyfile.json
@@ -50,3 +37,7 @@ echo "docker push to gcr"
 docker push $GCR_REGISTRY/$NAME:$TAG
 echo "gcr logout"
 docker logout https://$GCR_REGISTRY
+
+
+#gcloud trigger function
+gcloud functions call $TRIGGER_FUNCTION --region $TRIGGER_REGION --project $GCR_PROJECT_ID --data '{"imageParent":"ciceksepeti", "imageName":"eventransit", "tag":"'"$TAG"'"}'

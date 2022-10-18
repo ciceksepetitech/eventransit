@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;

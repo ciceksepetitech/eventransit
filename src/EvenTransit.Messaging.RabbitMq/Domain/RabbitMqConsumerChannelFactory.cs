@@ -1,4 +1,4 @@
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
@@ -42,14 +42,14 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     }
 
     public RabbitMqConsumerChannelFactory(IRabbitMqConnectionFactory connection,
-        ILogger<RabbitMqConsumerChannelFactory> logger, 
+        ILogger<RabbitMqConsumerChannelFactory> logger,
         IServiceScopeFactory serviceScopeFactory)
     {
         _connection = connection;
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
     }
-    
+
     private void ChannelFailureScenario(IModel channel)
     {
         channel.ModelShutdown += (sender, args) =>
@@ -74,7 +74,7 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
                                 using var scope = _serviceScopeFactory.CreateScope();
                                 var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
                                 eventConsumer.ConsumeAsync().GetAwaiter().GetResult();
-                                
+
                                 break;
                             }
                             _logger.ChannelStateFailed("Channel waiting...", args.Cause, null);

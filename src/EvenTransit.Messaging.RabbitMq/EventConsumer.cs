@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
@@ -74,7 +74,8 @@ public class EventConsumer : IEventConsumer
         foreach (var @event in events)
         {
             var eventName = @event.Name;
-            foreach (var service in @event.Services) BindQueue(eventName, service);
+            foreach (var service in @event.Services)
+                BindQueue(eventName, service);
         }
 
         #endregion
@@ -105,7 +106,7 @@ public class EventConsumer : IEventConsumer
         var body = JsonSerializer.Deserialize<EventPublishDto>(Encoding.UTF8.GetString(bodyArray));
         var retryCount = GetRetryCount(ea.BasicProperties);
         var serviceName = serviceData.Name;
-        
+
         var replacedUrl = serviceData.Url.ReplaceDynamicFieldValues(body?.Fields);
         var requestHeaders = new Dictionary<string, string>();
         foreach (var header in serviceData.Headers)
@@ -119,11 +120,11 @@ public class EventConsumer : IEventConsumer
 
         try
         {
-            if (serviceData.CustomBodyMap != null && serviceData.CustomBodyMap.Any() && body is {Payload: JsonElement element})
+            if (serviceData.CustomBodyMap != null && serviceData.CustomBodyMap.Any() && body is { Payload: JsonElement element })
             {
                 body.Payload = _customObjectMapper.Map(element, serviceData.CustomBodyMap);
             }
-            
+
             var requestData = serviceData with { Url = replacedUrl, Headers = requestHeaders };
             var processResult = await _httpProcessor.ProcessAsync(eventName, requestData, body);
 
@@ -151,13 +152,14 @@ public class EventConsumer : IEventConsumer
                     {
                         Body = body?.Payload,
                         Fields = body?.Fields,
-                        Url = serviceData.Url,
+                        Url = replacedUrl,
                         Timeout = serviceData.Timeout,
-                        Headers = serviceData.Headers
+                        Headers = requestHeaders
                     },
                     Response = new EventLogHttpResponseDto
                     {
-                        IsSuccess = false, StatusCode = StatusCodes.Status500InternalServerError
+                        IsSuccess = false,
+                        StatusCode = StatusCodes.Status500InternalServerError
                     },
                     Message = e.Message,
                     CorrelationId = body?.CorrelationId
@@ -173,11 +175,13 @@ public class EventConsumer : IEventConsumer
         var messageBody = ea.Body;
         var message = Encoding.UTF8.GetString(messageBody.ToArray());
 
-        if (string.IsNullOrEmpty(message)) return Task.CompletedTask;
+        if (string.IsNullOrEmpty(message))
+            return Task.CompletedTask;
 
         var serviceInfo = JsonSerializer.Deserialize<NewServiceDto>(message);
 
-        if (serviceInfo == null) return Task.CompletedTask;
+        if (serviceInfo == null)
+            return Task.CompletedTask;
 
         var eventName = serviceInfo.EventName;
         var queueName = serviceInfo.ServiceName.GetQueueName(eventName);
@@ -209,7 +213,7 @@ public class EventConsumer : IEventConsumer
     private void BindQueue(string eventName, Service service)
     {
         var serviceData = _mapper.Map<ServiceDto>(service);
-        
+
         var queueName = service.Name.GetQueueName(eventName);
         var eventConsumer = new AsyncEventingBasicConsumer(Channel);
         

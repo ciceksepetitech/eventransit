@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
@@ -12,6 +12,7 @@ namespace EvenTransit.Messaging.RabbitMq;
 
 public class EventPublisher : IEventPublisher
 {
+    private const int _maxRetryCount = 5;
     private IModel Channel => _channelFactory.Channel;
     private readonly IRetryQueueHelper _retryQueueHelper;
     private readonly IRabbitMqChannelFactory _channelFactory;
@@ -42,6 +43,9 @@ public class EventPublisher : IEventPublisher
 
     public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
     {
+        if (retryCount > _maxRetryCount)
+            return;
+
         var newRetryCount = retryCount + 1;
 
         var properties = Channel.CreateBasicProperties();

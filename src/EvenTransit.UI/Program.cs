@@ -1,4 +1,4 @@
-using EvenTransit.Data.MongoDb;
+﻿using EvenTransit.Data.MongoDb;
 using EvenTransit.Domain.Configuration;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Logging.Serilog;
@@ -10,8 +10,11 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Configuration.AddEnvironmentVariables("EvenTransit_");
 
