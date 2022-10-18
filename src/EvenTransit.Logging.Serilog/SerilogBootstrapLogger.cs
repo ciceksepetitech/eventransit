@@ -27,10 +27,10 @@ public class SerilogBootstrapLogger : IBootstrapLogger
     public void Configure<TConfiguration>(Action<TConfiguration>? config)
     {
         var configuration = new LoggerConfiguration()
-            .SetDefaultLogLevel("LOG_LEVEL")
-            .MinimumLevel.Override("Microsoft", "LOG_LEVEL_MICROSOFT".GetLogLevel())
-            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", "LOG_LEVEL_MICROSOFT_HOSTING_LIFETIME".GetLogLevel())
-            .MinimumLevel.Override("System", "LOG_LEVEL_SYSTEM".GetLogLevel())
+            .SetDefaultLogLevel("EvenTransit_LOG_LEVEL")
+            .MinimumLevel.Override("Microsoft", "EvenTransit_LOG_LEVEL_MICROSOFT".GetLogLevel())
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", "EvenTransit_LOG_LEVEL_MICROSOFT_HOSTING_LIFETIME".GetLogLevel())
+            .MinimumLevel.Override("System", "EvenTransit_LOG_LEVEL_SYSTEM".GetLogLevel())
             .Enrich.With(HttpEnricher);
 
         if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() == "development")
