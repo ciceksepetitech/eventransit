@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
         
-        services.AddSingleton(typeof(IConnectionFactory), _ =>
+        services.AddScoped(typeof(IConnectionFactory), _ =>
         {
             var connectionFactory = new ConnectionFactory
             {
