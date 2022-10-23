@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Domain;
@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
         
-        services.AddScoped(typeof(IConnectionFactory), _ =>
+        services.AddSingleton(typeof(IConnectionFactory), _ =>
         {
             var connectionFactory = new ConnectionFactory
             {
@@ -37,7 +37,6 @@ public static class ServiceCollectionExtensions
             return connectionFactory;
         });
 
-        services.AddHealthChecks()
-            .AddCheck<RabbitMqHealthCheck>("rabbitmq");
+        services.AddHealthChecks().AddCheck<RabbitMqHealthCheck>("rabbitmq");
     }
 }

@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using System.Net;

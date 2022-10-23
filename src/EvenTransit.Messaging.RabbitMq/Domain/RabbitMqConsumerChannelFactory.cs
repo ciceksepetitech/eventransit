@@ -34,7 +34,7 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
 
                 _channel = _connection.ConsumerConnection.CreateModel();
                 
-                ChannelFailureScenario(_channel);
+                //ChannelFailureScenario(_channel);
 
                 return _channel;
             }

@@ -135,7 +135,7 @@ public class EventConsumer : IEventConsumer
         }
         catch (Exception e)
         {
-            _logger.ConsumerFailed("Message consume fail!", e);
+            _logger.ConsumerFailed($"Message consume fail! - event name : {eventName} - service name : {serviceData.Name}", e);
 
             _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
                 
@@ -202,7 +202,7 @@ public class EventConsumer : IEventConsumer
         }
         catch (Exception e)
         {
-            _logger.ConsumerFailed("New service creation fail!", e);
+            _logger.ConsumerFailed($"New service creation fail! - queue name {queueName} ", e);
 
             Channel.BasicNack(ea.DeliveryTag, false, false);
         }
