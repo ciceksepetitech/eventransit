@@ -42,9 +42,6 @@ public class EventPublisher : IEventPublisher
 
     public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
     {
-        //todo:closed for a while
-        return;
-
         if (retryCount > _maxRetryCount)
             return;
 
