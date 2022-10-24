@@ -1,4 +1,4 @@
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ namespace EvenTransit.Messaging.RabbitMq.Domain;
 public class RabbitMqProducerChannelFactory : IRabbitMqChannelFactory, IDisposable
 {
     private IModel _channel;
-    private readonly object _guard = new();
+    private static readonly object _guard = new();
     private readonly IRabbitMqConnectionFactory _connection;
     private readonly ILogger<RabbitMqProducerChannelFactory> _logger;
 

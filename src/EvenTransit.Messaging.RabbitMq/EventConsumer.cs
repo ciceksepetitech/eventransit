@@ -26,10 +26,9 @@ public class EventConsumer : IEventConsumer
     private readonly ILogger<EventConsumer> _logger;
     private readonly IMapper _mapper;
     private readonly IEventPublisher _eventPublisher;
-    private IModel Channel => _channelFactory.Channel;
+    private readonly IModel _channel;
     private readonly IRetryQueueHelper _retryQueueHelper;
     private readonly ICustomObjectMapper _customObjectMapper;
-    private readonly IRabbitMqChannelFactory _channelFactory;
 
     public EventConsumer(
         IEnumerable<IRabbitMqChannelFactory> channelFactories,
@@ -50,20 +49,20 @@ public class EventConsumer : IEventConsumer
         _eventPublisher = eventPublisher;
         _retryQueueHelper = retryQueueHelper;
         _customObjectMapper = customObjectMapper;
-        _channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Consumer);
+        _channel = channelFactories.Single(x => x.ChannelType == ChannelTypes.Consumer).Channel;
     }
 
     public async Task ConsumeAsync()
     {
         #region New Service Registration Queue
 
-        var newServiceConsumer = new AsyncEventingBasicConsumer(Channel);
+        var newServiceConsumer = new AsyncEventingBasicConsumer(_channel);
         newServiceConsumer.Received += OnNewServiceCreated;
 
-        Channel.ExchangeDeclare(MessagingConstants.NewServiceExchange, ExchangeType.Fanout, false, false, null);
-        var queueName = Channel.QueueDeclare().QueueName;
-        Channel.QueueBind(queueName, MessagingConstants.NewServiceExchange, string.Empty);
-        Channel.BasicConsume(queueName, false, newServiceConsumer);
+        _channel.ExchangeDeclare(MessagingConstants.NewServiceExchange, ExchangeType.Fanout, false, false, null);
+        var queueName = _channel.QueueDeclare().QueueName;
+        _channel.QueueBind(queueName, MessagingConstants.NewServiceExchange, string.Empty);
+        _channel.BasicConsume(queueName, false, newServiceConsumer);
 
         #endregion
 
@@ -85,19 +84,19 @@ public class EventConsumer : IEventConsumer
     {
         var queueName = serviceName.GetQueueName(eventName);
 
-        Channel.QueueDelete(queueName, false, false);
+        _channel.QueueDelete(queueName, false, false);
 
         foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
         {
             var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
-            Channel.QueueDelete(retryQueueName, false, false);
+            _channel.QueueDelete(retryQueueName, false, false);
         }
     }
 
     public void DeleteExchange(string eventName)
     {
-        Channel.ExchangeDelete(eventName);
-        Channel.ExchangeDelete(eventName.GetRetryExchangeName());
+        _channel.ExchangeDelete(eventName);
+        _channel.ExchangeDelete(eventName.GetRetryExchangeName());
     }
 
     private async Task OnReceiveMessageAsync(string eventName, ServiceDto serviceData, BasicDeliverEventArgs ea)
@@ -128,7 +127,7 @@ public class EventConsumer : IEventConsumer
             var requestData = serviceData with { Url = replacedUrl, Headers = requestHeaders };
             var processResult = await _httpProcessor.ProcessAsync(eventName, requestData, body);
 
-            Channel.BasicAck(ea.DeliveryTag, false);
+            _channel.BasicAck(ea.DeliveryTag, false);
 
             if (!processResult)
                 _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
@@ -138,8 +137,8 @@ public class EventConsumer : IEventConsumer
             _logger.ConsumerFailed($"Message consume fail! - event name : {eventName} - service name : {serviceData.Name}", e);
 
             _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
-                
-            Channel.BasicAck(ea.DeliveryTag, false);
+
+            _channel.BasicAck(ea.DeliveryTag, false);
 
             var logData = new EventLogDto
             {
@@ -188,8 +187,8 @@ public class EventConsumer : IEventConsumer
 
         try
         {
-            Channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
-            Channel.QueueDeclare(queueName, true, false, false, null);
+            _channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
+            _channel.QueueDeclare(queueName, true, false, false, null);
 
             var service = _eventsRepository.GetServiceByEvent(eventName, serviceInfo.ServiceName);
 
@@ -198,13 +197,13 @@ public class EventConsumer : IEventConsumer
             foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
                 BindRetryQueue(eventName, service.Name, retryQueue);
 
-            Channel.BasicAck(ea.DeliveryTag, false);
+            _channel.BasicAck(ea.DeliveryTag, false);
         }
         catch (Exception e)
         {
             _logger.ConsumerFailed($"New service creation fail! - queue name {queueName} ", e);
 
-            Channel.BasicNack(ea.DeliveryTag, false, false);
+            _channel.BasicNack(ea.DeliveryTag, false, false);
         }
 
         return Task.CompletedTask;
@@ -215,22 +214,22 @@ public class EventConsumer : IEventConsumer
         var serviceData = _mapper.Map<ServiceDto>(service);
 
         var queueName = service.Name.GetQueueName(eventName);
-        var eventConsumer = new AsyncEventingBasicConsumer(Channel);
+        var eventConsumer = new AsyncEventingBasicConsumer(_channel);
         
         eventConsumer.Received += async (_, ea) =>
         {
             await OnReceiveMessageAsync(eventName, serviceData, ea);
         };
 
-        Channel.QueueBind(queueName, eventName, eventName);
-        Channel.BasicConsume(queueName, false, eventConsumer);
+        _channel.QueueBind(queueName, eventName, eventName);
+        _channel.BasicConsume(queueName, false, eventConsumer);
     }
 
     private void BindRetryQueue(string eventName, string serviceName, RetryQueueInfo retryQueue)
     {
         var queueName = serviceName.GetQueueName(eventName);
         var retryExchangeName = eventName.GetRetryExchangeName();
-        Channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
+        _channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
         var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
         var retryQueueArguments = new Dictionary<string, object>
@@ -240,14 +239,14 @@ public class EventConsumer : IEventConsumer
             { "x-message-ttl", retryQueue.TTL }
         };
 
-        Channel.QueueDeclare(retryQueueName,
+        _channel.QueueDeclare(retryQueueName,
             true,
             false,
             false,
             retryQueueArguments);
 
-        Channel.QueueBind(retryQueueName, retryExchangeName, queueName);
-        Channel.QueueBind(queueName, eventName, queueName);
+        _channel.QueueBind(retryQueueName, retryExchangeName, queueName);
+        _channel.QueueBind(queueName, eventName, queueName);
     }
 
     private static long GetRetryCount(IBasicProperties properties)
