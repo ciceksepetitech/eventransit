@@ -134,7 +134,7 @@ public class EventConsumer : IEventConsumer
         }
         catch (Exception e)
         {
-            _logger.ConsumerFailed($"Message consume fail! - event name : {eventName} - service name : {serviceData.Name}", e);
+            _logger.ConsumerFailed($"Message consume fail! - event name : {eventName} - service name : {serviceData.Name} - retry : {retryCount} ", e);
 
             _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
 

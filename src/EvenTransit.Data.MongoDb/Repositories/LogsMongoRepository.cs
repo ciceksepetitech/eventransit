@@ -44,14 +44,12 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
 
     public async Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type)
     {
-        return await Collection.CountDocumentsAsync(x =>
-            x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
+        return await Collection.CountDocumentsAsync(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
     }
 
     public long GetLogsCount(DateTime startDate, DateTime endDate, LogType type)
     {
-        return Collection.CountDocuments(x =>
-            x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
+        return Collection.CountDocuments(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
     }
 
     public (long, long) GetLogsCountByEvent(string eventName)

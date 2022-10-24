@@ -27,13 +27,13 @@
           label: 'Succeeded',
           data: @Html.Raw(Model.SuccessCount),
           borderColor: "rgb(25, 135, 84)",
-          backgroundColor: "rgb(25, 135, 84, 0.5)",
+          backgroundColor: "rgb(0, 255, 0, 0.5)"
         },
         {
           label: 'Failed',
           data: @Html.Raw(Model.FailCount),
           borderColor: "rgb(245, 71, 72)",
-          backgroundColor: "rgba(245, 71, 72, 0.5)",
+          backgroundColor: "rgba(128, 0, 0, 0.5)"
         }
       ]
     };
@@ -46,7 +46,7 @@
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'top',
+            position: 'top'
           },
           title: {
             display: true,

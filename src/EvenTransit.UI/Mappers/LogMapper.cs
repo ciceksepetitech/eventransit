@@ -1,4 +1,5 @@
-using AutoMapper;
+﻿using AutoMapper;
+using EvenTransit.Domain.Extensions;
 using EvenTransit.Service.Dto.Log;
 using EvenTransit.UI.Models.Logs;
 
@@ -9,7 +10,8 @@ public class LogMapper : Profile
     public LogMapper()
     {
         CreateMap<LogFilterModel, LogSearchRequestDto>();
-        CreateMap<LogFilterItemDto, LogSearchResultViewModel>();
+        CreateMap<LogFilterItemDto, LogSearchResultViewModel>()
+            .ForMember(s => s.CreatedOnString, m => m.MapFrom(s => s.CreatedOn.ConvertToLocalDateString()));
 
         CreateMap<LogItemDto, LogItemViewModel>();
         CreateMap<LogItemDetailDto, LogItemDetailViewModel>();

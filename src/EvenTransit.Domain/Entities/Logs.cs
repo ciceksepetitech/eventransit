@@ -1,5 +1,4 @@
-using System;
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Domain.Entities;
 
