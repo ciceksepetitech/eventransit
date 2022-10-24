@@ -1,4 +1,4 @@
-using EvenTransit.Messaging.Core.Abstractions;
+﻿using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Service.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +8,7 @@ namespace EvenTransit.Service.BackgroundServices;
 
 public class ConsumerBinderService : BackgroundService
 {
-    private const int DelayMs = 5000;
+    private const int DelayMs = 1000;
     private const int OneSecond = 1000;
     
     private readonly IServiceScopeFactory _serviceScope;
@@ -37,8 +37,7 @@ public class ConsumerBinderService : BackgroundService
                 }
                 catch (Exception e)
                 {
-                    _logger.ConsumerBinderFailed(null,
-                        $"{e.GetType().Name}. {e.Message}. Retrying in {DelayMs / OneSecond} seconds...");
+                    _logger.ConsumerBinderFailed(null, $"{e.GetType().Name}. {e.Message}. Retrying in {DelayMs / OneSecond} seconds...");
                     
                     await Task.Delay(DelayMs, cancellationToken);
                 }

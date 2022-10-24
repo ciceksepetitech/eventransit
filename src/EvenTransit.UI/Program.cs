@@ -51,8 +51,7 @@ if (modeConsumer)
     services.AddHostedService<LogStatisticsService>();
     services.AddHostedService<EventLogStatisticsService>();
 
-    mvcBuilder = services.AddControllersWithViews()
-        .AddRazorRuntimeCompilation();
+    mvcBuilder = services.AddControllersWithViews().AddRazorRuntimeCompilation();
 }
 else
 {
