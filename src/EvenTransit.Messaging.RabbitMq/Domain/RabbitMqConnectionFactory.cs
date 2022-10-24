@@ -22,10 +22,10 @@ public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
 
     public void Dispose()
     {
-        TryCloseConnection(() => ProducerConnection);
-        TryCloseConnection(() => ConsumerConnection);
+        //TryCloseConnection(() => ProducerConnection);
+        //TryCloseConnection(() => ConsumerConnection);
 
-        GC.SuppressFinalize(this);
+        //GC.SuppressFinalize(this);
     }
 
     private void TryCloseConnection(Func<IConnection> connection)
