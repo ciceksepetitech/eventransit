@@ -15,17 +15,17 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services.AddScoped<IEventPublisher, EventPublisher>();
-        services.AddScoped<IRabbitMqChannelFactory, RabbitMqProducerChannelFactory>();
+        services.AddSingleton<IRabbitMqChannelFactory, RabbitMqProducerChannelFactory>();
 
         if (modeConsumer)
         {
             services.AddScoped<IEventConsumer, EventConsumer>();
-            services.AddScoped<IRabbitMqChannelFactory, RabbitMqConsumerChannelFactory>();
+            services.AddSingleton<IRabbitMqChannelFactory, RabbitMqConsumerChannelFactory>();
         }
 
-        services.AddScoped<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+        services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
 
-        services.AddSingleton(typeof(IConnectionFactory), _ =>
+        services.AddScoped(typeof(IConnectionFactory), _ =>
         {
             var connectionFactory = new ConnectionFactory
             {

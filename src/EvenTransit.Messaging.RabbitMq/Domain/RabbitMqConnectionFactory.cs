@@ -1,5 +1,6 @@
 ﻿using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
@@ -7,25 +8,31 @@ namespace EvenTransit.Messaging.RabbitMq.Domain;
 
 public class RabbitMqConnectionFactory : IRabbitMqConnectionFactory, IDisposable
 {
+    private readonly IConnection _producerConnection;
+    private readonly IConnection _consumerConnection;
     private readonly ILogger<RabbitMqConnectionFactory> _logger;
 
-    public IConnection ProducerConnection { get; }
-    public IConnection ConsumerConnection { get; }
+    public IConnection ProducerConnection => _producerConnection;
 
-    public RabbitMqConnectionFactory(ILogger<RabbitMqConnectionFactory> logger, IConnectionFactory connectionFactory)
+    public IConnection ConsumerConnection => _consumerConnection;
+
+    public RabbitMqConnectionFactory(IServiceScopeFactory scopeFactory,
+        ILogger<RabbitMqConnectionFactory> logger)
     {
-        ProducerConnection = connectionFactory.CreateConnection();
-        ConsumerConnection = connectionFactory.CreateConnection();
+        using var scope = scopeFactory.CreateScope();
+        var connectionFactory = scope.ServiceProvider.GetRequiredService<IConnectionFactory>();
 
+        _producerConnection = connectionFactory.CreateConnection();
+        _consumerConnection = connectionFactory.CreateConnection();
         _logger = logger;
     }
 
     public void Dispose()
     {
-        //TryCloseConnection(() => ProducerConnection);
-        //TryCloseConnection(() => ConsumerConnection);
+        TryCloseConnection(() => ProducerConnection);
+        TryCloseConnection(() => ConsumerConnection);
 
-        //GC.SuppressFinalize(this);
+        GC.SuppressFinalize(this);
     }
 
     private void TryCloseConnection(Func<IConnection> connection)
