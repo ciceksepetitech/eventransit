@@ -21,17 +21,17 @@ jobs:
       - name: Compose up
         run: docker-compose up -d ui
 
-     # - name: Compose up
-     #   run: | 
-     #     docker build -t mountebank -f ./ci-test/imposters/Dockerfile.mountebank . 
-     #     docker-compose up -d rabbitmq
-     #     docker-compose up -d ui 
-     #     docker-compose up wait-for-it
+      - name: Compose up
+        run: | 
+          docker build -t mountebank -f ./ci-test/imposters/Dockerfile.mountebank . 
+          docker-compose up -d rabbitmq
+          docker-compose up -d ui 
+          docker-compose up wait-for-it
           
-     # - name: Integration tests
-     #   run: |
-     #     docker run --network container:EventTransitUI \
-     #         postman/newman_ubuntu1404 run https://www.getpostman.com/collections/a45fa2176aa788827619
+      - name: Integration tests
+        run: |
+          docker run --network container:EventTransitUI \
+              postman/newman_ubuntu1404 run https://api.postman.com/collections/18070358-8144f59b-bed2-4d52-bb57-7efbe8f828fe?access_key=PMAT-01GK9KJ46G4HW2A4RMZJV5TVXZ
 
       - name: Push image
         env:
