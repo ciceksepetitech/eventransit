@@ -17,16 +17,13 @@ jobs:
 
       - name: Build image
         run: sh ./scripts/ci-build.sh
-        
-      - name: Compose up
-        run: docker-compose up -d ui
 
       - name: Compose up
         run: | 
           docker build -t mountebank -f ./ci-test/imposters/Dockerfile.mountebank . 
           docker-compose up -d rabbitmq
           docker-compose up -d ui 
-          docker-compose up wait-for-it
+          docker-compose up wait-for-it       
           
       - name: Integration tests
         run: |
