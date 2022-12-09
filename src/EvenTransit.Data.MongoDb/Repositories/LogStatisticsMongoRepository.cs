@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EvenTransit.Data.MongoDb.Settings;
+﻿using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -16,26 +13,27 @@ public class LogStatisticsMongoRepository : BaseMongoRepository<LogStatistic>, I
     {
     }
 
-    public LogStatistic GetStatistic(DateTime date)
+    public async  Task<LogStatistic> GetStatisticAsync(DateTime date)
     {
-        return Collection.Find(x => x.Date == date).FirstOrDefault();
+        return (await Collection.FindAsync(x => x.Date == date)).FirstOrDefault();
     }
 
-    public void AddStatistic(LogStatistic logStatistic)
+    public async Task AddStatisticAsync(LogStatistic logStatistic)
     {
-        Collection.InsertOne(logStatistic);
+        await Collection.InsertOneAsync(logStatistic);
     }
 
-    public void UpdateStatistic(Guid id, long successCount, long failCount)
+    public async Task UpdateStatisticAsync(Guid id, long successCount, long failCount)
     {
-        var update = Builders<LogStatistic>.Update.Set("FailCount", failCount);
-        update.Set("SuccessCount", successCount);
-        Collection.UpdateOne(x => x.Id == id, update);
+        var update = Builders<LogStatistic>.Update
+            .Inc(s => s.FailCount, failCount)
+            .Inc(s => s.SuccessCount, successCount);
+
+        await Collection.UpdateOneAsync(x => x.Id == id, update);
     }
 
     public async Task<List<LogStatistic>> GetStatisticsAsync(DateTime startDate, DateTime endDate)
     {
-        return await Collection.Find(x => x.Date >= startDate
-                                          && x.Date <= endDate).ToListAsync();
+        return await Collection.Find(x => x.Date >= startDate && x.Date <= endDate).ToListAsync();
     }
 }

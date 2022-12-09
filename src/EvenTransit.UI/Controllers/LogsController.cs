@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using EvenTransit.Domain.Extensions;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
@@ -43,8 +43,8 @@ public class LogsController : Controller
             ServiceName = model.ServiceName,
             LogType = model.LogType,
             Page = model.Page,
-            LogDateFrom = model.LogDateFrom.ConvertToDateTime(),
-            LogDateTo = model.LogDateTo.ConvertToDateTime()
+            LogDateFrom = model.LogDateFrom.ConvertToStartDate(),
+            LogDateTo = model.LogDateTo.ConvertToEndDate()
         };
 
         var result = await _logService.SearchAsync(request);

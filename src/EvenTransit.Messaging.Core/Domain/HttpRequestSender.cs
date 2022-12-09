@@ -8,6 +8,8 @@ namespace EvenTransit.Messaging.Core.Domain;
 
 public class HttpRequestSender : IHttpRequestSender
 {
+    private const int _defaultTimeout = 20;
+    private const int _maxTimeout = 60;
     private readonly IHttpClientFactory _clientFactory;
 
     public HttpRequestSender(IHttpClientFactory clientFactory)
@@ -21,14 +23,19 @@ public class HttpRequestSender : IHttpRequestSender
         var httpClient = _clientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(request.Url);
 
-        if (request.Timeout > 0) httpClient.Timeout = TimeSpan.FromSeconds(request.Timeout);
+        httpClient.Timeout = TimeSpan.FromSeconds(_defaultTimeout);
+
+        if (request.Timeout > 0)
+            httpClient.Timeout = TimeSpan.FromSeconds(request.Timeout);
+
+        if (request.Timeout > _maxTimeout)
+            httpClient.Timeout = TimeSpan.FromSeconds(_maxTimeout);
 
         if (request.Headers != null)
             foreach (var header in request.Headers)
                 requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
 
         requestMessage.Method = new HttpMethod(request.Method);
-
 
         var contentData = string.Empty;
 
@@ -43,8 +50,8 @@ public class HttpRequestSender : IHttpRequestSender
         requestMessage.Content = content;
 
         var response = await httpClient.SendAsync(requestMessage);
-        
-        var isSuccess = response.StatusCode < HttpStatusCode.InternalServerError && 
+
+        var isSuccess = response.StatusCode < HttpStatusCode.InternalServerError &&
                         response.StatusCode != HttpStatusCode.TooManyRequests &&
                         response.StatusCode != HttpStatusCode.RequestTimeout;
 

@@ -43,13 +43,11 @@ services.AddServices(modeConsumer);
 services.AddMessaging(modeConsumer);
 services.AddHealthChecks();
 
-IMvcBuilder mvcBuilder; 
+IMvcBuilder mvcBuilder;
 
 if (modeConsumer)
 {
     services.AddHostedService<ConsumerBinderService>();
-    services.AddHostedService<LogStatisticsService>();
-    services.AddHostedService<EventLogStatisticsService>();
 
     mvcBuilder = services.AddControllersWithViews().AddRazorRuntimeCompilation();
 }
@@ -73,23 +71,13 @@ void App()
 
     app.ConfigureSerilogLogger();
 
-    // Configure the HTTP request pipeline.
-    if (modeConsumer)
-    {
-        if (env.IsDevelopment())
-            app.UseDeveloperExceptionPage();
-        else
-        {
-            app.UseExceptionHandler("/Home/Error");
-            app.UseHsts();
-        }
-    }
+    app.UseDeveloperExceptionPage();
 
     app.UseSwagger();
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "EvenTransit.Api v1"); });
 
     app.UseHttpsRedirection();
-    
+
     if (modeConsumer)
     {
         app.UseStaticFiles();
@@ -99,12 +87,10 @@ void App()
 
     app.MapHealthChecks("/healthcheck", new HealthCheckOptions { Predicate = _ => false });
     app.MapHealthChecks("/readiness");
-    
+
     if (modeConsumer)
     {
-        app.MapControllerRoute(
-            "default",
-            "{controller=Home}/{action=Index}/{id?}");
+        app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
     }
     else
     {
@@ -112,7 +98,7 @@ void App()
     }
 
     ConfigureMinThreads();
-    
+
     app.Run();
 }
 
@@ -122,13 +108,15 @@ static void ConfigureMinThreads()
 {
     const string minCopThreads = "MIN_IOC_THREAD";
     const string minWorkerThreads = "MIN_WORKER_THREAD";
-    const string defaultValue = "100";
-            
+    const string defaultValue = "200";
+
     var envMinWorker = Environment.GetEnvironmentVariable(minWorkerThreads);
     var envMinIoc = Environment.GetEnvironmentVariable(minCopThreads);
 
-    if (string.IsNullOrEmpty(envMinWorker)) envMinWorker = defaultValue;
-    if (string.IsNullOrEmpty(envMinIoc)) envMinIoc = defaultValue;
+    if (string.IsNullOrEmpty(envMinWorker))
+        envMinWorker = defaultValue;
+    if (string.IsNullOrEmpty(envMinIoc))
+        envMinIoc = defaultValue;
 
     ThreadPool.SetMinThreads(Convert.ToInt32(envMinWorker), Convert.ToInt32(envMinIoc));
 }

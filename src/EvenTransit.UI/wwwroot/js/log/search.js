@@ -161,7 +161,7 @@ function fillLogTableRows(result, tbodyRef, page) {
             eventNameCell.innerHTML = item.eventName;
             serviceNameCell.innerHTML = item.serviceName;
             typeCell.innerHTML = getLogType(item.logType);
-            createdOnCell.innerHTML = item.createdOn;
+            createdOnCell.innerHTML = item.createdOnString;
         });
     }
 
@@ -259,6 +259,8 @@ function createPaginationElement(i, page, innerHtml, activeControl, isDisabled) 
 function activePassivePrevNextItem(page, firstPage, totalPage) {
     let prev = document.querySelector("#prev button");
     let next = document.querySelector("#next button");
+
+    if (prev == null) return;
 
     prev.disabled = page <= firstPage;
 

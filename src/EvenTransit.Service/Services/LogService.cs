@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
@@ -49,7 +45,8 @@ public class LogService : ILogService
 
         return new LogSearchResultDto
         {
-            Items = _mapper.Map<List<LogFilterItemDto>>(result.Items), TotalPages = result.TotalPages
+            Items = _mapper.Map<List<LogFilterItemDto>>(result.Items),
+            TotalPages = result.TotalPages
         };
     }
 
@@ -59,7 +56,8 @@ public class LogService : ILogService
 
         return new LogSearchResultDto
         {
-            Items = _mapper.Map<List<LogFilterItemDto>>(result.Items), TotalPages = result.TotalPages
+            Items = _mapper.Map<List<LogFilterItemDto>>(result.Items),
+            TotalPages = result.TotalPages
         };
     }
 
@@ -72,11 +70,11 @@ public class LogService : ILogService
     public async Task<LogStatisticsDto> GetDashboardStatistics()
     {
         var response = new LogStatisticsDto();
-        var startDate = DateTime.Today.AddDays(-4);
+        var startDate = DateTime.Today.AddDays(-7);
         var endDate = DateTime.UtcNow;
         var logStatistics = await _logStatisticsRepository.GetStatisticsAsync(startDate, endDate);
 
-        var dates = logStatistics.Select(x => x.Date.ToString("yyyy-MM-dd")).ToList();
+        var dates = logStatistics.Select(x => x.Date.AddHours(3).ToString("dd-MM-yyyy")).ToList();
         var successCount = logStatistics.Select(x => x.SuccessCount).ToList();
         var failCount = logStatistics.Select(x => x.FailCount).ToList();
 

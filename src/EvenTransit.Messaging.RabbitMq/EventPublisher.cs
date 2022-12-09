@@ -6,6 +6,7 @@ using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace EvenTransit.Messaging.RabbitMq;
@@ -13,19 +14,25 @@ namespace EvenTransit.Messaging.RabbitMq;
 public class EventPublisher : IEventPublisher
 {
     private const int _maxRetryCount = 5;
-    private readonly IModel _channel;
     private readonly IRetryQueueHelper _retryQueueHelper;
+    private readonly ILogger<EventPublisher> _logger;
+    private readonly IRabbitMqChannelFactory _channelFactory;
+    private IModel Channel => _channelFactory.Channel;
 
     public EventPublisher(IEnumerable<IRabbitMqChannelFactory> channelFactories,
-        IRetryQueueHelper retryQueueHelper)
+        IRetryQueueHelper retryQueueHelper,
+        ILogger<EventPublisher> logger)
     {
         _retryQueueHelper = retryQueueHelper;
-        _channel = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer).Channel;
+        _logger = logger;
+        _channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Producer);
     }
 
     public void Publish(EventRequestDto request)
     {
-        var properties = _channel.CreateBasicProperties();
+        var channel = Channel;
+        
+        var properties = channel.CreateBasicProperties();
         properties.Persistent = true;
 
         var data = new EventPublishDto
@@ -36,32 +43,37 @@ public class EventPublisher : IEventPublisher
         };
 
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
-
-        _channel.BasicPublish(request.EventName, request.EventName, false, properties, body);
+        
+        channel.ExchangeDeclare(request.EventName, ExchangeType.Direct, true, false, null);
+        
+        channel.BasicPublish(request.EventName, request.EventName, false, properties, body);
     }
 
     public void PublishToRetry(string eventName, string serviceName, byte[] payload, long retryCount)
     {
         if (retryCount > _maxRetryCount)
+        {
+            _logger.MaxRetryReached($" event name : {eventName} - service name : {serviceName} - retry : {retryCount} ");
             return;
+        }
 
         var newRetryCount = retryCount + 1;
 
-        var properties = _channel.CreateBasicProperties();
+        var properties = Channel.CreateBasicProperties();
         properties.Persistent = true;
         properties.Headers = new Dictionary<string, object> { { MessagingConstants.RetryHeaderName, newRetryCount } };
 
         var retryQueueName = serviceName.GetRetryQueueName(eventName, _retryQueueHelper.GetRetryQueue(retryCount));
-        _channel.BasicPublish(eventName.GetRetryExchangeName(), retryQueueName, false, properties, payload);
+        Channel.BasicPublish(eventName.GetRetryExchangeName(), retryQueueName, false, properties, payload);
     }
 
     public void RegisterNewService(NewServiceDto data)
     {
-        var properties = _channel.CreateBasicProperties();
+        var properties = Channel.CreateBasicProperties();
         properties.Persistent = true;
 
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
 
-        _channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false, properties, body);
+        Channel.BasicPublish(MessagingConstants.NewServiceExchange, string.Empty, false, properties, body);
     }
 }

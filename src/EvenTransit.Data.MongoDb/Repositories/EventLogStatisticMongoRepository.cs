@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EvenTransit.Data.MongoDb.Settings;
+﻿using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -32,6 +29,11 @@ public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStat
         return await Collection.Find(x => x.EventId == eventId).FirstOrDefaultAsync();
     }
 
+    public async Task<EventLogStatistic> GetAsync(string name)
+    {
+        return await Collection.Find(x => x.EventName == name).FirstOrDefaultAsync();
+    }
+
     public async Task InsertAsync(EventLogStatistic data)
     {
         data.Id = Guid.NewGuid();
@@ -52,5 +54,14 @@ public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStat
     public async Task DeleteAsync(Guid id)
     {
         await Collection.DeleteOneAsync(x => x.EventId == id);
+    }
+
+    public async Task UpdateStatisticAsync(Guid id, long successCount, long failCount)
+    {
+        var update = Builders<EventLogStatistic>.Update
+            .Inc(s => s.FailCount, failCount)
+            .Inc(s => s.SuccessCount, successCount);
+
+        await Collection.UpdateOneAsync(x => x.Id == id, update);
     }
 }
