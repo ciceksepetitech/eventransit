@@ -227,6 +227,7 @@ public class EventConsumer : IEventConsumer
         foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
             BindRetryQueue(eventName, service.Name, retryQueue);
         
+        channel.QueueBind(queueName, eventName, eventName);
         channel.BasicConsume(queueName, false, eventConsumer);
     }
 
