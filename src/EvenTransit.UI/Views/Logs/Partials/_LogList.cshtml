@@ -13,7 +13,11 @@
 </table>
 
 <nav class="float-end">
-    <ul class="pagination" id="logs-pagination"></ul>
+    <ul class="pagination" id="logs-pagination">
+        <div class="select2-toggle"  style=" display: none;">
+            <select class="select2me" id="custom-page"></select>
+        </div>
+    </ul>
 </nav>
 
 @await Html.PartialAsync("Partials/_LogDetail")
