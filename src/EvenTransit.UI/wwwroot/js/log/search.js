@@ -1,5 +1,9 @@
 const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailModal'), {});
 const serviceDropdown = document.querySelector("#ServiceName");
+
+
+$('.select2me').select2();
+
 document.querySelector("select#EventName").addEventListener("change", async (e) => {
     let selectedEvent = e.target.value;
 
@@ -92,23 +96,38 @@ function removeLogTableRows(tbodyRef) {
 async function search(page = 1) {
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
 
+    const btnSearch = $("#btnSearch");
+    const loadingClass = "button--loading";
+    btnSearch.addClass(loadingClass);
+    setTimeout(() => btnSearch.removeClass(loadingClass), 500);
+
     removeLogTableRows(tbodyRef);
 
-    const logDateFrom = getFieldValue("#LogDateFrom", "");
-    const logDateTo = getFieldValue("#LogDateTo", "");
+    const logDateFrom = $('#LogDate').data('daterangepicker').startDate.format("DD-MM-YYYY HH:mm");
+    const logDateTo = $('#LogDate').data('daterangepicker').endDate.format("DD-MM-YYYY HH:mm");
+
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
     const serviceName = getFieldValue("select#ServiceName", "");
 
-    const response = await fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
+    const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
+    }).catch(() => {
+        fillLogTableRows({
+            message: "Unknown error",
+            isSuccess: false
+        }, tbodyRef, page);
+        setTimeout(() => btnSearch.removeClass(loadingClass), 500);
     });
-    const result = await response.json();
+    const response = await promise;
+    if (response) {
+        const result = await response.json();
 
-    fillLogTableRows(result, tbodyRef, page);
+        fillLogTableRows(result, tbodyRef, page);
+    }
 }
 
 function fillLogTableRows(result, tbodyRef, page) {
@@ -221,7 +240,7 @@ function addPaginationItems(i, firstPage, totalPage, page) {
         elementList.push(createPaginationElement(i, page, dots, false, true));
     }
 
-    //Add last page element 
+    //Add last page element
     if (i === totalPage && totalPage > firstPage) {
         elementList.push(createPaginationElement(i, page, i, true));
         console.log(i, " last element", page);

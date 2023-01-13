@@ -14,11 +14,11 @@ public class SaveServiceModelValidator : AbstractValidator<SaveServiceModel>
             .WithMessage("Event id cannot be empty");
 
         RuleFor(x => x.ServiceName)
-            .Must(x => !string.IsNullOrWhiteSpace(x))
+            .NotEmpty()
             .WithMessage("Service name cannot be empty");
 
         RuleFor(x => x.Url)
-            .Must(x => !string.IsNullOrWhiteSpace(x))
+            .NotEmpty()
             .WithMessage("Url cannot be empty");
 
         RuleFor(x => x.ServiceName)
@@ -30,7 +30,7 @@ public class SaveServiceModelValidator : AbstractValidator<SaveServiceModel>
             .WithMessage(ValidationConstants.TimeoutMustBeGreaterThanZero);
 
         RuleFor(x => x.Method)
-            .Must(x => !string.IsNullOrWhiteSpace(x))
+            .NotEmpty()
             .WithMessage(ValidationConstants.MethodCannotBeNotEmpty);
 
         RuleFor(x => x.Method)
