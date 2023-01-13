@@ -2,7 +2,13 @@ const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailMod
 const serviceDropdown = document.querySelector("#ServiceName");
 
 
-$('.select2me').select2();
+const select2me = $('.select2me');
+select2me.select2();
+$("#custom-page").on("select2:select", function (e) {
+    if (!e.params.data.id) return;
+    search(parseInt(e.params.data.id));
+});
+
 
 document.querySelector("select#EventName").addEventListener("change", async (e) => {
     let selectedEvent = e.target.value;
@@ -103,30 +109,41 @@ async function search(page = 1) {
 
     removeLogTableRows(tbodyRef);
 
-    const logDateFrom = $('#LogDate').data('daterangepicker').startDate.format("DD-MM-YYYY HH:mm");
-    const logDateTo = $('#LogDate').data('daterangepicker').endDate.format("DD-MM-YYYY HH:mm");
+    const logDate = $("#LogDate");
+    const logDateFrom = logDate.data('daterangepicker').startDate.format("DD-MM-YYYY HH:mm");
+    const logDateTo = logDate.data('daterangepicker').endDate.format("DD-MM-YYYY HH:mm");
 
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
     const serviceName = getFieldValue("select#ServiceName", "");
 
+    const defaultResponse = {
+        message: "Unknown error",
+        isSuccess: false
+    };
     const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     }).catch(() => {
-        fillLogTableRows({
-            message: "Unknown error",
-            isSuccess: false
-        }, tbodyRef, page);
         setTimeout(() => btnSearch.removeClass(loadingClass), 500);
     });
-    const response = await promise;
-    if (response) {
-        const result = await response.json();
 
-        fillLogTableRows(result, tbodyRef, page);
+    const response = await promise;
+
+    let result = response?.json && await response.json();
+    result ??= defaultResponse
+
+    fillLogTableRows(result, tbodyRef, page);
+}
+
+function toggleCustomPager(totalPage) {
+    const div = $(".select2-toggle");
+    if (div.is(":visible") && totalPage < 2) {
+        div.hide();
+    } else {
+        div.show();
     }
 }
 
@@ -189,13 +206,24 @@ function fillLogTableRows(result, tbodyRef, page) {
     let totalPage = result.data.totalPages;
     let firstPage = 1;
 
+    const customPage = $('#custom-page');
+    customPage.empty().trigger("change");
+
+    toggleCustomPager(totalPage);
+
     for (let i = 1; i <= totalPage; i++) {
         let liElements = addPaginationItems(i, firstPage, totalPage, page);
+
+        const newOption = new Option(i, i, false, false);
+        customPage.append(newOption).trigger('change');
 
         for (let j = 0; j < liElements.length; j++) {
             paginationRef.appendChild(liElements[j]);
         }
     }
+
+    customPage.val(page);
+    customPage.trigger('change');
 
     activePassivePrevNextItem(page, firstPage, totalPage);
 
