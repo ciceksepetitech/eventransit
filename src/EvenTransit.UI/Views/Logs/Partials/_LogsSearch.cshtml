@@ -1,14 +1,13 @@
 @model EvenTransit.UI.Models.Logs.LogsViewModel
+
 <div class="row">
     <div class="col">
         <div class="h-100 p-5 bg-light border rounded-3">
             <div class="row">
                 <div class="col-4">
                     <label for="LogDateFrom" class="form-label">Log Date</label>
-                    <div class="input-group" id="LogDate">
-                        <input type="text" class="form-control" placeholder="From" aria-label="From" id="LogDateFrom" name="LogDateFrom">
-                        <span class="input-group-text">to</span>
-                        <input type="text" class="form-control" placeholder="To" aria-label="To" id="LogDateTo" name="LogDateTo">
+                    <div class="input-group">
+                        <input type="text" id="LogDate" name="daterange" class="form-control"/>
                     </div>
                 </div>
                 <div class="col">
@@ -21,17 +20,24 @@
                 </div>
                 <div class="col">
                     @Html.Label("EventName", "Event", new { @class = "form-label" })
-                    @Html.DropDownList("EventName", Model.Events, "Select...", new { @class = "form-control" })
+                    @Html.DropDownList("EventName", Model.Events, "Select...", new { @class = "select2-container form-control select2me" })
                 </div>
+            </div>
+            <div class="row">
                 <div class="col">
                     <label for="ServiceName" class="form-label">Service</label>
                     <select class="form-control" id="ServiceName" name="ServiceName">
                         <option value="">Select...</option>
                     </select>
                 </div>
+                <div class="col">
+                    <label for="Query" class="form-label">Query</label>
+                    <input type="text" class="form-control" id="Query" name="Query"/>
+                </div>
                 <div class="col-1 d-flex">
-                    <button type="button" class="btn btn-success align-self-end" onclick="search()">
-                        Search
+                    <button type="button" class="btn btn-success align-self-end button" id="btnSearch" onclick="search()">
+                        <span class="button__text">Search</span>
+
                     </button>
                 </div>
             </div>

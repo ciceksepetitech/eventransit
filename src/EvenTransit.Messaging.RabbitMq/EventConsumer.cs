@@ -131,10 +131,10 @@ public class EventConsumer : IEventConsumer
             var requestData = serviceData with { Url = replacedUrl, Headers = requestHeaders };
             var processResult = await _httpProcessor.ProcessAsync(eventName, requestData, body);
 
-            Channel.BasicAck(ea.DeliveryTag, false);
-
             if (!processResult)
                 _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
+            
+            Channel.BasicAck(ea.DeliveryTag, false);
         }
         catch (Exception e)
         {
@@ -223,15 +223,15 @@ public class EventConsumer : IEventConsumer
 
         channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
         channel.QueueDeclare(queueName, true, false, false, null);
+        channel.QueueBind(queueName, eventName, eventName); // bind routing key events.
+        channel.QueueBind(queueName, eventName, queueName); // bind routing key for retries.
+
+        BindRetryQueues(eventName, service.Name);
         
-        foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
-            BindRetryQueue(eventName, service.Name, retryQueue);
-        
-        channel.QueueBind(queueName, eventName, eventName);
         channel.BasicConsume(queueName, false, eventConsumer);
     }
 
-    private void BindRetryQueue(string eventName, string serviceName, RetryQueueInfo retryQueue)
+    private void BindRetryQueues(string eventName, string serviceName)
     {
         var channel = Channel;
         
@@ -239,22 +239,24 @@ public class EventConsumer : IEventConsumer
         var retryExchangeName = eventName.GetRetryExchangeName();
         channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
-        var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
-        var retryQueueArguments = new Dictionary<string, object>
+        foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
         {
-            { "x-dead-letter-exchange", eventName },
-            { "x-dead-letter-routing-key", queueName },
-            { "x-message-ttl", retryQueue.TTL }
-        };
+            var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
+            var retryQueueArguments = new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", eventName },
+                { "x-dead-letter-routing-key", queueName },
+                { "x-message-ttl", retryQueue.TTL }
+            };
 
-        channel.QueueDeclare(retryQueueName,
-            true,
-            false,
-            false,
-            retryQueueArguments);
+            channel.QueueDeclare(retryQueueName,
+                true,
+                false,
+                false,
+                retryQueueArguments);
 
-        channel.QueueBind(retryQueueName, retryExchangeName, queueName);
-        channel.QueueBind(queueName, eventName, queueName);
+            channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
+        }
     }
 
     private static long GetRetryCount(IBasicProperties properties)
