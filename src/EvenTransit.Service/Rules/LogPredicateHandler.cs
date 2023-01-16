@@ -19,5 +19,5 @@ public abstract class LogPredicateHandler
     }
 
     public abstract BinaryExpression HandleRequest(ParameterExpression parameter, Expression leftExpression,
-        LogSearchRequestDto logSearchRequestDto);
+        LogSearchRequestDto request);
 }

@@ -9,7 +9,7 @@ namespace EvenTransit.Domain.Abstractions;
 public interface ILogsRepository
 {
     Task InsertLogAsync(Logs model);
-    Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page);
+    Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, string query, int page);
     Task<Logs> GetByIdAsync(Guid id);
     Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type);
     long GetLogsCount(DateTime startDate, DateTime endDate, LogType type);

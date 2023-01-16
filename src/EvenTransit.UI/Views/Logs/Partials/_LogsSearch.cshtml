@@ -22,11 +22,17 @@
                     @Html.Label("EventName", "Event", new { @class = "form-label" })
                     @Html.DropDownList("EventName", Model.Events, "Select...", new { @class = "select2-container form-control select2me" })
                 </div>
+            </div>
+            <div class="row">
                 <div class="col">
                     <label for="ServiceName" class="form-label">Service</label>
                     <select class="form-control" id="ServiceName" name="ServiceName">
                         <option value="">Select...</option>
                     </select>
+                </div>
+                <div class="col">
+                    <label for="Query" class="form-label">Query</label>
+                    <input type="text" class="form-control" id="Query" name="Query"/>
                 </div>
                 <div class="col-1 d-flex">
                     <button type="button" class="btn btn-success align-self-end button" id="btnSearch" onclick="search()">

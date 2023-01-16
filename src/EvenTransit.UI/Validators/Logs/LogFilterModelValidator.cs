@@ -15,9 +15,8 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             .WithMessage("Event name cannot be empty");
 
         RuleFor(x => x.ServiceName)
+            .NotEmpty()
             .WithMessage("Service name cannot be empty");
-        //     .NotEmpty()
-               .NotEmpty()
 
         RuleFor(x => x.LogDateFrom)
             .Must(x => DateTime.TryParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out var _))
@@ -28,5 +27,14 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             .Must(x => DateTime.TryParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out var _))
             .When(x => !string.IsNullOrWhiteSpace(x.LogDateTo))
             .WithMessage(ValidationConstants.InvalidLogDateTo);
+
+        RuleFor(w => w)
+            .Must(w =>
+            {
+                DateTime.TryParse(w.LogDateFrom, out var startDate);
+                DateTime.TryParse(w.LogDateTo, out var endDate);
+                return (endDate - startDate).TotalDays <= 1;
+            }).WithMessage("Date range must be max 1 day when 'Query' string provided")
+            .When(w => !string.IsNullOrWhiteSpace(w.Query));
     }
 }
