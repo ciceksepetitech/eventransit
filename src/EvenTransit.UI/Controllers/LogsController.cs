@@ -37,17 +37,15 @@ public class LogsController : Controller
     {
         if (model.Page <= 0) model.Page = 1;
 
-        DateTime.TryParse(model.LogDateFrom, out var startDate);
-        DateTime.TryParse(model.LogDateTo, out var endDate);
-
         var request = new LogSearchRequestDto
         {
             EventName = model.EventName,
             ServiceName = model.ServiceName,
             LogType = model.LogType,
             Page = model.Page,
-            LogDateFrom = startDate,
-            LogDateTo = endDate
+            LogDateFrom = DateTime.Parse(model.LogDateFrom),
+            LogDateTo = DateTime.Parse(model.LogDateTo),
+            Query = model.Query
         };
 
         var result = await _logService.SearchAsync(request);

@@ -116,12 +116,13 @@ async function search(page = 1) {
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
     const serviceName = getFieldValue("select#ServiceName", "");
+    const query = getFieldValue("#Query", "");
 
     const defaultResponse = {
         message: "Unknown error",
         isSuccess: false
     };
-    const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
+    const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}&query=${query}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -140,10 +141,10 @@ async function search(page = 1) {
 
 function toggleCustomPager(totalPage) {
     const div = $(".select2-toggle");
-    if (div.is(":visible") && totalPage < 2) {
-        div.hide();
-    } else {
+    if (!div.is(":visible") && totalPage > 1) {
         div.show();
+    } else if (div.is(":visible") && totalPage <= 1) {
+        div.hide();
     }
 }
 
