@@ -33,8 +33,8 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             {
                 DateTime.TryParse(w.LogDateFrom, out var startDate);
                 DateTime.TryParse(w.LogDateTo, out var endDate);
-                return (endDate - startDate).TotalDays <= 1;
-            }).WithMessage("Date range must be max 1 day when 'Query' string provided")
+                return (endDate - startDate).TotalHours <= 24;
+            }).WithMessage("Date range must be max 24 hours when 'Query' string provided")
             .When(w => !string.IsNullOrWhiteSpace(w.Query));
     }
 }
