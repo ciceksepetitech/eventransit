@@ -105,7 +105,6 @@ async function search(page = 1) {
     const btnSearch = $("#btnSearch");
     const loadingClass = "button--loading";
     btnSearch.addClass(loadingClass);
-    setTimeout(() => btnSearch.removeClass(loadingClass), 500);
 
     removeLogTableRows(tbodyRef);
 
@@ -132,6 +131,7 @@ async function search(page = 1) {
     });
 
     const response = await promise;
+    setTimeout(() => btnSearch.removeClass(loadingClass), 500);
 
     let result = response?.json && await response.json();
     result ??= defaultResponse
