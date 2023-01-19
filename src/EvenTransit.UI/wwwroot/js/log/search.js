@@ -10,7 +10,7 @@ $("#custom-page").on("select2:select", function (e) {
 });
 
 
-document.querySelector("select#EventName").addEventListener("change", async (e) => {
+$("select#EventName").on('select2:select', async function (e) {
     let selectedEvent = e.target.value;
 
     clearServiceDropdown();
@@ -115,13 +115,13 @@ async function search(page = 1) {
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
     const serviceName = getFieldValue("select#ServiceName", "");
-    const query = getFieldValue("#Query", "");
+    const query = getFieldValue("input#Query", "");
 
     const defaultResponse = {
         message: "Unknown error",
         isSuccess: false
     };
-    const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}&query=${query}`, {
+    const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}&Query=${query}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
