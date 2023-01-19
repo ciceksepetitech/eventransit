@@ -19,9 +19,15 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             .WithMessage("Service name cannot be empty");
 
         RuleFor(x => x.LogDateFrom)
+            .NotEmpty();
+
+        RuleFor(x => x.LogDateFrom)
             .Must(x => DateTime.TryParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out var _))
             .When(x => !string.IsNullOrWhiteSpace(x.LogDateFrom))
             .WithMessage(ValidationConstants.InvalidLogDateFrom);
+
+        RuleFor(x => x.LogDateTo)
+            .NotEmpty();
 
         RuleFor(x => x.LogDateTo)
             .Must(x => DateTime.TryParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out var _))
