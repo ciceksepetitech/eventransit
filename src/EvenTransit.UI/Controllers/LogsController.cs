@@ -43,8 +43,8 @@ public class LogsController : Controller
             ServiceName = model.ServiceName,
             LogType = model.LogType,
             Page = model.Page,
-            LogDateFrom = DateTime.Parse(model.LogDateFrom),
-            LogDateTo = DateTime.Parse(model.LogDateTo),
+            LogDateFrom = DateTime.ParseExact(model.LogDateFrom, "dd-MM-yyyy HH:mm", null),
+            LogDateTo = DateTime.ParseExact(model.LogDateTo, "dd-MM-yyyy HH:mm", null),
             Query = model.Query
         };
 
