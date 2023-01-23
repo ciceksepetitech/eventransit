@@ -2,28 +2,79 @@
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
-using EvenTransit.Messaging.Core.InternalEvents;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EvenTransit.Messaging.Core.Domain;
 
 public class EventLog : IEventLog
 {
     private readonly ILogsRepository _logsRepository;
-    private readonly IInternalEventPublisher _internalEventPublisher;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogStatisticsRepository _logStatisticsRepository;
+    private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
 
     public EventLog
     (
         ILogsRepository logsRepository,
-        IInternalEventPublisher internalEventPublisher
+        IServiceProvider serviceProvider,
+        ILogStatisticsRepository logStatisticsRepository,
+        IEventLogStatisticRepository eventLogStatisticRepository
     )
     {
         _logsRepository = logsRepository;
-        _internalEventPublisher = internalEventPublisher;
+        _serviceProvider = serviceProvider;
+        _logStatisticsRepository = logStatisticsRepository;
+        _eventLogStatisticRepository = eventLogStatisticRepository;
     }
 
     public async Task LogAsync(Logs details)
     {
         await _logsRepository.InsertLogAsync(details);
-        await _internalEventPublisher.FireAndForgetAsync(new StatisticsUpdatedEvent { Details = details });
+
+        using var scope = _serviceProvider.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<IEventLog>();
+        await Task.Run(async () =>
+        {
+            await service.UpdateStatisticsAsync(details);
+        });
+
+        await Task.Run(async () =>
+        {
+            await service.UpdateEventStatisticsAsync(details);
+        });
+    }
+
+    public async Task UpdateStatisticsAsync(Logs details)
+    {
+        var startDate = DateTime.Today;
+        var statistic = await _logStatisticsRepository.GetStatisticAsync(startDate);
+
+        var failCount = details.LogType == LogType.Fail ? 1 : 0;
+        var successCount = details.LogType == LogType.Success ? 1 : 0;
+
+        if (statistic == null)
+        {
+            var logStatistic = new LogStatistic
+            {
+                Id = Guid.NewGuid(),
+                Date = startDate,
+                FailCount = failCount,
+                SuccessCount = successCount
+            };
+            await _logStatisticsRepository.AddStatisticAsync(logStatistic);
+        }
+        else
+            await _logStatisticsRepository.UpdateStatisticAsync(statistic.Id, successCount, failCount);
+    }
+
+
+    public async Task UpdateEventStatisticsAsync(Logs details)
+    {
+        var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName);
+
+        var successCount = details.LogType == LogType.Success ? 1 : 0;
+        var failCount = details.LogType == LogType.Fail ? 1 : 0;
+
+        await _eventLogStatisticRepository.UpdateStatisticAsync(eventStatistic.Id, successCount, failCount);
     }
 }

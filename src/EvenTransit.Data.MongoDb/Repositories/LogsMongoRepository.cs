@@ -32,7 +32,7 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
         var contains = FilterDefinition<Logs>.Empty;
         if (!string.IsNullOrWhiteSpace(query))
         {
-            var regex = new BsonRegularExpression(query, "i");
+            var regex = new BsonRegularExpression(Regex.Escape(query), "i");
             contains = Builders<Logs>.Filter.Regex(w => w.Details.Request.Body, regex);
         }
 
