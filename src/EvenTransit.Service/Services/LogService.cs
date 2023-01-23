@@ -75,7 +75,7 @@ public class LogService : ILogService
         var endDate = DateTime.UtcNow;
         var logStatistics = await _logStatisticsRepository.GetStatisticsAsync(startDate, endDate);
 
-        var dates = logStatistics.Select(x => x.Date.AddHours(3).ToString("dd-MM-yyyy")).ToList();
+        var dates = logStatistics.Select(x => x.Date.ToString("dd-MM-yyyy")).ToList();
         var successCount = logStatistics.Select(x => x.SuccessCount).ToList();
         var failCount = logStatistics.Select(x => x.FailCount).ToList();
 

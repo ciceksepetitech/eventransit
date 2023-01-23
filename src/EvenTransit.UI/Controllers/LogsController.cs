@@ -6,6 +6,7 @@ using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Globalization;
 
 namespace EvenTransit.UI.Controllers;
 
@@ -43,8 +44,8 @@ public class LogsController : Controller
             ServiceName = model.ServiceName,
             LogType = model.LogType,
             Page = model.Page,
-            LogDateFrom = DateTime.ParseExact(model.LogDateFrom, "dd-MM-yyyy HH:mm", null),
-            LogDateTo = DateTime.ParseExact(model.LogDateTo, "dd-MM-yyyy HH:mm", null),
+            LogDateFrom = DateTime.ParseExact(model.LogDateFrom, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None),
+            LogDateTo = DateTime.ParseExact(model.LogDateTo, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None),
             Query = model.Query
         };
 
