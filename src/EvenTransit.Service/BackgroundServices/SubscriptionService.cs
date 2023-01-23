@@ -23,7 +23,7 @@ namespace EvenTransit.Service.BackgroundServices
         /// <returns>Event consumers</returns>
         public IEnumerable<IConsumer<T>> GetSubscriptions<T>() where T : IInternalEvent
         {
-            return (IEnumerable<IConsumer<T>>)_serviceProvider.GetServices(typeof(IConsumer<T>));
+            return _serviceProvider.GetServices<IConsumer<T>>();
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace EvenTransit.Service.BackgroundServices
         /// <returns>Event consumers</returns>
         public IEnumerable<IAsyncConsumer<T>> GetAsyncSubscriptions<T>() where T : IInternalAsyncEvent
         {
-            return (IEnumerable<IAsyncConsumer<T>>)_serviceProvider.GetServices(typeof(IAsyncConsumer<T>));
+            return _serviceProvider.GetServices<IAsyncConsumer<T>>();
         }
     }
 }
