@@ -39,7 +39,7 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             {
                 var success = DateTime.TryParse(w.LogDateFrom, out var startDate);
                 success &= DateTime.TryParse(w.LogDateTo, out var endDate);
-                return !success || (endDate - startDate).TotalHours <= maxHourRange;
+                return success && (endDate - startDate).TotalHours <= maxHourRange;
             }).WithMessage($"Date range must be max {maxHourRange} hours when 'Query' string provided")
             .When(w => !string.IsNullOrWhiteSpace(w.Query));
     }
