@@ -10,7 +10,6 @@ public class EventLog : IEventLog
     private readonly ILogsRepository _logsRepository;
     private readonly ILogStatisticsRepository _logStatisticsRepository;
     private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
-    private readonly IServiceScope _scope;
 
     public EventLog
     (
