@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
 
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+        BsonSerializer.RegisterSerializer(typeof(DateTime), new ApplicationDateTimeSerializer());
 
         services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
 
@@ -27,8 +28,6 @@ public static class ServiceCollectionExtensions
 
         services.AddHealthChecks()
             .AddCheck<MongoDbHealthCheck>("mongodb");
-
-        BsonSerializer.RegisterSerializer(typeof(DateTime), new ApplicationDateTimeSerializer());
 
         return services;
     }

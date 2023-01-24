@@ -2,27 +2,23 @@
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace EvenTransit.Messaging.Core.Domain;
 
 public class EventLog : IEventLog
 {
     private readonly ILogsRepository _logsRepository;
-    private readonly IServiceProvider _serviceProvider;
     private readonly ILogStatisticsRepository _logStatisticsRepository;
     private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
 
     public EventLog
     (
         ILogsRepository logsRepository,
-        IServiceProvider serviceProvider,
         ILogStatisticsRepository logStatisticsRepository,
         IEventLogStatisticRepository eventLogStatisticRepository
     )
     {
         _logsRepository = logsRepository;
-        _serviceProvider = serviceProvider;
         _logStatisticsRepository = logStatisticsRepository;
         _eventLogStatisticRepository = eventLogStatisticRepository;
     }
@@ -30,21 +26,11 @@ public class EventLog : IEventLog
     public async Task LogAsync(Logs details)
     {
         await _logsRepository.InsertLogAsync(details);
-
-        using var scope = _serviceProvider.CreateScope();
-        var service = scope.ServiceProvider.GetRequiredService<IEventLog>();
-        await Task.Run(async () =>
-        {
-            await service.UpdateStatisticsAsync(details);
-        });
-
-        await Task.Run(async () =>
-        {
-            await service.UpdateEventStatisticsAsync(details);
-        });
+        await UpdateStatisticsAsync(details);
+        await UpdateEventStatisticsAsync(details);
     }
 
-    public async Task UpdateStatisticsAsync(Logs details)
+    private async Task UpdateStatisticsAsync(Logs details)
     {
         var startDate = DateTime.Today;
         var statistic = await _logStatisticsRepository.GetStatisticAsync(startDate);
@@ -68,7 +54,7 @@ public class EventLog : IEventLog
     }
 
 
-    public async Task UpdateEventStatisticsAsync(Logs details)
+    private async Task UpdateEventStatisticsAsync(Logs details)
     {
         var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName);
 

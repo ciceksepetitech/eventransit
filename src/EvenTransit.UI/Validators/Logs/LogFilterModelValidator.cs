@@ -1,4 +1,5 @@
 ﻿using EvenTransit.Domain.Constants;
+using EvenTransit.Domain.Extensions;
 using EvenTransit.UI.Models.Logs;
 using FluentValidation;
 using System.Globalization;
@@ -21,7 +22,7 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             .NotEmpty();
 
         RuleFor(x => x.LogDateFrom)
-            .Must(x => DateTime.TryParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out var _))
+            .Must(x => x.TryConvertToDate(out var _))
             .When(x => !string.IsNullOrWhiteSpace(x.LogDateFrom))
             .WithMessage(ValidationConstants.InvalidLogDateFrom);
 
@@ -29,7 +30,7 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
             .NotEmpty();
 
         RuleFor(x => x.LogDateTo)
-            .Must(x => DateTime.TryParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out var _))
+            .Must(x => x.TryConvertToDate(out var _))
             .When(x => !string.IsNullOrWhiteSpace(x.LogDateTo))
             .WithMessage(ValidationConstants.InvalidLogDateTo);
 
@@ -37,8 +38,8 @@ public class LogFilterModelValidator : AbstractValidator<LogFilterModel>
         RuleFor(w => w)
             .Must(w =>
             {
-                var success = DateTime.TryParse(w.LogDateFrom, out var startDate);
-                success &= DateTime.TryParse(w.LogDateTo, out var endDate);
+                var success = w.LogDateFrom.TryConvertToDate(out var startDate);
+                success &= w.LogDateTo.TryConvertToDate(out var endDate);
                 return success && (endDate - startDate).TotalHours <= maxHourRange;
             }).WithMessage($"Date range must be max {maxHourRange} hours when 'Query' string provided")
             .When(w => !string.IsNullOrWhiteSpace(w.Query));
