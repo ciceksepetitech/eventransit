@@ -17,7 +17,7 @@ public class ServiceLockMongoRepository : BaseMongoRepository<ServiceLock>, ISer
     public void Insert(ServiceLock data)
     {
         data.Id = Guid.NewGuid();
-        data.LockStartDate = DateTime.UtcNow;
+        data.LockStartDate = DateTime.Now;
 
         Collection.InsertOne(data);
     }
