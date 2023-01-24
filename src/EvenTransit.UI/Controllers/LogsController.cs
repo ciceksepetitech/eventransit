@@ -44,8 +44,8 @@ public class LogsController : Controller
             ServiceName = model.ServiceName,
             LogType = model.LogType,
             Page = model.Page,
-            LogDateFrom = DateTime.ParseExact(model.LogDateFrom, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None),
-            LogDateTo = DateTime.ParseExact(model.LogDateTo, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None),
+            LogDateFrom = model.LogDateFrom.ConvertToDate(),
+            LogDateTo = model.LogDateTo.ConvertToDate(),
             Query = model.Query
         };
 
