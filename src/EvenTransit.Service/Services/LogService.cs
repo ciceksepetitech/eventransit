@@ -72,7 +72,7 @@ public class LogService : ILogService
     {
         var response = new LogStatisticsDto();
         var startDate = DateTime.Today.AddDays(-7);
-        var endDate = DateTime.UtcNow;
+        var endDate = DateTime.Now;
         var logStatistics = await _logStatisticsRepository.GetStatisticsAsync(startDate, endDate);
 
         var dates = logStatistics.Select(x => x.Date.ToString("dd-MM-yyyy")).ToList();

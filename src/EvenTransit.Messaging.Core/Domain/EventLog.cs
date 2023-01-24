@@ -9,9 +9,9 @@ namespace EvenTransit.Messaging.Core.Domain;
 public class EventLog : IEventLog
 {
     private readonly ILogsRepository _logsRepository;
-    private readonly IServiceProvider _serviceProvider;
     private readonly ILogStatisticsRepository _logStatisticsRepository;
     private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
+    private readonly IServiceScope _scope;
 
     public EventLog
     (
@@ -22,7 +22,7 @@ public class EventLog : IEventLog
     )
     {
         _logsRepository = logsRepository;
-        _serviceProvider = serviceProvider;
+        _scope = serviceProvider.CreateScope(); //don't dispose that scope. rabbitmq consumes 1 per lifetime
         _logStatisticsRepository = logStatisticsRepository;
         _eventLogStatisticRepository = eventLogStatisticRepository;
     }
@@ -31,14 +31,13 @@ public class EventLog : IEventLog
     {
         await _logsRepository.InsertLogAsync(details);
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _scope.ServiceProvider.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IEventLog>();
-        await Task.Run(async () =>
+        Task.Run(async () =>
         {
             await service.UpdateStatisticsAsync(details);
         });
-
-        await Task.Run(async () =>
+        Task.Run(async () =>
         {
             await service.UpdateEventStatisticsAsync(details);
         });
