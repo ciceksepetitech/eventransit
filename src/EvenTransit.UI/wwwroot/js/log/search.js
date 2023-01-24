@@ -1,5 +1,6 @@
 const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailModal'), {});
 const serviceDropdown = document.querySelector("#ServiceName");
+const dateFormat = "DD-MM-YYYY HH:mm";
 
 
 const select2me = $('.select2me');
@@ -109,8 +110,8 @@ async function search(page = 1) {
     removeLogTableRows(tbodyRef);
 
     const logDate = $("#LogDate");
-    const logDateFrom = logDate.data('daterangepicker').startDate.format("DD-MM-YYYY HH:mm");
-    const logDateTo = logDate.data('daterangepicker').endDate.format("DD-MM-YYYY HH:mm");
+    const logDateFrom = logDate.data('daterangepicker').startDate.utc().format("DD-MM-YYYY HH:mm");
+    const logDateTo = logDate.data('daterangepicker').endDate.utc().format("DD-MM-YYYY HH:mm");
 
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
@@ -198,7 +199,7 @@ function fillLogTableRows(result, tbodyRef, page) {
             eventNameCell.innerHTML = item.eventName;
             serviceNameCell.innerHTML = item.serviceName;
             typeCell.innerHTML = getLogType(item.logType);
-            createdOnCell.innerHTML = item.createdOnString;
+            createdOnCell.innerHTML = moment(moment.utc(item.createdOnString, dateFormat).toDate()).format(dateFormat);
         });
     }
 
