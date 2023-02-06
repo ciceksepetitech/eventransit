@@ -25,14 +25,14 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
         await Collection.InsertOneAsync(model);
     }
 
-    public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, string query, int page)
+    public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, string requestBodyRegex, int page)
     {
         const int perPage = 100;
         var definition = new FilterDefinitionBuilder<Logs>();
         var contains = FilterDefinition<Logs>.Empty;
-        if (!string.IsNullOrWhiteSpace(query))
+        if (!string.IsNullOrWhiteSpace(requestBodyRegex))
         {
-            var regex = new BsonRegularExpression(Regex.Escape(query), "i");
+            var regex = new BsonRegularExpression(Regex.Escape(requestBodyRegex), "i");
             contains = Builders<Logs>.Filter.Regex(w => w.Details.Request.Body, regex);
         }
 
