@@ -415,5 +415,28 @@ db.Logs.insertMany([
         "EventName": "LogTest",
         "LogType": 1,
         "ServiceName": "Success"
+    },
+    {
+        "_id": UUID("2871657c-b960-4e2f-ab01-a27cad947670"),
+        "CreatedOn": ISODate("2021-10-06T20:50:35.528Z"),
+        "Details": {
+            "Message": null,
+            "Request": {
+                "Url": "http://localhost/api/successtest",
+                "Timeout": 15,
+                "Body": "{\"Id\":70136766,\"CustomerId\":10858617,\"StoreId\":1,\"CountryId\":1,\"DeviceId\":null,\"OrderItems\":[{\"Id\":801552579,\"BranchId\":1500007257,\"Quantity\":1,\"TotalPrice\":10.00,\"ProductVariant\":{\"Product\":{\"Id\":7000768,\"CategoryId\":15692}},\"Discounts\":[]}]}",
+                "Headers": {
+                    "userId": "5"
+                }
+            },
+            "Response": {
+                "IsSuccess": true,
+                "StatusCode": 200,
+                "Response": "{\n    \"message\": \"Success Test\"\n}"
+            }
+        },
+        "EventName": "LogTest",
+        "LogType": 1,
+        "ServiceName": "Success"
     }
 ])
