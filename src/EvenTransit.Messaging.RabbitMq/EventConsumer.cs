@@ -7,7 +7,6 @@ using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
-using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;

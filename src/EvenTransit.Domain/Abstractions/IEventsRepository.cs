@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using EvenTransit.Domain.Entities;
 
 namespace EvenTransit.Domain.Abstractions;

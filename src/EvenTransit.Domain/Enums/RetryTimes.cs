@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace EvenTransit.Domain.Enums;
 
 public enum RetryTimes

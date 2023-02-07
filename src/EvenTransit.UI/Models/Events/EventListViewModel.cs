@@ -1,5 +1,3 @@
-using System;
-
 namespace EvenTransit.UI.Models.Events;
 
 public class EventListViewModel

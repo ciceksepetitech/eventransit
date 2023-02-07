@@ -1,4 +1,3 @@
-using System;
 using EvenTransit.Domain.Constants;
 using EvenTransit.UI.Models.Events;
 using FluentValidation;

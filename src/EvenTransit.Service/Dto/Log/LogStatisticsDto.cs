@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvenTransit.Service.Dto.Log;
 
 public class LogStatisticsDto

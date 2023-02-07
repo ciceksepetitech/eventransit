@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using EvenTransit.Messaging.Core.Dto;
 
 namespace EvenTransit.Messaging.Core.Abstractions;

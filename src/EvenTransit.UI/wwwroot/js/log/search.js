@@ -153,11 +153,15 @@ function fillLogTableRows(result, tbodyRef, page) {
     document.getElementById("errors").classList.add("d-none");
 
     if (!result.isSuccess) {
-        document.getElementById("errors").innerHTML = result.message;
-        document.getElementById("errors").classList.remove("d-none");
+        showErrorMessage(result.message);
         return;
     }
 
+    if (result.data.items === null || result.data.items.length === 0) {
+        showErrorMessage("Record not found");
+        return;
+    }
+    
     if (result.data.items) {
         result.data.items.forEach((item, index) => {
             let newRow = tbodyRef.insertRow();
@@ -230,6 +234,11 @@ function fillLogTableRows(result, tbodyRef, page) {
     activePassivePrevNextItem(page, firstPage, totalPage);
 
     bindPagination();
+}
+
+function showErrorMessage(error) {
+    document.getElementById("errors").innerHTML = error;
+    document.getElementById("errors").classList.remove("d-none");
 }
 
 function bindPagination() {

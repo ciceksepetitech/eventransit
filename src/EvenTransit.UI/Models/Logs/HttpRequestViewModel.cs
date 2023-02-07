@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvenTransit.UI.Models.Logs;
 
 public class HttpRequestViewModel
