@@ -28,7 +28,7 @@ jobs:
       - name: Integration tests
         run: |
           docker run --network container:EventTransitUI \
-              postman/newman_ubuntu1404 run https://api.postman.com/collections/19112664-b30fc34e-8d15-459f-b753-3c8c1952bb5a?access_key=PMAT-01GQ2NRYZEW4Q1CDTEGPDWZQDA
+              postman/newman_ubuntu1404 run https://api.postman.com/collections/18070358-8144f59b-bed2-4d52-bb57-7efbe8f828fe?access_key=PMAT-01GK9KJ46G4HW2A4RMZJV5TVXZ
 
       - name: Push image
         env:
