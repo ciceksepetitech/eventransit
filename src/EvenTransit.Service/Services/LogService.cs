@@ -1,11 +1,10 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
-using EvenTransit.Domain.Enums;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
 using EvenTransit.Service.Rules.Log;
+using System.Linq.Expressions;
 
 namespace EvenTransit.Service.Services;
 
@@ -33,15 +32,17 @@ public class LogService : ILogService
         var logTypePredicateHandler = new LogTypePredicateHandler();
         var dateFromPredicateHandler = new DateFromPredicateHandler();
         var dateToPredicateHandler = new DateToPredicateHandler();
+        // var queryPredictionHandler = new QueryPredictionHandler();
 
         eventNamePredicateHandler.SetSuccessor(serviceNamePredicateHandler);
         serviceNamePredicateHandler.SetSuccessor(logTypePredicateHandler);
         logTypePredicateHandler.SetSuccessor(dateFromPredicateHandler);
         dateFromPredicateHandler.SetSuccessor(dateToPredicateHandler);
+        // dateFromPredicateHandler.SetSuccessor(queryPredictionHandler);
 
         var expression = eventNamePredicateHandler.HandleRequest(argParam, Expression.Constant(true), request);
         var lambda = Expression.Lambda<Func<Logs, bool>>(expression, argParam);
-        var result = await _logsRepository.GetLogsAsync(lambda, request.Page);
+        var result = await _logsRepository.GetLogsAsync(lambda, request.RequestBodyRegex, request.Page);
 
         return new LogSearchResultDto
         {
@@ -52,7 +53,7 @@ public class LogService : ILogService
 
     public async Task<LogSearchResultDto> SearchAsync(string correlationId)
     {
-        var result = await _logsRepository.GetLogsAsync(x => x.Details.CorrelationId == correlationId, 1);
+        var result = await _logsRepository.GetLogsAsync(x => x.Details.CorrelationId == correlationId, null, 1);
 
         return new LogSearchResultDto
         {
@@ -74,7 +75,7 @@ public class LogService : ILogService
         var endDate = DateTime.UtcNow;
         var logStatistics = await _logStatisticsRepository.GetStatisticsAsync(startDate, endDate);
 
-        var dates = logStatistics.Select(x => x.Date.AddHours(3).ToString("dd-MM-yyyy")).ToList();
+        var dates = logStatistics.Select(x => x.Date.ToString("dd-MM-yyyy")).ToList();
         var successCount = logStatistics.Select(x => x.SuccessCount).ToList();
         var failCount = logStatistics.Select(x => x.FailCount).ToList();
 
@@ -83,16 +84,5 @@ public class LogService : ILogService
         response.FailCount = failCount;
 
         return response;
-    }
-
-    private async Task<(long, long)> GetLogsCountByDay(DateTime day)
-    {
-        var startDate = new DateTime(day.Year, day.Month, day.Day, 0, 0, 0);
-        var endDate = new DateTime(day.Year, day.Month, day.Day, 23, 59, 59);
-
-        var successLogsCount = await _logsRepository.GetLogsCountAsync(startDate, endDate, LogType.Success);
-        var failLogsCount = await _logsRepository.GetLogsCountAsync(startDate, endDate, LogType.Fail);
-
-        return (successLogsCount, failLogsCount);
     }
 }

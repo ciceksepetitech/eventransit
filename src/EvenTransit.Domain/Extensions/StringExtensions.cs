@@ -1,21 +1,24 @@
-﻿
+﻿using System.Globalization;
+
 namespace EvenTransit.Domain.Extensions;
 
 public static class StringExtensions
 {
-    public static DateTime ConvertToStartDate(this string dateTime)
-    {
-        var isSuccess = DateTime.TryParse(dateTime, out var convertedDateTime);
-        return isSuccess ? convertedDateTime : DateTime.UtcNow.Date;
-    }
-
-    public static DateTime ConvertToEndDate(this string dateTime)
-    {
-        return ConvertToStartDate(dateTime).AddHours(23).AddMinutes(59);
-    }
-
     public static string ConvertToLocalDateString(this DateTime dateTime)
     {
-        return dateTime.AddHours(3).ToString("dd-MM-yyyy HH:mm");
+        return dateTime.ToString("dd-MM-yyyy HH:mm");
+    }
+
+    public static bool TryConvertToDate(this string data, out DateTime dateTime)
+    {
+        var value = DateTime.TryParseExact(data, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal, out dateTime);
+        dateTime = dateTime.ToUniversalTime();
+        return value;
+    }
+
+    public static DateTime ConvertToDate(this string data)
+    {
+        var value = DateTime.ParseExact(data, "dd-MM-yyyy HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime();
+        return value;
     }
 }

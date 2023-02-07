@@ -11,4 +11,5 @@ public class LogSearchRequestDto
     public string EventName { get; set; }
     public string ServiceName { get; set; }
     public int Page { get; set; }
+    public string RequestBodyRegex { get; set; }
 }

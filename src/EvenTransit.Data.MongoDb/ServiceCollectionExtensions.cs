@@ -20,7 +20,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
 
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
-        
+        BsonSerializer.RegisterSerializer(typeof(DateTime), new ApplicationDateTimeSerializer());
+
         services.Configure<MongoDbSettings>(configuration.GetSection("MongoDb"));
 
         services.AddSingleton<MongoDbConnectionStringBuilder>();
@@ -29,5 +30,25 @@ public static class ServiceCollectionExtensions
             .AddCheck<MongoDbHealthCheck>("mongodb");
 
         return services;
+    }
+}
+
+public class ApplicationDateTimeSerializer : DateTimeSerializer
+{
+    //  MongoDB returns datetime as DateTimeKind.Utc, which can't be used in our timezone conversion logic
+    //  We overwrite it to be DateTimeKind.Unspecified
+    public override DateTime Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    {
+        var obj = base.Deserialize(context, args);
+        return new DateTime(obj.Ticks, DateTimeKind.Unspecified);
+    }
+
+    //  MongoDB stores all datetime as Utc, any datetime value DateTimeKind is not DateTimeKind.Utc,
+    //  will be converted to Utc first
+    //  We overwrite it to be DateTimeKind.Utc, because we want to preserve the raw value
+    public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, DateTime value)
+    {
+        var utcValue = new DateTime(value.Ticks, DateTimeKind.Utc);
+        base.Serialize(context, args, utcValue);
     }
 }

@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
         }
         
         services.AddScoped<IEventPublisherService, EventPublisherService>();
-        
+
         return services;
     }
 }

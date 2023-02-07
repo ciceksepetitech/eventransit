@@ -4,7 +4,9 @@ using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Text.RegularExpressions;
 
 namespace EvenTransit.Data.MongoDb.Repositories;
 
@@ -23,18 +25,31 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
         await Collection.InsertOneAsync(model);
     }
 
-    public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page)
+    public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, string requestBodyRegex, int page)
     {
         const int perPage = 100;
+        var definition = new FilterDefinitionBuilder<Logs>();
+        var contains = FilterDefinition<Logs>.Empty;
+        if (!string.IsNullOrWhiteSpace(requestBodyRegex))
+        {
+            var regex = new BsonRegularExpression(Regex.Escape(requestBodyRegex), "i");
+            contains = Builders<Logs>.Filter.Regex(w => w.Details.Request.Body, regex);
+        }
 
-        var count = await Collection.Find(predicate).CountDocumentsAsync();
+        var filter = definition.And(predicate, contains);
+
+        var count = await Collection.Find(filter).CountDocumentsAsync();
         var totalPages = (int)Math.Ceiling((double)count / perPage);
-        var result = await Collection.Find(predicate)
+        var result = await Collection.Find(filter)
             .Skip((page - 1) * perPage)
             .Limit(perPage)
             .ToListAsync();
 
-        return new LogFilter { Items = result, TotalPages = totalPages };
+        return new LogFilter
+        {
+            Items = result,
+            TotalPages = totalPages
+        };
     }
 
     public async Task<Logs> GetByIdAsync(Guid id)

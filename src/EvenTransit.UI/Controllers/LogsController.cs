@@ -6,6 +6,7 @@ using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Globalization;
 
 namespace EvenTransit.UI.Controllers;
 
@@ -27,7 +28,7 @@ public class LogsController : Controller
     public async Task<IActionResult> Index()
     {
         var events = await _eventService.GetAllAsync();
-        var responseModel = new LogsViewModel { Events = _mapper.Map<List<SelectListItem>>(events) };
+        var responseModel = new LogsViewModel { Events = _mapper.Map<List<SelectListItem>>(events.OrderBy(w => w.Name)) };
 
         return View(responseModel);
     }
@@ -43,16 +44,31 @@ public class LogsController : Controller
             ServiceName = model.ServiceName,
             LogType = model.LogType,
             Page = model.Page,
-            LogDateFrom = model.LogDateFrom.ConvertToStartDate(),
-            LogDateTo = model.LogDateTo.ConvertToEndDate()
+            LogDateFrom = model.LogDateFrom.ConvertToDate(),
+            LogDateTo = model.LogDateTo.ConvertToDate(),
+            RequestBodyRegex = model.Query
         };
 
         var result = await _logService.SearchAsync(request);
+        if (!result.Items.Any())
+            return Ok(new
+            {
+                IsSuccess = false,
+                Message = "Record not found"
+            });
         var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
 
-        var responseModel = new LogList { Items = response, TotalPages = result.TotalPages };
+        var responseModel = new LogList
+        {
+            Items = response,
+            TotalPages = result.TotalPages
+        };
 
-        return StatusCode(StatusCodes.Status200OK, new { IsSuccess = true, Data = responseModel });
+        return StatusCode(StatusCodes.Status200OK, new
+        {
+            IsSuccess = true,
+            Data = responseModel
+        });
     }
 
     [HttpGet]
@@ -61,9 +77,17 @@ public class LogsController : Controller
     {
         var result = await _logService.SearchAsync(correlationId);
         var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
-        var responseModel = new LogList { Items = response, TotalPages = result.TotalPages };
+        var responseModel = new LogList
+        {
+            Items = response,
+            TotalPages = result.TotalPages
+        };
 
-        return StatusCode(StatusCodes.Status200OK, new { IsSuccess = true, Data = responseModel });
+        return StatusCode(StatusCodes.Status200OK, new
+        {
+            IsSuccess = true,
+            Data = responseModel
+        });
     }
 
     [HttpGet]

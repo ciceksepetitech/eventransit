@@ -9,7 +9,7 @@ public class SaveEventModelValidator : AbstractValidator<SaveEventModel>
     public SaveEventModelValidator()
     {
         RuleFor(x => x.EventName)
-            .Must(x => !string.IsNullOrWhiteSpace(x))
+            .NotEmpty()
             .WithMessage("Event name cannot be empty");
 
         RuleFor(x => x.EventName)

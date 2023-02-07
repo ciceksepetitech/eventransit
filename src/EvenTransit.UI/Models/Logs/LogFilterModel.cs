@@ -9,5 +9,6 @@ public class LogFilterModel
     public LogType LogType { get; set; }
     public string EventName { get; set; }
     public string ServiceName { get; set; }
+    public string Query { get; set; }
     public int Page { get; set; }
 }

@@ -1,6 +1,17 @@
 const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailModal'), {});
 const serviceDropdown = document.querySelector("#ServiceName");
-document.querySelector("select#EventName").addEventListener("change", async (e) => {
+const dateFormat = "DD-MM-YYYY HH:mm";
+
+
+const select2me = $('.select2me');
+select2me.select2();
+$("#custom-page").on("select2:select", function (e) {
+    if (!e.params.data.id) return;
+    search(parseInt(e.params.data.id));
+});
+
+
+$("select#EventName").on('select2:select', async function (e) {
     let selectedEvent = e.target.value;
 
     clearServiceDropdown();
@@ -92,23 +103,50 @@ function removeLogTableRows(tbodyRef) {
 async function search(page = 1) {
     let tbodyRef = document.getElementById('logs').getElementsByTagName('tbody')[0];
 
+    const btnSearch = $("#btnSearch");
+    const loadingClass = "button--loading";
+    btnSearch.addClass(loadingClass);
+
     removeLogTableRows(tbodyRef);
 
-    const logDateFrom = getFieldValue("#LogDateFrom", "");
-    const logDateTo = getFieldValue("#LogDateTo", "");
+    const logDate = $("#LogDate");
+    const logDateFrom = logDate.data('daterangepicker').startDate.utc().format("DD-MM-YYYY HH:mm");
+    const logDateTo = logDate.data('daterangepicker').endDate.utc().format("DD-MM-YYYY HH:mm");
+
     const logType = parseInt(getFieldValue("#LogType", 0));
     const eventName = getFieldValue("select#EventName", "");
     const serviceName = getFieldValue("select#ServiceName", "");
+    const query = getFieldValue("input#Query", "");
 
-    const response = await fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}`, {
+    const defaultResponse = {
+        message: "Unknown error",
+        isSuccess: false
+    };
+    const promise = fetch(`/Logs/Search?LogDateFrom=${logDateFrom}&LogDateTo=${logDateTo}&LogType=${logType}&EventName=${eventName}&ServiceName=${serviceName}&Page=${page}&Query=${query}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
+    }).catch(() => {
+        setTimeout(() => btnSearch.removeClass(loadingClass), 500);
     });
-    const result = await response.json();
+
+    const response = await promise;
+    setTimeout(() => btnSearch.removeClass(loadingClass), 500);
+
+    let result = response?.json && await response.json();
+    result ??= defaultResponse
 
     fillLogTableRows(result, tbodyRef, page);
+}
+
+function toggleCustomPager(totalPage) {
+    const div = $(".select2-toggle");
+    if (!div.is(":visible") && totalPage > 1) {
+        div.show();
+    } else if (div.is(":visible") && totalPage <= 1) {
+        div.hide();
+    }
 }
 
 function fillLogTableRows(result, tbodyRef, page) {
@@ -161,7 +199,7 @@ function fillLogTableRows(result, tbodyRef, page) {
             eventNameCell.innerHTML = item.eventName;
             serviceNameCell.innerHTML = item.serviceName;
             typeCell.innerHTML = getLogType(item.logType);
-            createdOnCell.innerHTML = item.createdOnString;
+            createdOnCell.innerHTML = moment(moment.utc(item.createdOnString, dateFormat).toDate()).format(dateFormat);
         });
     }
 
@@ -170,13 +208,24 @@ function fillLogTableRows(result, tbodyRef, page) {
     let totalPage = result.data.totalPages;
     let firstPage = 1;
 
+    const customPage = $('#custom-page');
+    customPage.empty().trigger("change");
+
+    toggleCustomPager(totalPage);
+
     for (let i = 1; i <= totalPage; i++) {
         let liElements = addPaginationItems(i, firstPage, totalPage, page);
+
+        const newOption = new Option(i, i, false, false);
+        customPage.append(newOption).trigger('change');
 
         for (let j = 0; j < liElements.length; j++) {
             paginationRef.appendChild(liElements[j]);
         }
     }
+
+    customPage.val(page);
+    customPage.trigger('change');
 
     activePassivePrevNextItem(page, firstPage, totalPage);
 
@@ -221,7 +270,7 @@ function addPaginationItems(i, firstPage, totalPage, page) {
         elementList.push(createPaginationElement(i, page, dots, false, true));
     }
 
-    //Add last page element 
+    //Add last page element
     if (i === totalPage && totalPage > firstPage) {
         elementList.push(createPaginationElement(i, page, i, true));
         console.log(i, " last element", page);

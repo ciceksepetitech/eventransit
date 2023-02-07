@@ -19,13 +19,25 @@
 @section Scripts
 {
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/atom-one-light.min.css">
-    <link rel="stylesheet" href="~/lib/vanillajs-datepicker/css/datepicker.min.css"/>
-    <link rel="stylesheet" href="~/lib/vanillajs-datepicker/css/datepicker-bs4.min.css"/>
-    <script src="~/lib/vanillajs-datepicker/js/datepicker-full.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
     <script src="~/js/log/search.js" asp-append-version="true"></script>
     <script>
-    const elem = document.querySelector('#LogDate');
-    const datepicker = new DateRangePicker(elem, { format: 'dd-mm-yyyy' }); 
+    $(function() {
+        $('#LogDate').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            startDate: moment().startOf('day'),
+            endDate: moment().endOf('day'),
+            locale: {
+              format: 'DD/MM/YYYY HH:mm'
+            },
+            autoApply:true
+          });
+    });
     </script>
 }

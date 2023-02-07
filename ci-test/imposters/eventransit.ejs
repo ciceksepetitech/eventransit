@@ -1,0 +1,81 @@
+{
+    "port": 5025,
+    "protocol": "http",
+    "name": "origin",
+    "recordRequests": true,
+    "stubs": [{
+        "predicates": [{
+                "equals": {
+                    "method": "POST",
+                    "path": "/api/successtest"
+                }
+        }],
+        "responses": [{
+            "is": {
+                "body": {
+                    "message": "Success Test"
+                }
+            }
+        }]
+    }, {
+        "predicates": [{
+                "equals": {
+                    "method": "POST",
+                    "path": "/api/failtest"
+                }
+        }],
+        "responses": [{
+            "is": {
+                "statusCode": 400,
+                "body": {
+                    "message": "Fail Test"
+                }
+            }
+        }]
+    }, {
+        "predicates": [{
+                "equals": {
+                    "method": "POST",
+                    "path": "/api/failtest500"
+                }
+        }],
+        "responses": [{
+            "is": {
+                "statusCode": 500,
+                "body": {
+                    "message": "Fail 500 Test"
+                }
+            }
+        }]
+    }, {
+        "predicates": [{
+                "equals": {
+                    "method": "POST",
+                    "path": "/api/failtest429"
+                }
+        }],
+        "responses": [{
+            "is": {
+                "statusCode": 429,
+                "body": {
+                    "message": "Fail 429 Test"
+                }
+            }
+        }]
+    }, {
+        "predicates": [{
+                "equals": {
+                    "method": "POST",
+                    "path": "/api/failtest408"
+                }
+        }],
+        "responses": [{
+            "is": {
+                "statusCode": 408,
+                "body": {
+                    "message": "Fail 408 Test"
+                }
+            }
+        }]
+    }]
+}

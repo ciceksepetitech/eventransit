@@ -11,9 +11,12 @@ public class EventLog : IEventLog
     private readonly ILogStatisticsRepository _logStatisticsRepository;
     private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
 
-    public EventLog(ILogsRepository logsRepository,
+    public EventLog
+    (
+        ILogsRepository logsRepository,
         ILogStatisticsRepository logStatisticsRepository,
-        IEventLogStatisticRepository eventLogStatisticRepository)
+        IEventLogStatisticRepository eventLogStatisticRepository
+    )
     {
         _logsRepository = logsRepository;
         _logStatisticsRepository = logStatisticsRepository;
@@ -23,11 +26,8 @@ public class EventLog : IEventLog
     public async Task LogAsync(Logs details)
     {
         await _logsRepository.InsertLogAsync(details);
-
-        //TODO: do async or event
         await UpdateStatisticsAsync(details);
         await UpdateEventStatisticsAsync(details);
-        //TODO: do async or event
     }
 
     private async Task UpdateStatisticsAsync(Logs details)
@@ -52,6 +52,7 @@ public class EventLog : IEventLog
         else
             await _logStatisticsRepository.UpdateStatisticAsync(statistic.Id, successCount, failCount);
     }
+
 
     private async Task UpdateEventStatisticsAsync(Logs details)
     {
