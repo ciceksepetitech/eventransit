@@ -2,7 +2,6 @@ using System.Reflection;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Service.Abstractions;
-using EvenTransit.Service.Locker;
 using EvenTransit.Service.Mappers;
 using EvenTransit.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +17,6 @@ public static class ServiceCollectionExtensions
             services.AddScoped<IEventLog, EventLog>();
             services.AddScoped<IHttpRequestSender, HttpRequestSender>();
             services.AddScoped<IHttpProcessor, HttpProcessor>();
-            services.AddScoped<IDistributedLocker, DistributedLocker>();
         }
         
         services.AddSingleton<IRetryQueueHelper, RetryQueueHelper>();

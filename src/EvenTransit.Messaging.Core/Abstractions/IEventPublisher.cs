@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using EvenTransit.Messaging.Core.Dto;
 
 namespace EvenTransit.Messaging.Core.Abstractions;

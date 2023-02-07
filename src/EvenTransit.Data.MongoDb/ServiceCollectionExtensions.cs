@@ -17,7 +17,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ILogsRepository, LogsMongoRepository>();
         services.AddScoped<ILogStatisticsRepository, LogStatisticsMongoRepository>();
         services.AddScoped<IEventLogStatisticRepository, EventLogStatisticMongoRepository>();
-        services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
 
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
         BsonSerializer.RegisterSerializer(typeof(DateTime), new ApplicationDateTimeSerializer());

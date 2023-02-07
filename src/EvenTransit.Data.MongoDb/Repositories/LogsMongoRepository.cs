@@ -2,7 +2,6 @@
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
-using EvenTransit.Domain.Enums;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -25,6 +24,11 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
         await Collection.InsertOneAsync(model);
     }
 
+    public Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, int page)
+    {
+        return GetLogsAsync(predicate, null, page);
+    }
+    
     public async Task<LogFilter> GetLogsAsync(Expression<Func<Logs, bool>> predicate, string requestBodyRegex, int page)
     {
         const int perPage = 100;
@@ -55,23 +59,5 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
     public async Task<Logs> GetByIdAsync(Guid id)
     {
         return await Collection.Find(x => x.Id == id).FirstOrDefaultAsync();
-    }
-
-    public async Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type)
-    {
-        return await Collection.CountDocumentsAsync(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
-    }
-
-    public long GetLogsCount(DateTime startDate, DateTime endDate, LogType type)
-    {
-        return Collection.CountDocuments(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
-    }
-
-    public (long, long) GetLogsCountByEvent(string eventName)
-    {
-        var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Success);
-        var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Fail);
-
-        return (successLogCount, failLogCount);
     }
 }

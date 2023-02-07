@@ -32,13 +32,11 @@ public class LogService : ILogService
         var logTypePredicateHandler = new LogTypePredicateHandler();
         var dateFromPredicateHandler = new DateFromPredicateHandler();
         var dateToPredicateHandler = new DateToPredicateHandler();
-        // var queryPredictionHandler = new QueryPredictionHandler();
 
         eventNamePredicateHandler.SetSuccessor(serviceNamePredicateHandler);
         serviceNamePredicateHandler.SetSuccessor(logTypePredicateHandler);
         logTypePredicateHandler.SetSuccessor(dateFromPredicateHandler);
         dateFromPredicateHandler.SetSuccessor(dateToPredicateHandler);
-        // dateFromPredicateHandler.SetSuccessor(queryPredictionHandler);
 
         var expression = eventNamePredicateHandler.HandleRequest(argParam, Expression.Constant(true), request);
         var lambda = Expression.Lambda<Func<Logs, bool>>(expression, argParam);
@@ -53,7 +51,7 @@ public class LogService : ILogService
 
     public async Task<LogSearchResultDto> SearchAsync(string correlationId)
     {
-        var result = await _logsRepository.GetLogsAsync(x => x.Details.CorrelationId == correlationId, null, 1);
+        var result = await _logsRepository.GetLogsAsync(x => x.Details.CorrelationId == correlationId, 1);
 
         return new LogSearchResultDto
         {

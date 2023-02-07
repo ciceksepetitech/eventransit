@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace EvenTransit.Service.Dto.Event;
 
 public class ServiceDto

@@ -28,7 +28,7 @@ public class LogsController : Controller
     public async Task<IActionResult> Index()
     {
         var events = await _eventService.GetAllAsync();
-        var responseModel = new LogsViewModel { Events = _mapper.Map<List<SelectListItem>>(events.OrderBy(w => w.Name)) };
+        var responseModel = new LogsViewModel {Events = _mapper.Map<List<SelectListItem>>(events)};
 
         return View(responseModel);
     }
@@ -50,12 +50,6 @@ public class LogsController : Controller
         };
 
         var result = await _logService.SearchAsync(request);
-        if (!result.Items.Any())
-            return Ok(new
-            {
-                IsSuccess = false,
-                Message = "Record not found"
-            });
         var response = _mapper.Map<List<LogSearchResultViewModel>>(result.Items);
 
         var responseModel = new LogList

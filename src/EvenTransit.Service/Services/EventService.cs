@@ -38,7 +38,7 @@ public class EventService : IEventService
     {
         var events = await _eventLogStatisticRepository.GetAllAsync();
 
-        return _mapper.Map<List<EventDto>>(events);
+        return _mapper.Map<List<EventDto>>(events.OrderBy(w => w.EventName));
     }
 
     public async Task<EventDto> GetEventDetailsAsync(Guid id)

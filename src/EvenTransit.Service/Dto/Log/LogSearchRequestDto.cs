@@ -1,4 +1,3 @@
-using System;
 using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Service.Dto.Log;

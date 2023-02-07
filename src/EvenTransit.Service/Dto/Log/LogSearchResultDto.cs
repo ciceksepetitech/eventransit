@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
 using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Service.Dto.Log;
 
 public class LogSearchResultDto
 {
-    public List<LogFilterItemDto> Items { get; set; }
+    public List<LogFilterItemDto> Items { get; set; } = new();
     public int TotalPages { get; set; }
 }
 

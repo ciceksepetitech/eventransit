@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Abstractions;
@@ -10,7 +7,6 @@ using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
 using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Events;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EvenTransit.UI.Controllers;
