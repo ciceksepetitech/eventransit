@@ -42,7 +42,7 @@ public class LogService : ILogService
 
         var expression = eventNamePredicateHandler.HandleRequest(argParam, Expression.Constant(true), request);
         var lambda = Expression.Lambda<Func<Logs, bool>>(expression, argParam);
-        var result = await _logsRepository.GetLogsAsync(lambda, request.Query, request.Page);
+        var result = await _logsRepository.GetLogsAsync(lambda, request.RequestBodyRegex, request.Page);
 
         return new LogSearchResultDto
         {

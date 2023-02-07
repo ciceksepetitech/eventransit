@@ -9,7 +9,9 @@ public class LogMapper : Profile
 {
     public LogMapper()
     {
-        CreateMap<LogFilterModel, LogSearchRequestDto>();
+        CreateMap<LogFilterModel, LogSearchRequestDto>()
+            .ForMember(s => s.RequestBodyRegex, m => m.MapFrom(s => s.Query));
+
         CreateMap<LogFilterItemDto, LogSearchResultViewModel>()
             .ForMember(s => s.CreatedOnString, m => m.MapFrom(s => s.CreatedOn.ConvertToLocalDateString()));
 

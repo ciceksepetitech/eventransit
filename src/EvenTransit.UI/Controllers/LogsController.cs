@@ -46,7 +46,7 @@ public class LogsController : Controller
             Page = model.Page,
             LogDateFrom = model.LogDateFrom.ConvertToDate(),
             LogDateTo = model.LogDateTo.ConvertToDate(),
-            Query = model.Query
+            RequestBodyRegex = model.Query
         };
 
         var result = await _logService.SearchAsync(request);
