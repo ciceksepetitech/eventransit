@@ -1,6 +1,5 @@
-using System.Text;
+﻿using System.Text;
 using EvenTransit.Data.MongoDb.Settings;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace EvenTransit.Data.MongoDb;
