@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core.Abstractions;
@@ -35,24 +35,39 @@ public class HttpProcessor : IHttpProcessor
         return result.IsSuccess;
     }
 
-    private async Task LogResult(string eventName, string serviceName, HttpResponseDto result,
-        HttpRequestDto request, string correlationId)
+    private async Task LogResult(string eventName, string serviceName, HttpResponseDto result, HttpRequestDto request, string correlationId)
     {
+        var logType = result.IsSuccess ? LogType.Success : LogType.Fail;
+
+        switch (result.StatusCode)
+        {
+            case 400:
+            case 404:
+                result.IsSuccess = false;
+                break;
+
+        }
+
         var body = JsonSerializer.Serialize(request.Body);
         var logData = new Logs
         {
             EventName = eventName,
             ServiceName = serviceName,
-            LogType = result.IsSuccess ? LogType.Success : LogType.Fail,
+            LogType = logType,
             Details = new LogDetail
             {
                 Request = new LogDetailRequest
                 {
-                    Url = request.Url, Timeout = request.Timeout, Body = body, Headers = request.Headers
+                    Url = request.Url,
+                    Timeout = request.Timeout,
+                    Body = body,
+                    Headers = request.Headers
                 },
                 Response = new LogDetailResponse
                 {
-                    Response = result.Response, IsSuccess = result.IsSuccess, StatusCode = result.StatusCode
+                    Response = result.Response,
+                    IsSuccess = result.IsSuccess,
+                    StatusCode = result.StatusCode
                 },
                 CorrelationId = correlationId
             }

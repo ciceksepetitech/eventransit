@@ -1,4 +1,4 @@
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Domain.Configuration;
 
@@ -6,6 +6,7 @@ public class EvenTransitConfig
 {
     public EvenTransitLoggingConfig Logging { get; set; }
     public Mode Mode { get; set; }
+    public int RetryCount { get; set; }
 }
 
 public class EvenTransitLoggingConfig
