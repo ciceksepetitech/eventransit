@@ -2,17 +2,18 @@
 using System.Text.Json;
 using AutoMapper;
 using EvenTransit.Domain.Abstractions;
+using EvenTransit.Domain.Configuration;
 using EvenTransit.Domain.Constants;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Domain.Enums;
 using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
-using EvenTransit.Messaging.Core.Domain;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -29,7 +30,8 @@ public class EventConsumer : IEventConsumer
     private readonly IRetryQueueHelper _retryQueueHelper;
     private readonly ICustomObjectMapper _customObjectMapper;
     private readonly IRabbitMqChannelFactory _channelFactory;
-    
+    private readonly int _maxRetryCount;
+
     private IModel Channel => _channelFactory.Channel;
 
     public EventConsumer(
@@ -41,7 +43,8 @@ public class EventConsumer : IEventConsumer
         IMapper mapper,
         IEventPublisher eventPublisher,
         IRetryQueueHelper retryQueueHelper,
-        ICustomObjectMapper customObjectMapper)
+        ICustomObjectMapper customObjectMapper,
+        IOptions<EvenTransitConfig> config)
     {
         _httpProcessor = httpProcessor;
         _eventsRepository = eventsRepository;
@@ -52,6 +55,7 @@ public class EventConsumer : IEventConsumer
         _retryQueueHelper = retryQueueHelper;
         _customObjectMapper = customObjectMapper;
         _channelFactory = channelFactories.Single(x => x.ChannelType == ChannelTypes.Consumer);
+        _maxRetryCount = config.Value.RetryCount;
     }
 
     public async Task ConsumeAsync()
@@ -62,7 +66,7 @@ public class EventConsumer : IEventConsumer
         newServiceConsumer.Received += OnNewServiceCreated;
 
         var channel = Channel;
-        
+
         channel.ExchangeDeclare(MessagingConstants.NewServiceExchange, ExchangeType.Fanout, false, false, null);
         var queueName = channel.QueueDeclare().QueueName;
         channel.QueueBind(queueName, MessagingConstants.NewServiceExchange, string.Empty);
@@ -133,12 +137,12 @@ public class EventConsumer : IEventConsumer
 
             if (!processResult)
                 _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
-            
+
             Channel.BasicAck(ea.DeliveryTag, false);
         }
         catch (Exception e)
         {
-            _logger.ConsumerFailed($"Message consume fail! - event name : {eventName} - service name : {serviceData.Name} - retry : {retryCount} ", e);
+            _logger.AckFailed($"Message consume fail! - event name : {eventName} - service name : {serviceData.Name} - retry : {retryCount} ", e, retryCount, _maxRetryCount);
 
             _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
 
@@ -215,7 +219,7 @@ public class EventConsumer : IEventConsumer
 
         var queueName = service.Name.GetQueueName(eventName);
         var eventConsumer = new AsyncEventingBasicConsumer(channel);
-        
+
         eventConsumer.Received += async (_, ea) =>
         {
             await OnReceiveMessageAsync(eventName, serviceData, ea);
@@ -227,14 +231,14 @@ public class EventConsumer : IEventConsumer
         channel.QueueBind(queueName, eventName, queueName); // bind routing key for retries.
 
         BindRetryQueues(eventName, service.Name);
-        
+
         channel.BasicConsume(queueName, false, eventConsumer);
     }
 
     private void BindRetryQueues(string eventName, string serviceName)
     {
         var channel = Channel;
-        
+
         var queueName = serviceName.GetQueueName(eventName);
         var retryExchangeName = eventName.GetRetryExchangeName();
         channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
