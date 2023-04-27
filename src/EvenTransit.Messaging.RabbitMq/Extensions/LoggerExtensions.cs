@@ -9,6 +9,7 @@ public static class LoggerExtensions
     private static readonly Action<ILogger, string, Exception> ConnectionStateFailedAction;
     private static readonly Action<ILogger, string, Exception> ConsumerFailedAction;
     private static readonly Action<ILogger, string, Exception> MaxRetryReachedAction;
+    private static readonly Action<ILogger, string, Exception> AckFailedAction;
 
     static LoggerExtensions()
     {
@@ -33,9 +34,14 @@ public static class LoggerExtensions
             "Consumer failed Message = {Message}");
 
         MaxRetryReachedAction = LoggerMessage.Define<string>(
-            LogLevel.Information,
-            new EventId(101, nameof(MaxRetryReached)),
+            LogLevel.Warning,
+            new EventId(105, nameof(MaxRetryReached)),
             "Max Retry Count Reached = {Message}");
+
+        AckFailedAction = LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(106, nameof(AckFailedAction)),
+            "Api call Failed At Last Try = {Message}");
     }
 
     public static void ChannelState(this ILogger logger, string message)
@@ -61,5 +67,11 @@ public static class LoggerExtensions
     public static void MaxRetryReached(this ILogger logger, string message)
     {
         MaxRetryReachedAction(logger, message, null);
+    }
+
+    public static void AckFailed(this ILogger logger, string message, Exception e, long retryCount, int maxRetryCount)
+    {
+        if (retryCount >= maxRetryCount)
+            AckFailedAction(logger, message, e);
     }
 }

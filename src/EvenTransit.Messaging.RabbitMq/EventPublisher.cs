@@ -58,7 +58,7 @@ public class EventPublisher : IEventPublisher
         if (_maxRetryCount == 0)
             return;
 
-        if (retryCount > _maxRetryCount)
+        if (retryCount >= _maxRetryCount)
         {
             _logger.MaxRetryReached($" event name : {eventName} - service name : {serviceName} - retry : {retryCount} ");
             return;
