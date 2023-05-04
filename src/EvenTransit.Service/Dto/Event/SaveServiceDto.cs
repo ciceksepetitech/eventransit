@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-
+﻿
 namespace EvenTransit.Service.Dto.Event;
 
 public class SaveServiceDto

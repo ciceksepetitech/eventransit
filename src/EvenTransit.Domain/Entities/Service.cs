@@ -1,4 +1,4 @@
-namespace EvenTransit.Domain.Entities;
+﻿namespace EvenTransit.Domain.Entities;
 
 public class Service
 {
@@ -7,5 +7,5 @@ public class Service
     public int Timeout { get; set; }
     public string Method { get; set; }
     public Dictionary<string, string> Headers { get; set; }
-    // public Dictionary<string, string> CustomBodyMap { get; set; }
+    public Dictionary<string, string> CustomBodyMap { get; set; }
 }
