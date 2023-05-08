@@ -37,16 +37,8 @@ public class HttpProcessor : IHttpProcessor
 
     private async Task LogResult(string eventName, string serviceName, HttpResponseDto result, HttpRequestDto request, string correlationId)
     {
-        var logType = result.IsSuccess ? LogType.Success : LogType.Fail;
-
-        switch (result.StatusCode)
-        {
-            case 400:
-            case 404:
-                result.IsSuccess = false;
-                break;
-
-        }
+        var logSuccess = result.StatusCode is >= 200 and <= 299;
+        var logType = logSuccess ? LogType.Success : LogType.Fail;
 
         var body = JsonSerializer.Serialize(request.Body);
         var logData = new Logs
@@ -66,7 +58,7 @@ public class HttpProcessor : IHttpProcessor
                 Response = new LogDetailResponse
                 {
                     Response = result.Response,
-                    IsSuccess = result.IsSuccess,
+                    IsSuccess = logSuccess,
                     StatusCode = result.StatusCode
                 },
                 CorrelationId = correlationId
