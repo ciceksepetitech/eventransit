@@ -1,4 +1,4 @@
-using EvenTransit.Service.Dto;
+﻿using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
 using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 

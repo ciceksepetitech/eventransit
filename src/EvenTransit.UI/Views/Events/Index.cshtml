@@ -18,8 +18,18 @@
         </div>
     </div>
 </div>
+<div class="row mb-4">
+    <div class="col-4">
+        <label for="EventName" class="form-label">Event Name</label>
+        <input type="text" class="form-control" id="EventName" name="EventName" />
+    </div>
+    <div class="col-4">
+        <label for="Service" class="form-label">Service Name or Service Url</label>
+        <input type="text" class="form-control" id="Service" name="Service" />
+    </div>
+</div>
 
-<table class="table table-hover table-bordered table-striped">
+<table class="table table-hover table-bordered table-striped" id="events">
     <thead>
     <tr>
         <th class="text-center index-column">#</th>
@@ -30,10 +40,13 @@
         <th></th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="events-body">
     @foreach (var eventDto in Model)
     {
-        <tr>
+        <tr id="@eventDto.Id">
+            <input type="hidden" data-url="@string.Join(',', eventDto.Services.Select(p=> p.Url))"/>
+            <input type="hidden" data-servicename="@string.Join(',', eventDto.Services.Select(p=> p.Name))"/>
+            <input type="hidden" data-eventname="@eventDto.Name"/>
             <td class="text-center">@index</td>
             <td class="col-2">@eventDto.Name</td>
             <td class="col-2">

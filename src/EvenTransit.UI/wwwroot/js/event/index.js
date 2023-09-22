@@ -3,6 +3,14 @@ const saveForm = document.querySelector("#save-event");
 document.querySelectorAll('.delete-event')
     .forEach(button => button.addEventListener('click', deleteEvent));
 
+document.querySelector("#EventName").addEventListener("keyup", e => {
+    filterTableByEventName();
+});
+
+document.querySelector("#Service").addEventListener("keyup", e => {
+    filterTableByService();
+});
+
 saveForm.addEventListener("submit", async e => {
     e.stopPropagation();
     e.preventDefault();
@@ -53,5 +61,40 @@ async function deleteEvent(e) {
         }
 
         window.location.reload();
+    }
+}
+
+async function filterTableByEventName() {
+    var filterText = document.getElementById("EventName").value.toLowerCase();;
+
+    var tableBody = document.querySelector("#events-body");
+    var rows = tableBody.querySelectorAll("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var eventName = rows[i].querySelector("[data-eventname]").getAttribute("data-eventname").toLowerCase();
+
+        if (eventName.includes(filterText)) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+}
+
+async function filterTableByService() {
+    var filterText = document.getElementById("Service").value.toLowerCase();;
+
+    var tableBody = document.querySelector("#events-body");
+    var rows = tableBody.querySelectorAll("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var serviceName = rows[i].querySelector("[data-servicename]").getAttribute("data-servicename").toLowerCase();
+        var serviceUrl = rows[i].querySelector("[data-url]").getAttribute("data-url").toLowerCase();
+
+        if (serviceName.includes(filterText) || serviceUrl.includes(filterText)) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
     }
 }
