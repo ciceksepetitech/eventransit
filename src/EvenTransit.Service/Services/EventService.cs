@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Constants;
 using EvenTransit.Domain.Entities;
@@ -36,9 +36,38 @@ public class EventService : IEventService
 
     public async Task<List<EventDto>> GetAllAsync()
     {
-        var events = await _eventLogStatisticRepository.GetAllAsync();
+        var list = new List<EventDto>();
+        var events = await _eventsRepository.GetEventsAsync();
+        var eventLogStatistics = await _eventLogStatisticRepository.GetAllAsync();
 
-        return _mapper.Map<List<EventDto>>(events);
+        foreach (var @event in events)
+        {
+            var dto = new EventDto { Services = new List<ServiceDto>() };
+            var eventLogStatistic = eventLogStatistics.FirstOrDefault(p => p.EventId == @event.Id);
+            if (eventLogStatistic == null)
+                continue;
+
+            dto.Id = @event.Id.ToString();
+            dto.FailCount = eventLogStatistic.FailCount;
+            dto.ServiceCount = eventLogStatistic.ServiceCount;
+            dto.SuccessCount = eventLogStatistic.SuccessCount;
+            dto.Name = @event.Name;
+
+            foreach (var service in @event.Services)
+            {
+                dto.Services.Add(new ServiceDto
+                {
+                    Url = service.Url,
+                    Name = service.Name,
+                    Method = service.Method,
+                    Timeout = service.Timeout
+                });
+            }
+
+            list.Add(dto);
+        }
+
+        return list;
     }
 
     public async Task<EventDto> GetEventDetailsAsync(Guid id)
@@ -125,7 +154,8 @@ public class EventService : IEventService
 
             _eventConsumer.DeleteExchange(@event.Name);
 
-            foreach (var service in @event.Services) _eventConsumer.DeleteQueue(@event.Name, service.Name);
+            foreach (var service in @event.Services)
+                _eventConsumer.DeleteQueue(@event.Name, service.Name);
 
             await _eventsRepository.DeleteEventAsync(id);
             await _eventLogStatisticRepository.DeleteAsync(id);
@@ -154,7 +184,8 @@ public class EventService : IEventService
 
             var eventLogData = await _eventLogStatisticRepository.GetAsync(id);
             var newServiceCount = eventLogData.ServiceCount - 1;
-            if (newServiceCount < 0) newServiceCount = 0;
+            if (newServiceCount < 0)
+                newServiceCount = 0;
             eventLogData.ServiceCount = newServiceCount;
 
             await _eventLogStatisticRepository.UpdateAsync(id, eventLogData);

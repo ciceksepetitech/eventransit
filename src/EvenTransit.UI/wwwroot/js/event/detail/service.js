@@ -84,6 +84,9 @@ async function editService(eventId, serviceName) {
     document.querySelector("#Timeout").value = timeout;
     document.querySelector("#Method").value = result.method;
 
+    if (document.querySelector("#Url").value != undefined)
+        document.querySelector("#Url").setAttribute("disabled", "disabled");
+
     const headers = result.headers;
     clearTable("headers");
 
@@ -177,4 +180,5 @@ function clearNewProcessModal() {
     saveForm.reset();
     clearTable("headers");
     clearTable("body-map");
+    document.querySelector("#Url").removeAttribute("disabled");
 }
