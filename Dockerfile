@@ -28,13 +28,13 @@ RUN apt-get update && apt-get install -y wget ca-certificates gnupg \
 && apt-get install -y newrelic-dotnet-agent
 
 
-ARG new_relic_license_key
+ARG NEW_RELIC_LICENSE_KEY
 # Enable the agent
 ENV CORECLR_ENABLE_PROFILING=1 \
 CORECLR_PROFILER={36032161-FFC0-4B61-B559-F6C5D41BAE5A} \
 CORECLR_NEWRELIC_HOME=/usr/local/newrelic-dotnet-agent \
 CORECLR_PROFILER_PATH=/usr/local/newrelic-dotnet-agent/libNewRelicProfiler.so \
-NEW_RELIC_LICENSE_KEY=${new_relic_license_key:-"local"} \
+NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY:-"local"} \
 NEW_RELIC_APP_NAME=EvenTransit
 
 WORKDIR /app
