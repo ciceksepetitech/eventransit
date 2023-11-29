@@ -1,6 +1,6 @@
 # EvenTransit
 
-EvenTransit is a solution which transfers events into relevant service(s) in a distributed way. Distributed messages handled by built in RabbitMQ implementation.
+EvenTransit is a production-ready solution that transfers events into relevant service(s) in a distributed way. Distributed messages are handled by built-in RabbitMQ implementation.
 
 ## Highlights
 - Language agnostic way to implement distributed messaging. Best fit for microservices.
@@ -17,7 +17,7 @@ EvenTransit is a solution which transfers events into relevant service(s) in a d
 
 ## Message Processing Mechanism
 
-An event is published into EvenTransit service. EvenTransit transfers published message into event's exchange. This exchange delivers message to all bound queues. Each queue consumers make HTTP call with message to external services.
+An event is published into the EvenTransit service. EvenTransit transfers published messages into the event's exchange. This exchange delivers the message to all bound queues. Each queue consumer makes an HTTP call with the message to external services.
 
 
 ![EvenTransit Message Processing Mechanism](assets/EvenTransitInternalMechanism.svg) 
@@ -29,7 +29,7 @@ An event is published into EvenTransit service. EvenTransit transfers published 
  
 ## Retry Mechanism
 
-Retry mechanism is involved occurence of an error from external services. Delivered message is transferred into retry exchange and queue. The message waits 30 sec before it republishes. EvenTransit tries message to publish 5 times. Each HTTP call is logged into database.
+The retry mechanism involves the occurrence of an error from external services. The delivered message is transferred into the retry exchange and queue. The message waits 30 sec before it is republished. EvenTransit tries to message to publish 5 times. Each HTTP call is logged into the database.
 
 ![EvenTransit Retry Mechanism](assets/EvenTransitRetryMechanism.svg)
 
@@ -46,7 +46,7 @@ To get started locally, follow these instructions:
 
 ## Usage
 
-Publish an event with below command
+Publish an event with the command below
 
 ```bash 
 curl -X POST "https://localhost:5010/api/v1/event" \ 
@@ -59,10 +59,10 @@ curl -X POST "https://localhost:5010/api/v1/event" \
 [Dashboard Wiki](Dashboard.md)
 
 ## Contribution
-We are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving EvenTransit.
+We are grateful to the community for contributing bug fixes and improvements. Read below to learn how you can take part in improving EvenTransit.
 
 ### Contribution Prerequisites
-You have installed below prerequisites.
+You have installed the prerequisites below.
 - .Net 6.0
 - RabbitMq
 - MongoDB
@@ -72,8 +72,8 @@ You have installed below prerequisites.
 Before submitting a pull request, please make sure the following is done:
 - Fork the repository and create your branch from `main`.
 - Make sure you use [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) branching model 
-- Don't forget to add new feature explanation to documentation
+- Don't forget to add new feature explanations to the documentation
 
 ## Licenses
-EvenTransit use either the [MIT](LICENSE.txt) or [Apache 2](https://www.apache.org/licenses/LICENSE-2.0) licenses for code.
+EvenTransit uses either the [MIT](LICENSE.txt) or [Apache 2](https://www.apache.org/licenses/LICENSE-2.0) licenses for code.
 
