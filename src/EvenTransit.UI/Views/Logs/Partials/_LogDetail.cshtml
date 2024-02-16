@@ -9,6 +9,8 @@
                 <div class="mb-4">
                     <label for="EventName" class="form-label">Event Name</label>
                     <input type="text" class="form-control" id="EventName" readonly>
+                    <input type="hidden" class="form-control" id="Id" readonly>
+                    <input type="hidden" class="form-control" id="CreatedOn" readonly>
                 </div>
                 <div class="mb-4">
                     <label for="ServiceName" class="form-label">Service Name</label>
@@ -54,6 +56,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" id="btn-copy-filter" title="Copy Filter" class="btn btn-sm btn-cs text-white" onclick="copyDetailLink()">
+                    <i class="fa fa-link fa-fw"></i> Share
+                </button>
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>

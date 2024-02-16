@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EvenTransit.Domain.Enums;
 using EvenTransit.Domain.Extensions;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
