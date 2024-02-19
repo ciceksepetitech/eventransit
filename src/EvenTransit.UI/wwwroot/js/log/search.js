@@ -2,6 +2,22 @@ const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailMod
 const serviceDropdown = document.querySelector("#ServiceName");
 const dateFormat = "DD-MM-YYYY HH:mm";
 
+$('document').ready(function () {
+    $('#LogDate').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        startDate: moment().startOf('day'),
+        endDate: moment().endOf('day'),
+        locale: {
+            format: 'DD/MM/YYYY HH:mm'
+        },
+        autoApply: true
+    });
+
+    let queryParams = new URLSearchParams(window.location.search);
+    window.history.replaceState(null, '', window.location.pathname);
+    processQueryParams(queryParams);
+});
 
 const select2me = $('.select2me');
 select2me.select2();
@@ -36,8 +52,73 @@ $("select#EventName").on('select2:select', async function (e) {
     }
 });
 
-async function getLogDetails(e) {
-    const id = e.currentTarget.dataset.id;
+function processQueryParams(queryParams) {
+    if (!queryParams || queryParams.size === 0)
+        return;
+        
+    let id = queryParams.get('id');
+    if (id) {
+        $('#LogDate').val(null);
+        $('#ServiceName').val(null).trigger('select2:select');
+        $('#EventName').val(null).trigger('select2:select');
+        $('#LogType').val(null).trigger('select2:select');
+        $('#Query').val(null);
+
+        getLogDetails(null, id).then((logDetail) => {
+            if (logDetail.createdOn) {
+                let createdOn = moment(logDetail.createdOn)
+                let dateRangeFrom = createdOn;
+                let dateRangeTo = createdOn.add(1, 'minutes');
+                setTimeout(() => {
+                    let datePicker = $('#LogDate').data('daterangepicker');
+                    datePicker.setStartDate(dateRangeFrom.utc().format(dateFormat));
+                    datePicker.setEndDate(dateRangeTo.utc().format(dateFormat));
+                }, 500);
+            } else {
+                $('#LogDate').val(null);
+            }
+            
+            $('#EventName').val(logDetail.eventName).trigger('select2:select');
+            setTimeout(() => {
+                $('#ServiceName').val(logDetail.serviceName).trigger('select2:select');
+                $('#LogType').val(logDetail.logType).trigger('select2:select');
+            }, 500);
+        });
+        return;
+    }
+
+    let dateRangeFrom = moment(queryParams.get('logDateFrom'));
+    let dateRangeTo = moment(queryParams.get('logDateTo'));
+    let serviceName = queryParams.get('serviceName');
+    let eventName = queryParams.get('eventName');
+    let logType = queryParams.get('logType');
+    if (isNaN(logType))
+        logType = getLogTypeAsInt(logType);
+    let query = queryParams.get('query');
+
+    if (dateRangeFrom.isValid() && dateRangeTo.isValid()) {
+        setTimeout(() => {
+            let datePicker = $('#LogDate').data('daterangepicker');
+            datePicker.setStartDate(dateRangeFrom.utc().format(dateFormat));
+            datePicker.setEndDate(dateRangeTo.utc().format(dateFormat));
+        }, 500);
+    }
+
+    $('#EventName').val(eventName).trigger('select2:select');
+    setTimeout(() => {
+        $('#ServiceName').val(serviceName).trigger('select2:select');
+        $('#LogType').val(logType).trigger('select2:select');
+        $('#Query').val(query);
+
+        if (serviceName) {
+            search(page = 1).then(() => {
+            });
+        }
+    }, 500);
+}
+
+async function getLogDetails(e, idParam) {
+    const id = idParam || e.currentTarget.dataset.id;
     const response = await fetch(`/Logs/GetById/${id}`, {
         method: 'GET',
         headers: {
@@ -57,6 +138,7 @@ async function getLogDetails(e) {
 
     const result = await response.json();
 
+    document.querySelector("#logDetailModal #Id").value = result.id;
     document.querySelector("#logDetailModal #EventName").value = result.eventName;
     document.querySelector("#logDetailModal #ServiceName").value = result.serviceName;
     document.querySelector("#logDetailModal #LogType").value = getLogType(result.logType);
@@ -67,10 +149,18 @@ async function getLogDetails(e) {
     document.querySelector("#logDetailModal #StatusCode").value = result.details.response?.statusCode;
     document.querySelector("#logDetailModal #Message").value = result.details.message;
     document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response?.response;
+    document.querySelector("#logDetailModal #CreatedOn").innerHTML = result.CreatedOn;
 
     hljs.highlightAll();
 
     logDetailModal.show();
+
+    return {
+        logType: result.logType,
+        eventName: result.eventName,
+        serviceName: result.serviceName,
+        createdOn: result.createdOn
+    }
 }
 
 async function filterByCorrelationId(e) {
@@ -343,4 +433,78 @@ function getLogType(logType) {
     if (logType === 0) return "None";
     if (logType === 1) return "Success";
     if (logType === 2) return "Fail";
+}
+
+function getLogTypeAsInt(logType) {
+    if (logType === "None") return 0;
+    if (logType === "Success") return 1;
+    if (logType === "Fail") return 2;
+}
+
+async function copySearchFilter() {
+    let logDatePicker = $("#LogDate").data('daterangepicker');
+    
+    let params = {
+        logDateFrom: logDatePicker.startDate.format(),
+        logDateTo: logDatePicker.endDate.format(),
+        logType: parseInt(getFieldValue("#LogType", 0)),
+        eventName: getFieldValue("select#EventName", ""),
+        serviceName: getFieldValue("#ServiceName", ""),
+        query: getFieldValue("input#Query", ""),
+    };
+
+    let filter = `${window.location.href}?${jQuery.param(params)}`;
+    await copyToClipboard(filter);
+    try {
+        toastr.success('Search Filter copied to clipboard!');
+    } catch (err) {
+        toastr.warning('Unable to copy link to clipboard!');
+    }
+}
+
+async function copyDetailLink(id) {
+    if (!id) {
+        id = document.querySelector("#logDetailModal #Id").value;
+    }
+
+    let params = {
+        id: id,
+    };
+
+    let filter = `${window.location.href}?${jQuery.param(params)}`;
+
+    try {
+        await copyToClipboard(filter);
+        toastr.success('Log detail link copied to clipboard!');
+    } catch (err) {
+        toastr.warning('Unable to copy link to clipboard!');
+    }
+}
+
+async function copyToClipboard(content) {
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(content);
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = content;
+        
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+
+        if ($('.modal.show').length > 0) {
+            $('.modal.show').find('.modal-footer').append(textArea);
+        } else {
+            document.body.prepend(textArea);
+        }
+
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            textArea.remove();
+        }
+    }
 }

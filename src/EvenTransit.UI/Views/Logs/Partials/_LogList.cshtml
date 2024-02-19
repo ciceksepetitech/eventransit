@@ -1,13 +1,17 @@
 <table class="table table-hover table-bordered table-striped mt-3" id="logs">
     <thead>
-    <tr>
-        <th class="index-column">#</th>
-        <th>Event</th>
-        <th>Service</th>
-        <th>Type</th>
-        <th>Created</th>
-        <th class="index-column-2x"></th>
-    </tr>
+        <tr>
+            <th class="index-column">#</th>
+            <th>Event</th>
+            <th>Service</th>
+            <th>Type</th>
+            <th>Created</th>
+            <th class="index-column-2x">
+                <button type="button" id="btn-copy-filter" title="Copy Filter" class="btn btn-sm btn-cs text-white" onclick="copySearchFilter()">
+                    <i class="fa fa-link fa-fw"></i>
+                </button>
+            </th>
+        </tr>
     </thead>
     <tbody></tbody>
 </table>
