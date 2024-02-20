@@ -68,17 +68,18 @@ function processQueryParams(queryParams) {
             if (logDetail.createdOn) {
                 let createdOn = moment(logDetail.createdOn)
                 let dateRangeFrom = createdOn;
-                let dateRangeTo = createdOn.add(1, 'minutes');
+                let dateRangeTo = createdOn.add(1, 'minutes').format(dateFormat);
+                debugger;
                 setTimeout(() => {
                     let datePicker = $('#LogDate').data('daterangepicker');
-                    datePicker.setStartDate(dateRangeFrom.utc().format(dateFormat));
-                    datePicker.setEndDate(dateRangeTo.utc().format(dateFormat));
+                    datePicker.setStartDate(dateRangeFrom.format(dateFormat));
+                    datePicker.setEndDate(dateRangeTo.format(dateFormat));
                 }, 500);
             } else {
                 $('#LogDate').val(null);
             }
             
-            $('#EventName').val(logDetail.eventName).trigger('select2:select');
+            $('#EventName').val(logDetail.eventName).trigger('select2:select').trigger('change');
             setTimeout(() => {
                 $('#ServiceName').val(logDetail.serviceName).trigger('select2:select');
                 $('#LogType').val(logDetail.logType).trigger('select2:select');
@@ -86,7 +87,7 @@ function processQueryParams(queryParams) {
         });
         return;
     }
-
+    
     let dateRangeFrom = moment(queryParams.get('logDateFrom'));
     let dateRangeTo = moment(queryParams.get('logDateTo'));
     let serviceName = queryParams.get('serviceName');
@@ -99,12 +100,12 @@ function processQueryParams(queryParams) {
     if (dateRangeFrom.isValid() && dateRangeTo.isValid()) {
         setTimeout(() => {
             let datePicker = $('#LogDate').data('daterangepicker');
-            datePicker.setStartDate(dateRangeFrom.utc().format(dateFormat));
-            datePicker.setEndDate(dateRangeTo.utc().format(dateFormat));
+            datePicker.setStartDate(dateRangeFrom.format(dateFormat));
+            datePicker.setEndDate(dateRangeTo.format(dateFormat));
         }, 500);
     }
 
-    $('#EventName').val(eventName).trigger('select2:select');
+    $('#EventName').val(eventName).trigger('select2:select').trigger('change');
     setTimeout(() => {
         $('#ServiceName').val(serviceName).trigger('select2:select');
         $('#LogType').val(logType).trigger('select2:select');
