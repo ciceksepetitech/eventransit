@@ -20,58 +20,61 @@
 </div>
 <table class="table table-hover table-bordered table-striped">
     <thead>
-    <tr>
-        <th class="index-column">#</th>
-        <th>Service Name</th>
-        <th>Url</th>
-        <th>Timeout <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Seconds"></i></th>
-        <th>Headers</th>
-        <th>Actions</th>
-    </tr>
+        <tr>
+            <th class="index-column">#</th>
+            <th>Service Name</th>
+            <th>Url</th>
+            <th>Timeout <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Seconds"></i></th>
+            <th>Headers</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     @if (Model.Services != null)
     {
         <tbody>
-        @foreach (var service in Model.Services)
-        {
-            <tr>
+            @foreach (var service in Model.Services)
+            {
+                <tr>
 
-                <td>@index</td>
-                <td>@service.Name</td>
-                <td>
-                    <kbd>@service.Url</kbd>
-                </td>
-                @{
-                    if (service.Timeout == 0)
-                    {
-                        <td class="text-center"></td>
-                    }
-                    else
-                    {
-                        <td class="text-center">@service.Timeout</td>
-                    }
-                }
-                <td>
-                    @if (service.Headers != null)
-                    {
-                        foreach (var header in service.Headers)
+                    <td>@index</td>
+                    <td>@service.Name</td>
+                    <td>
+                        <kbd>@service.Url</kbd>
+                    </td>
+                    @{
+                        if (service.Timeout == 0)
                         {
-                            <code class="d-block">@header.Key - @header.Value</code>
+                            <td class="text-center"></td>
+                        }
+                        else
+                        {
+                            <td class="text-center">@service.Timeout</td>
                         }
                     }
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-warning" title="Edit" onclick="editService('@Model.Id', '@service.Name')">
-                        <i class="fa fa-edit fa-fw"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-danger" title="Delete" onclick="deleteService('@Model.Id', '@service.Name')">
-                        <i class="fa fa-times fa-fw"></i>
-                    </button>
-                </td>
-            </tr>
+                    <td>
+                        @if (service.Headers != null)
+                        {
+                            foreach (var header in service.Headers)
+                            {
+                                <code class="d-block">@header.Key - @header.Value</code>
+                            }
+                        }
+                    </td>
+                    <td class="text-center col-2">
+                        <button class="btn btn-sm btn-primary" title="Logs" onclick="logsbuttonClick('@Model.Name', '@service.Name')">
+                            <i class="fa fa-file-code fa-fw"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-warning" title="Edit" onclick="editService('@Model.Id', '@service.Name')">
+                            <i class="fa fa-edit fa-fw"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" title="Delete" onclick="deleteService('@Model.Id', '@service.Name')">
+                            <i class="fa fa-times fa-fw"></i>
+                        </button>
+                    </td>
+                </tr>
 
-            index++;
-        }
+                index++;
+            }
         </tbody>
     }
 </table>

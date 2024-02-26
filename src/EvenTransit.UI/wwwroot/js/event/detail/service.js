@@ -182,3 +182,9 @@ function clearNewProcessModal() {
     clearTable("body-map");
     document.querySelector("#Url").removeAttribute("disabled");
 }
+
+async function logsbuttonClick(eventName, serviceName) {
+    let url = `/Logs?logType=1&eventName=${eventName}&serviceName=${serviceName}`;
+
+    window.open(url, '_blank');
+}
