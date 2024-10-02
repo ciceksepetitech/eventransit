@@ -15,7 +15,8 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services.AddScoped<IEventPublisher, EventPublisher>();
-        services.AddSingleton<IRabbitMqChannelFactory, RabbitMqProducerChannelFactory>();
+        services.AddScoped<IRabbitMqPooledChannelProvider, RabbitMqPooledChannelProvider>();
+        services.AddSingleton<IRabbitMqChannelPool, RabbitMqChannelPool>();
 
         if (modeConsumer)
         {

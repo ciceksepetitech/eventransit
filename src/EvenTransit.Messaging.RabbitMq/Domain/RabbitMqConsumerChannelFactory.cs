@@ -1,58 +1,41 @@
-﻿using EvenTransit.Domain.Enums;
-using EvenTransit.Messaging.Core.Abstractions;
-using EvenTransit.Messaging.RabbitMq.Abstractions;
+﻿using EvenTransit.Messaging.RabbitMq.Abstractions;
 using EvenTransit.Messaging.RabbitMq.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using System.Collections.Concurrent;
 
 namespace EvenTransit.Messaging.RabbitMq.Domain;
 
 public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposable
 {
-    private IModel _channel;
-    private static readonly object _guard = new();
+    private readonly ConcurrentDictionary<string, IModel> _channels = new();
     private readonly IRabbitMqConnectionFactory _connection;
     private readonly IList<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<RabbitMqConsumerChannelFactory> _logger;
 
     private const int RetryToConnectAfterSeconds = 5;
     private const ushort DisposeReasonCodeSuccess = 200;
 
-    public ChannelTypes ChannelType => ChannelTypes.Consumer;
-
-    public IModel Channel
-    {
-        get
-        {
-            if (_channel is { IsOpen: true })
-                return _channel;
-
-            lock (_guard)
-            {
-                if (_channel is { IsOpen: true })
-                    return _channel;
-
-                _channel = _connection.ConsumerConnection.CreateModel();
-
-                ChannelFailureScenario(_channel);
-
-                return _channel;
-            }
-        }
-    }
-
     public RabbitMqConsumerChannelFactory(IRabbitMqConnectionFactory connection,
-        ILogger<RabbitMqConsumerChannelFactory> logger,
-        IServiceScopeFactory serviceScopeFactory)
+        ILogger<RabbitMqConsumerChannelFactory> logger)
     {
         _connection = connection;
         _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
+    }
+    
+    public IModel ChannelForRecover(Action<IModel> recover)
+    {
+        var channel = _connection.ConsumerConnection.CreateModel();
+        
+        var id = Guid.NewGuid().ToString();
+        _channels.TryAdd(id, channel);
+        
+        ChannelFailureScenario(id, channel, recover);
+        
+        return channel;
     }
 
-    private void ChannelFailureScenario(IModel channel)
+    private void ChannelFailureScenario(string id, IModel channel, Action<IModel> recover)
     {
         channel.ModelShutdown += (sender, args) =>
         {
@@ -74,17 +57,16 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
                         {
                             if (channel.IsClosed)
                             {
-                                using var scope = _serviceScopeFactory.CreateScope();
-                                var connectionFac = scope.ServiceProvider.GetRequiredService<IRabbitMqConnectionFactory>();
-                                channel = connectionFac.ConsumerConnection.CreateModel();
+                                channel = _connection.ConsumerConnection.CreateModel();
                             }
 
                             if (channel.IsOpen)
                             {
-                                using var scope = _serviceScopeFactory.CreateScope();
-                                var eventConsumer = scope.ServiceProvider.GetRequiredService<IEventConsumer>();
-                                eventConsumer.ConsumeAsync().GetAwaiter().GetResult();
-
+                                if (_channels.ContainsKey(id))
+                                {
+                                    _channels[id] = channel;
+                                }
+                                recover(channel);
                                 break;
                             }
                             _logger.ChannelStateFailed("Channel waiting...", args.Cause, null);
@@ -106,8 +88,11 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
 
     public void Dispose()
     {
-        _channel?.Close();
-
+        foreach (var pair in _channels)
+        {
+            pair.Value?.Close();
+        }
+        
         foreach (var source in _cancellationTokenSources)
         {
             source.Cancel();

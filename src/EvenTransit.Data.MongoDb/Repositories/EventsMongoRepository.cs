@@ -1,3 +1,4 @@
+using EvenTransit.Data.MongoDb.Abstractions;
 using System.Linq.Expressions;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
@@ -10,7 +11,7 @@ namespace EvenTransit.Data.MongoDb.Repositories;
 public class EventsMongoRepository : BaseMongoRepository<Event>, IEventsRepository
 {
     public EventsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings,
-        MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
+        IMongoClientProvider clientProvider) : base(mongoDbSettings, clientProvider)
     {
     }
 
@@ -26,11 +27,10 @@ public class EventsMongoRepository : BaseMongoRepository<Event>, IEventsReposito
         return await result.FirstOrDefaultAsync();
     }
 
-    public Service GetServiceByEvent(string eventName, string serviceName)
+    public Event GetEvent(Expression<Func<Event, bool>> predicate)
     {
-        var @event = Collection.Find(x => x.Name == eventName).FirstOrDefault();
-
-        return @event.Services.FirstOrDefault(x => x.Name == serviceName);
+        var result = Collection.Find(predicate);
+        return result.FirstOrDefault();
     }
 
     public async Task<Service> GetServiceByEventAsync(string eventName, string serviceName)
