@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using EvenTransit.Data.MongoDb.Abstractions;
+using System.Linq.Expressions;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
@@ -13,7 +14,7 @@ namespace EvenTransit.Data.MongoDb.Repositories;
 public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
 {
     public LogsMongoRepository(IOptions<MongoDbSettings> mongoDbSettings,
-        MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
+        IMongoClientProvider clientProvider) : base(mongoDbSettings, clientProvider)
     {
     }
 

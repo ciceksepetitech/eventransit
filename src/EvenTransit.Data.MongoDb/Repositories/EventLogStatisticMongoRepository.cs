@@ -1,4 +1,5 @@
-﻿using EvenTransit.Data.MongoDb.Settings;
+﻿using EvenTransit.Data.MongoDb.Abstractions;
+using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -9,7 +10,7 @@ namespace EvenTransit.Data.MongoDb.Repositories;
 public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStatistic>, IEventLogStatisticRepository
 {
     public EventLogStatisticMongoRepository(IOptions<MongoDbSettings> mongoDbSettings,
-        MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
+        IMongoClientProvider clientProvider) : base(mongoDbSettings, clientProvider)
     {
     }
 

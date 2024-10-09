@@ -1,4 +1,4 @@
-using System;
+using EvenTransit.Data.MongoDb.Abstractions;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
 using EvenTransit.Domain.Entities;
@@ -10,7 +10,7 @@ namespace EvenTransit.Data.MongoDb.Repositories;
 public class ServiceLockMongoRepository : BaseMongoRepository<ServiceLock>, IServiceLockRepository
 {
     public ServiceLockMongoRepository(IOptions<MongoDbSettings> mongoDbSettings,
-        MongoDbConnectionStringBuilder connectionStringBuilder) : base(mongoDbSettings, connectionStringBuilder)
+        IMongoClientProvider clientProvider) : base(mongoDbSettings, clientProvider)
     {
     }
 
