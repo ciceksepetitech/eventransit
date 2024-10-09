@@ -1,3 +1,4 @@
+using EvenTransit.Data.MongoDb.Abstractions;
 using EvenTransit.Data.MongoDb.Repositories;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
@@ -18,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ILogStatisticsRepository, LogStatisticsMongoRepository>();
         services.AddScoped<IEventLogStatisticRepository, EventLogStatisticMongoRepository>();
         services.AddScoped<IServiceLockRepository, ServiceLockMongoRepository>();
+        services.AddSingleton<IMongoClientProvider, MongoClientProvider>();
 
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
         BsonSerializer.RegisterSerializer(typeof(DateTime), new ApplicationDateTimeSerializer());

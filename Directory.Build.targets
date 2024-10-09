@@ -17,7 +17,7 @@
     <PackageReference Update="AutoMapper" Version="11.0.1"/>
     <PackageReference Update="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
     <PackageReference Update="Microsoft.Extensions.Logging" Version="6.0.0"/>
-    <PackageReference Update="RabbitMQ.Client" Version="6.2.4"/>
+    <PackageReference Update="RabbitMQ.Client" Version="6.8.1"/>
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.3"/>
     <PackageReference Update="Serilog" Version="2.10.0"/>
     <PackageReference Update="Serilog.AspNetCore" Version="5.0.0"/>
