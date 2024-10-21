@@ -1,4 +1,3 @@
-using System;
 using EvenTransit.Domain.Constants;
 using EvenTransit.UI.Models.Events;
 using FluentValidation;
@@ -29,6 +28,10 @@ public class SaveServiceModelValidator : AbstractValidator<SaveServiceModel>
             .GreaterThanOrEqualTo(0)
             .WithMessage(ValidationConstants.TimeoutMustBeGreaterThanZero);
 
+        RuleFor(x => x.DelaySeconds)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage(ValidationConstants.DelaySecondsMustBeGreaterThanZero);
+        
         RuleFor(x => x.Method)
             .NotEmpty()
             .WithMessage(ValidationConstants.MethodCannotBeNotEmpty);

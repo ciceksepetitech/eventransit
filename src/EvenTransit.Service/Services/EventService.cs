@@ -60,7 +60,8 @@ public class EventService : IEventService
                     Url = service.Url,
                     Name = service.Name,
                     Method = service.Method,
-                    Timeout = service.Timeout
+                    Timeout = service.Timeout,
+                    DelaySeconds = service.DelaySeconds
                 });
             }
 
