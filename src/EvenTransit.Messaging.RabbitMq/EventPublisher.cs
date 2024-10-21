@@ -15,16 +15,13 @@ namespace EvenTransit.Messaging.RabbitMq;
 public class EventPublisher : IEventPublisher
 {
     private readonly int _maxRetryCount;
-    private readonly IRetryQueueHelper _retryQueueHelper;
     private readonly ILogger<EventPublisher> _logger;
     private readonly IRabbitMqPooledChannelProvider _channelProvider;
 
-    public EventPublisher(IRetryQueueHelper retryQueueHelper,
-        ILogger<EventPublisher> logger,
+    public EventPublisher(ILogger<EventPublisher> logger,
         IOptions<EvenTransitConfig> config,
         IRabbitMqPooledChannelProvider channelProvider)
     {
-        _retryQueueHelper = retryQueueHelper;
         _logger = logger;
         _channelProvider = channelProvider;
         _maxRetryCount = config.Value.RetryCount;
@@ -68,10 +65,34 @@ public class EventPublisher : IEventPublisher
         
         var properties = channel.CreateBasicProperties();
         properties.Persistent = true;
+        var expiration = retryCount switch
+        {
+            //0,1 --> 5 sec
+            >= 0 and <= 1 => "5000",
+            //2,3 --> 30 sec
+            > 1 and <= 3 => "30000",
+            //4,5 --> 60 sec
+            _ => "60000"
+        };
+        properties.Expiration = expiration;
         properties.Headers = new Dictionary<string, object> { { MessagingConstants.RetryHeaderName, newRetryCount } };
 
-        var retryQueueName = serviceName.GetRetryQueueName(eventName, _retryQueueHelper.GetRetryQueue(retryCount));
+        var retryQueueName = serviceName.GetRetryQueueName(eventName);
         channel.BasicPublish(eventName.GetRetryExchangeName(), retryQueueName, false, properties, payload);
+    }
+    
+    public void PublishToDelay(string eventName, string serviceName, byte[] payload, int delaySeconds)
+    {
+        var channel = _channelProvider.Channel();
+        
+        var properties = channel.CreateBasicProperties();
+        properties.Persistent = true;
+        const int msInSec = 1000;
+        properties.Expiration = (delaySeconds * msInSec).ToString();
+        properties.Headers = new Dictionary<string, object> { { MessagingConstants.CustomDelayHeaderName, true } };
+
+        var delayQueueName = serviceName.GetDelayQueueName(eventName);
+        channel.BasicPublish(eventName.GetDelayExchangeName(), delayQueueName, false, properties, payload);
     }
 
     public void RegisterNewService(NewServiceDto data)

@@ -10,6 +10,7 @@ using EvenTransit.Messaging.Core;
 using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Messaging.RabbitMq.Abstractions;
+using EvenTransit.Messaging.RabbitMq.Domain;
 using EvenTransit.Messaging.RabbitMq.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,6 @@ public class EventConsumer : IEventConsumer
     private readonly ILogger<EventConsumer> _logger;
     private readonly IMapper _mapper;
     private readonly IEventPublisher _eventPublisher;
-    private readonly IRetryQueueHelper _retryQueueHelper;
     private readonly ICustomObjectMapper _customObjectMapper;
     private readonly IRabbitMqPooledChannelProvider _channelProvider;
     private readonly IRabbitMqChannelFactory _channelFactory;
@@ -41,7 +41,6 @@ public class EventConsumer : IEventConsumer
         ILogger<EventConsumer> logger,
         IMapper mapper,
         IEventPublisher eventPublisher,
-        IRetryQueueHelper retryQueueHelper,
         ICustomObjectMapper customObjectMapper,
         IOptions<EvenTransitConfig> config,
         IRabbitMqPooledChannelProvider channelProvider)
@@ -52,7 +51,6 @@ public class EventConsumer : IEventConsumer
         _logger = logger;
         _mapper = mapper;
         _eventPublisher = eventPublisher;
-        _retryQueueHelper = retryQueueHelper;
         _customObjectMapper = customObjectMapper;
         _channelProvider = channelProvider;
         _channelFactory = channelFactory;
@@ -113,11 +111,11 @@ public class EventConsumer : IEventConsumer
         
         channel.QueueDelete(queueName, false, false);
 
-        foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
-        {
-            var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
-            channel.QueueDelete(retryQueueName, false, false);
-        }
+        var retryQueueName = serviceName.GetRetryQueueName(eventName);
+        channel.QueueDelete(retryQueueName, false, false);
+        
+        var delayQueueName = serviceName.GetDelayQueueName(eventName);
+        channel.QueueDelete(delayQueueName, false, false);
     }
 
     public void DeleteExchange(string eventName)
@@ -125,14 +123,23 @@ public class EventConsumer : IEventConsumer
         var channel = _channelProvider.Channel();
         channel.ExchangeDelete(eventName);
         channel.ExchangeDelete(eventName.GetRetryExchangeName());
+        channel.ExchangeDelete(eventName.GetRetryExchangeName());
     }
 
     private async Task OnReceiveMessageAsync(IModel channel, string eventName, ServiceDto serviceData, BasicDeliverEventArgs ea)
     {
+        var serviceName = serviceData.Name;
         var bodyArray = ea.Body.ToArray();
+
+        if (serviceData.DelaySeconds > 0 && !IsAlreadyDelayed(ea.BasicProperties))
+        {
+            _eventPublisher.PublishToDelay(eventName, serviceName, bodyArray, serviceData.DelaySeconds);
+            channel.BasicAck(ea.DeliveryTag, false);
+            return;
+        }
+        
         var body = JsonSerializer.Deserialize<EventPublishDto>(Encoding.UTF8.GetString(bodyArray));
         var retryCount = GetRetryCount(ea.BasicProperties);
-        var serviceName = serviceData.Name;
 
         var replacedUrl = serviceData.Url.ReplaceDynamicFieldValues(body?.Fields);
         var requestHeaders = new Dictionary<string, string>();
@@ -234,6 +241,21 @@ public class EventConsumer : IEventConsumer
         var serviceData = _mapper.Map<ServiceDto>(service);
 
         var queueName = service.Name.GetQueueName(eventName);
+
+        if (RabbitMqConsumerTagWrapper._tags.TryGetValue(queueName, out var t) && t.Channel.IsOpen)
+        {
+            try
+            {
+                t.Channel.BasicCancel(t.Value);
+            }
+            catch (Exception e)
+            {
+                _logger.ConsumerWarning(
+                    $"New service creation issue! Unable to cancel the old receiver. queue: {queueName} ", e);
+            }
+            RabbitMqConsumerTagWrapper._tags.TryRemove(queueName, out _);
+        }
+        
         var eventConsumer = new AsyncEventingBasicConsumer(channel);
 
         eventConsumer.Received += async (_, ea) =>
@@ -244,44 +266,88 @@ public class EventConsumer : IEventConsumer
         channel.ExchangeDeclare(eventName, ExchangeType.Direct, true, false, null);
         channel.QueueDeclare(queueName, true, false, false, null);
         channel.QueueBind(queueName, eventName, eventName); // bind routing key events.
-        channel.QueueBind(queueName, eventName, queueName); // bind routing key for retries.
+        channel.QueueBind(queueName, eventName, queueName); // bind routing key for retries and delayed ones.
 
         BindRetryQueues(channel, eventName, service.Name);
 
-        channel.BasicConsume(queueName, false, eventConsumer);
+        if (service.DelaySeconds > 0)
+        {
+            BindDelayQueues(channel, eventName, service.Name);
+        }
+
+        var tag = channel.BasicConsume(queueName, false, eventConsumer);
+        
+        RabbitMqConsumerTagWrapper._tags.TryAdd(queueName, new ConsumerTag
+        {
+            Value = tag,
+            Channel = channel
+        });
     }
 
-    private void BindRetryQueues(IModel channel, string eventName, string serviceName)
+    private static void BindRetryQueues(IModel channel, string eventName, string serviceName)
     {
         var queueName = serviceName.GetQueueName(eventName);
         var retryExchangeName = eventName.GetRetryExchangeName();
         channel.ExchangeDeclare(retryExchangeName, ExchangeType.Direct, true, false, null);
 
-        foreach (var retryQueue in _retryQueueHelper.RetryQueueInfo)
+        var retryQueueName = serviceName.GetRetryQueueName(eventName);
+        var retryQueueArguments = new Dictionary<string, object>
         {
-            var retryQueueName = serviceName.GetRetryQueueName(eventName, retryQueue.RetryTime);
-            var retryQueueArguments = new Dictionary<string, object>
-            {
-                { "x-dead-letter-exchange", eventName },
-                { "x-dead-letter-routing-key", queueName },
-                { "x-message-ttl", retryQueue.TTL }
-            };
+            { "x-dead-letter-exchange", eventName },
+            { "x-dead-letter-routing-key", queueName }
+        };
 
-            channel.QueueDeclare(retryQueueName,
-                true,
-                false,
-                false,
-                retryQueueArguments);
+        channel.QueueDeclare(retryQueueName,
+            true,
+            false,
+            false,
+            retryQueueArguments);
 
-            channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
-        }
+        channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
+    }
+    
+    private static void BindDelayQueues(IModel channel, string eventName, string serviceName)
+    {
+        var queueName = serviceName.GetQueueName(eventName);
+        var delayExchangeName = eventName.GetDelayExchangeName();
+        channel.ExchangeDeclare(delayExchangeName, ExchangeType.Direct, true, false, null);
+
+        var delayQueueName = serviceName.GetDelayQueueName(eventName);
+        var delayQueueArguments = new Dictionary<string, object>
+        {
+            { "x-dead-letter-exchange", eventName },
+            { "x-dead-letter-routing-key", queueName },
+            { "x-queue-mode", "lazy" } // save to disk.
+        };
+
+        channel.QueueDeclare(delayQueueName,
+            true,
+            false,
+            false,
+            delayQueueArguments);
+
+        channel.QueueBind(delayQueueName, delayExchangeName, delayQueueName);
     }
 
     private static long GetRetryCount(IBasicProperties properties)
     {
-        if (properties?.Headers == null || !properties.Headers.ContainsKey(MessagingConstants.RetryHeaderName))
+        if (properties?.Headers == null ||
+            !properties.Headers.TryGetValue(MessagingConstants.RetryHeaderName, out var header))
+        {
             return 0;
+        }
 
-        return (long)properties.Headers[MessagingConstants.RetryHeaderName];
+        return (long)header;
+    }
+    
+    private static bool IsAlreadyDelayed(IBasicProperties properties)
+    {
+        if (properties?.Headers == null ||
+            !properties.Headers.TryGetValue(MessagingConstants.CustomDelayHeaderName, out var header))
+        {
+            return false;
+        }
+
+        return (bool)header;
     }
 }

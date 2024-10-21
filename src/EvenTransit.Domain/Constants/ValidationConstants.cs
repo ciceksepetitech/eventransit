@@ -8,6 +8,7 @@ public static class ValidationConstants
     public const string InvalidLogDateFrom = "Invalid LogDateFrom";
     public const string InvalidLogDateTo = "Invalid LogDateTo";
     public const string TimeoutMustBeGreaterThanZero = "Timeout must be greater than or equal to zero";
+    public const string DelaySecondsMustBeGreaterThanZero = "Delay Seconds must be greater than or equal to zero";
     public const string MethodCannotBeNotEmpty = "Method cannot be empty";
     public const string InvalidMethod = "Invalid Method";
 }
