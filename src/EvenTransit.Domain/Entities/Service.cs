@@ -6,6 +6,7 @@ public class Service
     public string Url { get; set; }
     public int Timeout { get; set; }
     public string Method { get; set; }
+    public int DelaySeconds { get; set; }
     public Dictionary<string, string> Headers { get; set; }
     public Dictionary<string, string> CustomBodyMap { get; set; }
 }

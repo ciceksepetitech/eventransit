@@ -6,6 +6,7 @@ public record ServiceDto
     public string Url { get; init; }
     public int Timeout { get; init; }
     public string Method { get; init; }
+    public int DelaySeconds { get; set; }
     public Dictionary<string, string> Headers { get; init; }
     public Dictionary<string, string> CustomBodyMap { get; init; }
 }

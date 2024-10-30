@@ -7,8 +7,11 @@ saveForm.addEventListener("submit", async e => {
     const formData = Object.fromEntries(new FormData(e.target).entries());
     let timeout = 0;
     if (formData.Timeout !== "") timeout = parseInt(formData.Timeout);
+    let delaySeconds = 0;
+    if (formData.DelaySeconds !== "") delaySeconds = parseInt(formData.DelaySeconds);
 
     formData.Timeout = timeout;
+    formData.DelaySeconds = delaySeconds;
     formData.Headers = {};
     formData.CustomBodyMap = {};
 
@@ -77,15 +80,17 @@ async function editService(eventId, serviceName) {
     const result = await response.json();
 
     const timeout = result.timeout === 0 ? "" : result.timeout;
+    const delaySeconds = result.delaySeconds === 0 ? "" : result.delaySeconds;
 
     document.getElementById("HiddenServiceName").value = result.name;
     document.querySelector("#ServiceName").value = result.name;
     document.querySelector("#Url").value = result.url;
     document.querySelector("#Timeout").value = timeout;
+    document.querySelector("#DelaySeconds").value = delaySeconds;
     document.querySelector("#Method").value = result.method;
 
-    if (document.querySelector("#Url").value != undefined)
-        document.querySelector("#Url").setAttribute("disabled", "disabled");
+    if (document.querySelector("#Url").value !== undefined)
+        document.querySelector("#Url").setAttribute("readonly", "readonly");
 
     const headers = result.headers;
     clearTable("headers");

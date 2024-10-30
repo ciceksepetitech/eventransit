@@ -20,8 +20,6 @@ public static class ServiceCollectionExtensions
             services.AddScoped<IHttpProcessor, HttpProcessor>();
             services.AddScoped<IDistributedLocker, DistributedLocker>();
         }
-        
-        services.AddSingleton<IRetryQueueHelper, RetryQueueHelper>();
 
         return services;
     }
