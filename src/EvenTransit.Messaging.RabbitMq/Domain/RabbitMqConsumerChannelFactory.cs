@@ -13,9 +13,8 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     private readonly IList<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
     private readonly ILogger<RabbitMqConsumerChannelFactory> _logger;
 
-    private const int RetryToConnectAfterSeconds = 5;
-    private const ushort DisposeReasonCodeSuccess = 200;
-
+    private const int _retryToConnectAfterSeconds = 5;
+    private const ushort _disposeReasonCodeSuccess = 200;
     public RabbitMqConsumerChannelFactory(IRabbitMqConnectionFactory connection,
         ILogger<RabbitMqConsumerChannelFactory> logger)
     {
@@ -39,7 +38,7 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
     {
         channel.ModelShutdown += (sender, args) =>
         {
-            if (args.ReplyCode == DisposeReasonCodeSuccess)
+            if (args.ReplyCode == _disposeReasonCodeSuccess)
                 return;
 
             _logger.ChannelStateFailed($"Channel lost. {args.ReplyText}", args.Cause, null);
@@ -79,7 +78,7 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
 
                     _logger.ChannelStateFailed("Connection waiting...", args.Cause, null);
 
-                    Thread.Sleep(1000 * RetryToConnectAfterSeconds);
+                    Thread.Sleep(1000 * _retryToConnectAfterSeconds);
                 }
             }, token);
         };

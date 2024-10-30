@@ -4,4 +4,5 @@ public static class MessagingConstants
 {
     public const string NewServiceExchange = "NewService";
     public const string RetryHeaderName = "x-retry-count";
+    public const string CustomDelayHeaderName = "x-delayed";
 }
