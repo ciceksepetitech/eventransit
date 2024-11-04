@@ -23,6 +23,7 @@ public class HttpProcessor : IHttpProcessor
         {
             Url = service.Url,
             Timeout = service.Timeout,
+            DelaySeconds = service.DelaySeconds,
             Body = message.Payload,
             Method = service.Method,
             Headers = service.Headers
@@ -52,6 +53,7 @@ public class HttpProcessor : IHttpProcessor
                 {
                     Url = request.Url,
                     Timeout = request.Timeout,
+                    DelaySeconds = request.DelaySeconds,
                     Body = body,
                     Headers = request.Headers
                 },
