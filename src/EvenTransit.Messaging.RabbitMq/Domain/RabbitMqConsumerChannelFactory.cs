@@ -15,6 +15,7 @@ public class RabbitMqConsumerChannelFactory : IRabbitMqChannelFactory, IDisposab
 
     private const int _retryToConnectAfterSeconds = 5;
     private const ushort _disposeReasonCodeSuccess = 200;
+    
     public RabbitMqConsumerChannelFactory(IRabbitMqConnectionFactory connection,
         ILogger<RabbitMqConsumerChannelFactory> logger)
     {

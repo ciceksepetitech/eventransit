@@ -188,6 +188,7 @@ public class EventConsumer : IEventConsumer
                         Fields = body?.Fields,
                         Url = replacedUrl,
                         Timeout = serviceData.Timeout,
+                        DelaySeconds = serviceData.DelaySeconds,
                         Headers = requestHeaders
                     },
                     Response = new EventLogHttpResponseDto
