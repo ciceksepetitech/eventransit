@@ -20,13 +20,6 @@ jobs:
           NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
         run: sh ./scripts/ci-build.sh
 
-      - name: Compose up
-        run: |
-          docker build -t mountebank -f ./ci-test/imposters/Dockerfile.mountebank .
-          docker-compose up -d rabbitmq
-          docker-compose up -d ui
-          docker-compose up wait-for-it
-
       - name: Push image
         env:
           GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}

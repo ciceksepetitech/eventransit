@@ -7,8 +7,6 @@ services:
       - "5000:5000"
     depends_on:
       - mongo
-      - sqlapi
-      - mountebank
     environment:
       - ASPNETCORE_ENVIRONMENT=production
       - MongoDb__Host=mongo
@@ -20,28 +18,10 @@ services:
     image: rabbitmq:3-management
     ports:
       - "15672:15672"
-      - "5672:5672"
-
-  mountebank:
-    container_name: mountebank
-    image: mountebank
-    ports:
-      - "2525:2525"
-      - "5025:5025"      
+      - "5672:5672"  
 
   mongo:
     build: ./ci-test/mongodb
     container_name: mongo
     ports:
       - "27017:27017"
-
-  sqlapi:
-    container_name: sqlapi
-    image: techciceksepeti/sqlapi:latest
-    ports:
-      - "8033:8033"
-
-  wait-for-it:
-    image: curlimages/curl:latest
-    restart: on-failure
-    command: sh -c "timeout 30 sh -c 'until curl -f -s -o /dev/null http://ui:5000/readiness; do sleep 1; done'"
