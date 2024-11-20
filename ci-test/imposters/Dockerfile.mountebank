@@ -1,7 +1,0 @@
-FROM andyrbell/mountebank:2.0.0
-
-EXPOSE 4546 5555
-
-ADD ./ci-test/imposters /mb
-
-CMD ["mb", "--configfile", "/mb/imposters.ejs", "--allowInjection"]
