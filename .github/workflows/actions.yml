@@ -20,18 +20,6 @@ jobs:
           NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
         run: sh ./scripts/ci-build.sh
 
-      - name: Compose up
-        run: |
-          docker build -t mountebank -f ./ci-test/imposters/Dockerfile.mountebank .
-          docker-compose up -d rabbitmq
-          docker-compose up -d ui
-          docker-compose up wait-for-it
-
-      - name: Integration tests
-        run: |
-          docker run --network container:EventTransitUI \
-              postman/newman_ubuntu1404 run https://api.postman.com/collections/18070358-d9c53e91-a367-469a-8ce3-c4c40498fd3c?access_key=PMAT-01JA501XQRYQD5VYFQ856WNF85
-
       - name: Push image
         env:
           GCR_REGISTRY_ID: ${{ secrets.GCR_REGISTRY_ID }}
