@@ -146,6 +146,7 @@ async function getLogDetails(e, idParam) {
     document.querySelector("#logDetailModal #Url").value = result.details.request.url;
     document.querySelector("#logDetailModal #Timeout").value = result.details.request.timeout;
     document.querySelector("#logDetailModal #RequestBody").innerHTML = result.details.request.body;
+    document.querySelector("#logDetailModal #RequestHeaders").innerHTML = JSON.stringify(result.details.request.headers, null, 2);
     document.querySelector("#logDetailModal #IsSuccess").value = result.details.response?.isSuccess;
     document.querySelector("#logDetailModal #StatusCode").value = result.details.response?.statusCode;
     document.querySelector("#logDetailModal #Message").value = result.details.message;
