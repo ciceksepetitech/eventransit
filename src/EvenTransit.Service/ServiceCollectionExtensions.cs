@@ -27,14 +27,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services, bool modeConsumer)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        
-        if (modeConsumer)
-        {
-            services.AddScoped<IEventService, EventService>();
-            services.AddScoped<ILogService, LogService>();
-            services.AddTransient<ICustomObjectMapper, CustomObjectMapper>();
-        }
-        
+
+        services.AddScoped<IEventService, EventService>();
+        services.AddTransient<ICustomObjectMapper, CustomObjectMapper>();
+        services.AddScoped<ILogService, LogService>();
         services.AddScoped<IEventPublisherService, EventPublisherService>();
 
         return services;
