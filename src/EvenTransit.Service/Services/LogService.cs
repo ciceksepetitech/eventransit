@@ -13,14 +13,20 @@ public class LogService : ILogService
     private readonly ILogsRepository _logsRepository;
     private readonly ILogStatisticsRepository _logStatisticsRepository;
     private readonly IMapper _mapper;
+    private readonly IEventsRepository _eventsRepository;
+    private readonly IEventLogStatisticRepository _eventLogStatisticRepository;
 
     public LogService(ILogsRepository logsRepository,
         IMapper mapper,
-        ILogStatisticsRepository logStatisticsRepository)
+        ILogStatisticsRepository logStatisticsRepository,
+        IEventsRepository eventsRepository,
+        IEventLogStatisticRepository eventLogStatisticRepository)
     {
         _logsRepository = logsRepository;
         _mapper = mapper;
         _logStatisticsRepository = logStatisticsRepository;
+        _eventsRepository = eventsRepository;
+        _eventLogStatisticRepository = eventLogStatisticRepository;
     }
 
     public async Task<LogSearchResultDto> SearchAsync(LogSearchRequestDto request)
@@ -84,5 +90,25 @@ public class LogService : ILogService
         response.FailCount = failCount;
 
         return response;
+    }
+
+    public async Task RefreshEventLogStatistic()
+    {
+        var events = await _eventsRepository.GetEventsAsync();
+        foreach (var eventDto in events)
+        {
+            var logCount = _logsRepository.GetLogsCountByEvent(eventDto.Name, DateTime.Now.AddDays(-5));
+
+            var eventLogData = await _eventLogStatisticRepository.GetAsync(eventDto.Id);
+            if(eventLogData != null)
+            {
+                eventLogData.SuccessCount = logCount.Item1;
+                eventLogData.FailCount = logCount.Item2;
+
+                await _eventLogStatisticRepository.UpdateAsync(eventLogData.EventId, eventLogData);
+
+                Console.WriteLine(eventDto.Name);
+            }
+        }
     }
 }

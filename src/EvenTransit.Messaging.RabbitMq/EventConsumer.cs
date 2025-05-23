@@ -251,8 +251,7 @@ public class EventConsumer : IEventConsumer
             }
             catch (Exception e)
             {
-                _logger.ConsumerWarning(
-                    $"New service creation issue! Unable to cancel the old receiver. queue: {queueName} ", e);
+                _logger.ConsumerWarning($"New service creation issue! Unable to cancel the old receiver. queue: {queueName} ", e);
             }
             RabbitMqConsumerTagWrapper._tags.TryRemove(queueName, out _);
         }

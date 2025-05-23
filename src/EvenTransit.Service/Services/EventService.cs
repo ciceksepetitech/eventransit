@@ -19,19 +19,22 @@ public class EventService : IEventService
     private readonly IMapper _mapper;
     private readonly IEventConsumer _eventConsumer;
     private readonly ILogger<EventService> _logger;
+    private readonly ILogsRepository _logsRepository;
 
     public EventService(
         IEventsRepository eventsRepository,
         IEventLogStatisticRepository eventLogStatisticRepository,
         IMapper mapper,
         IEventConsumer eventConsumer,
-        ILogger<EventService> logger)
+        ILogger<EventService> logger,
+        ILogsRepository logsRepository)
     {
         _eventsRepository = eventsRepository;
         _eventLogStatisticRepository = eventLogStatisticRepository;
         _mapper = mapper;
         _eventConsumer = eventConsumer;
         _logger = logger;
+        _logsRepository = logsRepository;
     }
 
     public async Task<List<EventDto>> GetAllAsync()
@@ -74,7 +77,16 @@ public class EventService : IEventService
     public async Task<EventDto> GetEventDetailsAsync(Guid id)
     {
         var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == id);
-        return _mapper.Map<EventDto>(eventDetails);
+        var eventDetailDto = _mapper.Map<EventDto>(eventDetails);
+
+        foreach (var service in eventDetailDto.Services)
+        {
+            var count = _logsRepository.GetLogsCountByEvent(eventDetailDto.Name, service.Name, DateTime.Now.AddDays(-5));
+            service.SuccessCount = count.Item1;
+            service.FailCount = count.Item2;
+        }
+
+        return eventDetailDto;
     }
 
     public async Task<BaseResponseDto> SaveServiceAsync(SaveServiceDto model)

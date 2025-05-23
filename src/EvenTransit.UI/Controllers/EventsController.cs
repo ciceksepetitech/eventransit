@@ -19,7 +19,9 @@ public class EventsController : Controller
     private readonly IEventPublisher _eventPublisher;
     private readonly IMapper _mapper;
 
-    public EventsController(IEventService eventService, IEventPublisher eventPublisher, IMapper mapper)
+    public EventsController(IEventService eventService,
+        IEventPublisher eventPublisher,
+        IMapper mapper)
     {
         _eventService = eventService;
         _eventPublisher = eventPublisher;

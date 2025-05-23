@@ -58,21 +58,17 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
         return await Collection.Find(x => x.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<long> GetLogsCountAsync(DateTime startDate, DateTime endDate, LogType type)
+    public (long, long) GetLogsCountByEvent(string eventName, DateTime startDate)
     {
-        return await Collection.CountDocumentsAsync(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
+        var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Success && x.CreatedOn > startDate);
+        var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Fail && x.CreatedOn > startDate);
+        return (successLogCount, failLogCount);
     }
 
-    public long GetLogsCount(DateTime startDate, DateTime endDate, LogType type)
+    public (long, long) GetLogsCountByEvent(string eventName, string serviceName, DateTime startDate)
     {
-        return Collection.CountDocuments(x => x.CreatedOn >= startDate && x.CreatedOn <= endDate && x.LogType == type);
-    }
-
-    public (long, long) GetLogsCountByEvent(string eventName)
-    {
-        var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Success);
-        var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.LogType == LogType.Fail);
-
+        var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.ServiceName == serviceName && x.LogType == LogType.Success && x.CreatedOn > startDate);
+        var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.ServiceName == serviceName && x.LogType == LogType.Fail && x.CreatedOn > startDate);
         return (successLogCount, failLogCount);
     }
 }
