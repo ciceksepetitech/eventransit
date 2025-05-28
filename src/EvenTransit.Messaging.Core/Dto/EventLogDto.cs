@@ -1,4 +1,4 @@
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Messaging.Core.Dto;
 
@@ -16,4 +16,6 @@ public class EventDetailDto
     public EventLogHttpResponseDto Response { get; set; }
     public string Message { get; set; }
     public string CorrelationId { get; set; }
+    public DateTime? PublishDate { get; set; }
+    public long Retry { get; set; }
 }

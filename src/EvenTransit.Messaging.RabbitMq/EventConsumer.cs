@@ -160,7 +160,7 @@ public class EventConsumer : IEventConsumer
             }
 
             var requestData = serviceData with { Url = replacedUrl, Headers = requestHeaders };
-            var processResult = await _httpProcessor.ProcessAsync(eventName, requestData, body);
+            var processResult = await _httpProcessor.ProcessAsync(eventName, requestData, body, retryCount);
 
             if (!processResult)
                 _eventPublisher.PublishToRetry(eventName, serviceName, bodyArray, retryCount);
@@ -197,7 +197,9 @@ public class EventConsumer : IEventConsumer
                         StatusCode = StatusCodes.Status500InternalServerError
                     },
                     Message = e.Message,
-                    CorrelationId = body?.CorrelationId
+                    CorrelationId = body?.CorrelationId,
+                    PublishDate = body?.PublishDate,
+                    Retry = retryCount
                 }
             };
 
@@ -251,8 +253,7 @@ public class EventConsumer : IEventConsumer
             }
             catch (Exception e)
             {
-                _logger.ConsumerWarning(
-                    $"New service creation issue! Unable to cancel the old receiver. queue: {queueName} ", e);
+                _logger.ConsumerWarning($"New service creation issue! Unable to cancel the old receiver. queue: {queueName} ", e);
             }
             RabbitMqConsumerTagWrapper._tags.TryRemove(queueName, out _);
         }

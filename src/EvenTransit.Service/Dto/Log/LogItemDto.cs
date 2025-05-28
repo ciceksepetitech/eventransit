@@ -24,6 +24,12 @@ public class LogItemDetailDto
     public LogItemDetailResponseDto Response { get; set; }
 
     public string Message { get; set; }
+
+    public string CorrelationId { get; set; }
+
+    public DateTime? PublishDate { get; set; }
+
+    public long? Retry { get; set; }
 }
 
 public class LogItemDetailRequestDto

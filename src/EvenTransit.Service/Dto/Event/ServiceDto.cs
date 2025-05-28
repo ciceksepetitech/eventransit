@@ -9,4 +9,6 @@ public class ServiceDto
     public string Method { get; set; }
     public Dictionary<string, string> Headers { get; set; }
     public Dictionary<string, string> CustomBodyMap { get; set; }
+    public long SuccessCount { get; set; }
+    public long FailCount { get; set; }
 }

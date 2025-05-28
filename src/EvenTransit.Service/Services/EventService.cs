@@ -8,7 +8,6 @@ using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
 using EvenTransit.Service.Extensions;
 using Microsoft.Extensions.Logging;
-using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 
 namespace EvenTransit.Service.Services;
 
@@ -19,19 +18,22 @@ public class EventService : IEventService
     private readonly IMapper _mapper;
     private readonly IEventConsumer _eventConsumer;
     private readonly ILogger<EventService> _logger;
+    private readonly ILogsRepository _logsRepository;
 
     public EventService(
         IEventsRepository eventsRepository,
         IEventLogStatisticRepository eventLogStatisticRepository,
         IMapper mapper,
         IEventConsumer eventConsumer,
-        ILogger<EventService> logger)
+        ILogger<EventService> logger,
+        ILogsRepository logsRepository)
     {
         _eventsRepository = eventsRepository;
         _eventLogStatisticRepository = eventLogStatisticRepository;
         _mapper = mapper;
         _eventConsumer = eventConsumer;
         _logger = logger;
+        _logsRepository = logsRepository;
     }
 
     public async Task<List<EventDto>> GetAllAsync()
@@ -43,14 +45,12 @@ public class EventService : IEventService
         foreach (var @event in events)
         {
             var dto = new EventDto { Services = new List<ServiceDto>() };
-            var eventLogStatistic = eventLogStatistics.FirstOrDefault(p => p.EventId == @event.Id);
-            if (eventLogStatistic == null)
-                continue;
+            var eventStatistics = eventLogStatistics.Where(p => p.EventId == @event.Id).ToList();
 
             dto.Id = @event.Id.ToString();
-            dto.FailCount = eventLogStatistic.FailCount;
-            dto.ServiceCount = eventLogStatistic.ServiceCount;
-            dto.SuccessCount = eventLogStatistic.SuccessCount;
+            dto.ServiceCount = @event.ServiceCount;
+            dto.FailCount = eventStatistics.Sum(s=>s.FailCount);
+            dto.SuccessCount = eventStatistics.Sum(s => s.SuccessCount);
             dto.Name = @event.Name;
 
             foreach (var service in @event.Services)
@@ -74,7 +74,16 @@ public class EventService : IEventService
     public async Task<EventDto> GetEventDetailsAsync(Guid id)
     {
         var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == id);
-        return _mapper.Map<EventDto>(eventDetails);
+        var eventDetailDto = _mapper.Map<EventDto>(eventDetails);
+
+        foreach (var service in eventDetailDto.Services)
+        {
+            var count = _logsRepository.GetLogsCountByEvent(eventDetailDto.Name, service.Name, DateTime.Now.AddDays(-5));
+            service.SuccessCount = count.Item1;
+            service.FailCount = count.Item2;
+        }
+
+        return eventDetailDto;
     }
 
     public async Task<BaseResponseDto> SaveServiceAsync(SaveServiceDto model)
@@ -93,11 +102,6 @@ public class EventService : IEventService
         if (service == null)
         {
             await _eventsRepository.AddServiceToEventAsync(model.EventId, serviceData);
-
-            var eventLogData = await _eventLogStatisticRepository.GetAsync(model.EventId);
-            eventLogData.ServiceCount++;
-
-            await _eventLogStatisticRepository.UpdateAsync(model.EventId, eventLogData);
         }
         else
         {
@@ -159,7 +163,6 @@ public class EventService : IEventService
                 _eventConsumer.DeleteQueue(@event.Name, service.Name);
 
             await _eventsRepository.DeleteEventAsync(id);
-            await _eventLogStatisticRepository.DeleteAsync(id);
 
             return true;
         }
@@ -182,14 +185,6 @@ public class EventService : IEventService
             _eventConsumer.DeleteQueue(@event.Name, service.Name);
 
             await _eventsRepository.DeleteServiceAsync(id, name);
-
-            var eventLogData = await _eventLogStatisticRepository.GetAsync(id);
-            var newServiceCount = eventLogData.ServiceCount - 1;
-            if (newServiceCount < 0)
-                newServiceCount = 0;
-            eventLogData.ServiceCount = newServiceCount;
-
-            await _eventLogStatisticRepository.UpdateAsync(id, eventLogData);
 
             return true;
         }

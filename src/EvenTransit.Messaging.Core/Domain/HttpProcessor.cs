@@ -17,7 +17,7 @@ public class HttpProcessor : IHttpProcessor
         _eventLog = eventLog;
     }
 
-    public async Task<bool> ProcessAsync(string eventName, ServiceDto service, EventPublishDto message)
+    public async Task<bool> ProcessAsync(string eventName, ServiceDto service, EventPublishDto message, long retry)
     {
         var request = new HttpRequestDto
         {
@@ -31,12 +31,12 @@ public class HttpProcessor : IHttpProcessor
 
         var result = await _httpRequestSender.SendAsync(request);
 
-        await LogResult(eventName, service.Name, result, request, message.CorrelationId);
+        await LogResult(eventName, service.Name, result, request, message, retry);
 
         return result.IsSuccess;
     }
 
-    private async Task LogResult(string eventName, string serviceName, HttpResponseDto result, HttpRequestDto request, string correlationId)
+    private async Task LogResult(string eventName, string serviceName, HttpResponseDto result, HttpRequestDto request, EventPublishDto message, long retry)
     {
         var logSuccess = result.StatusCode is >= 200 and <= 299;
         var logType = logSuccess ? LogType.Success : LogType.Fail;
@@ -63,7 +63,9 @@ public class HttpProcessor : IHttpProcessor
                     IsSuccess = logSuccess,
                     StatusCode = result.StatusCode
                 },
-                CorrelationId = correlationId
+                CorrelationId = message.CorrelationId,
+                PublishDate = message.PublishDate,
+                Retry = retry
             }
         };
 

@@ -1,4 +1,5 @@
 ﻿using EvenTransit.Domain.Enums;
+using System.Globalization;
 
 namespace EvenTransit.UI.Models.Logs;
 
@@ -14,6 +15,8 @@ public class LogItemViewModel
 
     public DateTime CreatedOn { get; set; }
 
+    public string Duration { get => Details.PublishDate.HasValue ? ((long)(CreatedOn - Details.PublishDate.Value).TotalSeconds).ToString(CultureInfo.InvariantCulture) : ""; }
+
     public LogItemDetailViewModel Details { get; set; }
 }
 
@@ -24,4 +27,10 @@ public class LogItemDetailViewModel
     public HttpResponseViewModel Response { get; set; }
 
     public string Message { get; set; }
+
+    public string CorrelationId { get; set; }
+
+    public DateTime? PublishDate { get; set; }
+
+    public long? Retry { get; set; }
 }

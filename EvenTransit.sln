@@ -1,5 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DBC87EF9-9A21-4B86-8DF1-2235705195BB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Build.targets = Directory.Build.targets
+		docker-compose.yml = docker-compose.yml
+		README.md = README.md
+		Dockerfile = Dockerfile
+		.github\workflows\actions.yml = .github\workflows\actions.yml
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C9DE5015-7164-484A-A8AB-40FF137FA192}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{72BBACCC-2F0D-439F-B39C-D95880B01E45}"

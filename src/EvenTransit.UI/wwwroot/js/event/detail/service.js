@@ -188,8 +188,14 @@ function clearNewProcessModal() {
     document.querySelector("#Url").removeAttribute("disabled");
 }
 
-async function logsbuttonClick(eventName, serviceName) {
-    let url = `/Logs?logType=1&eventName=${eventName}&serviceName=${serviceName}`;
+async function logsbuttonClick(eventName, serviceName, type, startDate, endDate) {
+    let url = `/Logs?logType=${type}&eventName=${eventName}&serviceName=${serviceName}`;
+    if (startDate)
+        url += `&logDateFrom=${startDate}`
+    if (endDate)
+        url += `&logDateTo=${endDate}`
+
+    console.log(url);
 
     window.open(url, '_blank');
 }

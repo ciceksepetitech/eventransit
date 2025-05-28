@@ -1,5 +1,4 @@
-using System;
-
+﻿
 namespace EvenTransit.Domain.Entities;
 
 public class BaseEntity

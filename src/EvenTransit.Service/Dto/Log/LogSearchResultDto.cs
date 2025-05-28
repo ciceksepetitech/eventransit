@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using EvenTransit.Domain.Enums;
+﻿using EvenTransit.Domain.Enums;
 
 namespace EvenTransit.Service.Dto.Log;
 
@@ -18,4 +16,6 @@ public class LogFilterItemDto
     public string CorrelationId { get; set; }
     public LogType LogType { get; set; }
     public DateTime CreatedOn { get; set; }
+    public DateTime? PublishDate { get; set; }
+    public long? Retry { get; set; }
 }

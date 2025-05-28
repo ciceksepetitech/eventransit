@@ -53,14 +53,32 @@ public class EventLog : IEventLog
             await _logStatisticsRepository.UpdateStatisticAsync(statistic.Id, successCount, failCount);
     }
 
-
     private async Task UpdateEventStatisticsAsync(Logs details)
     {
-        var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName);
+        var startDate = DateTime.Today;
+        var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName, startDate);
 
         var successCount = details.LogType == LogType.Success ? 1 : 0;
         var failCount = details.LogType == LogType.Fail ? 1 : 0;
 
-        await _eventLogStatisticRepository.UpdateStatisticAsync(eventStatistic.Id, successCount, failCount);
+        if (eventStatistic == null)
+        {
+            eventStatistic = new EventLogStatistic
+            {
+                CreatedOn = startDate,
+                EventName = details.EventName,
+                EventId = details.Id,
+                SuccessCount = successCount,
+                FailCount = failCount,
+                Id = Guid.NewGuid()
+            };
+            await _eventLogStatisticRepository.InsertAsync(eventStatistic);
+        }
+        else
+        {
+            eventStatistic.SuccessCount += successCount;
+            eventStatistic.FailCount += failCount;
+            await _eventLogStatisticRepository.UpdateAsync(eventStatistic.Id, successCount, failCount);
+        }
     }
 }

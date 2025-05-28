@@ -1,6 +1,4 @@
-using System;
-using System.Threading.Tasks;
-using EvenTransit.Service.Dto.Log;
+﻿using EvenTransit.Service.Dto.Log;
 
 namespace EvenTransit.Service.Abstractions;
 

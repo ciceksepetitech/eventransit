@@ -24,6 +24,8 @@
             <th class="index-column">#</th>
             <th>Service Name</th>
             <th>Url</th>
+            <th>Succees</th>
+            <th>Fail</th>
             <th>Timeout <i class="fa fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Seconds"></i></th>
             <th>Headers</th>
             <th>Actions</th>
@@ -38,8 +40,18 @@
 
                     <td>@index</td>
                     <td>@service.Name</td>
-                    <td>
+                    <td style="word-break:break-all">
                         <kbd>@service.Url</kbd>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-success" title="Logs" onclick="logsbuttonClick('@Model.Name', '@service.Name', 1,'@DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd")','@DateTime.Now.Date.AddDays(1).ToString("yyyy-MM-dd")')">
+                            @service.SuccessCount
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" title="Logs" onclick="logsbuttonClick('@Model.Name', '@service.Name', 2,'@DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd")','@DateTime.Now.Date.AddDays(1).ToString("yyyy-MM-dd")')">
+                            @service.FailCount
+                        </button>
                     </td>
                     @{
                         if (service.Timeout == 0)
@@ -61,7 +73,7 @@
                         }
                     </td>
                     <td class="text-center col-2">
-                        <button class="btn btn-sm btn-primary" title="Logs" onclick="logsbuttonClick('@Model.Name', '@service.Name')">
+                        <button class="btn btn-sm btn-primary" title="Logs" onclick="logsbuttonClick('@Model.Name', '@service.Name',1)">
                             <i class="fa fa-file-code fa-fw"></i>
                         </button>
                         <button type="button" class="btn btn-sm btn-warning" title="Edit" onclick="editService('@Model.Id', '@service.Name')">

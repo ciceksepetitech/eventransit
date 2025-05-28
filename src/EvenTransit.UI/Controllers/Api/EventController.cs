@@ -1,4 +1,4 @@
-using EvenTransit.Domain.Constants;
+﻿using EvenTransit.Domain.Constants;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.UI.Filters;
@@ -28,26 +28,20 @@ public class EventController : ControllerBase
     /// </summary>
     /// <param name="request">Event information</param>
     /// <returns></returns>
-    /// <response code="200">Event published to message broker.</response>
-    /// <response code="400">Validation problems</response>
-    /// <response code="404">Not found</response>
     [HttpPost]
-    [ProducesResponseType(typeof(void), 200)]
-    [ProducesResponseType(typeof(void), 400)]
-    [ProducesResponseType(typeof(void), 404)]
     public IActionResult PostAsync([FromBody] EventRequest request)
     {
         var requestId = StringValues.Empty;
-        
-        _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(HeaderConstants.RequestIdHeader,
-            out requestId);
+
+        _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(HeaderConstants.RequestIdHeader, out requestId);
 
         _eventPublisherService.Publish(new EventRequestDto
         {
             EventName = request.EventName,
             Payload = request.Payload,
             Fields = request.Fields,
-            CorrelationId = requestId
+            CorrelationId = requestId,
+            PublishDate = DateTime.UtcNow
         });
 
         return Ok();

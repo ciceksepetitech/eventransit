@@ -12,7 +12,7 @@
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.3"/>
     <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="6.0.3"/>
     <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0"/>
-    <PackageReference Update="MongoDB.Driver" Version="2.15.0"/>
+    <PackageReference Update="MongoDB.Driver" Version="2.20.0"/>
     <PackageReference Update="Microsoft.Extensions.Http" Version="6.0.0"/>
     <PackageReference Update="AutoMapper" Version="11.0.1"/>
     <PackageReference Update="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>

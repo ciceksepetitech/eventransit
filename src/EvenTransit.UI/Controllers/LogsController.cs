@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EvenTransit.Domain.Enums;
 using EvenTransit.Domain.Extensions;
 using EvenTransit.Service.Abstractions;
 using EvenTransit.Service.Dto.Log;
@@ -7,7 +6,6 @@ using EvenTransit.UI.Filters;
 using EvenTransit.UI.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Globalization;
 
 namespace EvenTransit.UI.Controllers;
 
@@ -37,7 +35,8 @@ public class LogsController : Controller
     [HttpGet]
     public async Task<IActionResult> Search(LogFilterModel model)
     {
-        if (model.Page <= 0) model.Page = 1;
+        if (model.Page <= 0)
+            model.Page = 1;
 
         var request = new LogSearchRequestDto
         {

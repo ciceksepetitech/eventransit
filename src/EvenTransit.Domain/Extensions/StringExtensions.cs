@@ -6,7 +6,12 @@ public static class StringExtensions
 {
     public static string ConvertToLocalDateString(this DateTime dateTime)
     {
-        return dateTime.ToString("dd-MM-yyyy HH:mm");
+        return dateTime.ToString("dd-MM-yyyy HH:mm:ss");
+    }
+
+    public static string ConvertToLocalDateString(this DateTime? dateTime)
+    {
+        return !dateTime.HasValue ? string.Empty : ConvertToLocalDateString(dateTime.Value);
     }
 
     public static bool TryConvertToDate(this string data, out DateTime dateTime)

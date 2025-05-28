@@ -1,4 +1,4 @@
-using EvenTransit.Data.MongoDb.Abstractions;
+﻿using EvenTransit.Data.MongoDb.Abstractions;
 using System.Linq.Expressions;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
@@ -17,8 +17,8 @@ public class EventsMongoRepository : BaseMongoRepository<Event>, IEventsReposito
 
     public async Task<List<Event>> GetEventsAsync()
     {
-        var result = await Collection.FindAsync(_ => true);
-        return await result.ToListAsync();
+        var result = await Collection.Find(_ => true).ToListAsync();
+        return result.OrderBy(s => s.Name).ToList();
     }
 
     public async Task<Event> GetEventAsync(Expression<Func<Event, bool>> predicate)
