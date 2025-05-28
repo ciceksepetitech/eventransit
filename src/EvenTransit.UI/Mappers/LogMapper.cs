@@ -13,7 +13,8 @@ public class LogMapper : Profile
             .ForMember(s => s.RequestBodyRegex, m => m.MapFrom(s => s.Query));
 
         CreateMap<LogFilterItemDto, LogSearchResultViewModel>()
-            .ForMember(s => s.CreatedOnString, m => m.MapFrom(s => s.CreatedOn.ConvertToLocalDateString()));
+            .ForMember(s => s.CreatedOnString, m => m.MapFrom(s => s.CreatedOn.ConvertToLocalDateString()))
+            .ForMember(s => s.PublishDateString, m => m.MapFrom(s => s.PublishDate.ConvertToLocalDateString()));
 
         CreateMap<LogItemDto, LogItemViewModel>();
         CreateMap<LogItemDetailDto, LogItemDetailViewModel>();

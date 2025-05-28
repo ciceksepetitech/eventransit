@@ -15,15 +15,12 @@ public class EventController : ControllerBase
 {
     private readonly IEventPublisherService _eventPublisherService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogService _logService;
 
     public EventController(IEventPublisherService eventPublisherService,
-        IHttpContextAccessor httpContextAccessor,
-        ILogService logService)
+        IHttpContextAccessor httpContextAccessor)
     {
         _eventPublisherService = eventPublisherService;
         _httpContextAccessor = httpContextAccessor;
-        _logService = logService;
     }
 
     /// <summary>
@@ -36,28 +33,17 @@ public class EventController : ControllerBase
     {
         var requestId = StringValues.Empty;
 
-        _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(HeaderConstants.RequestIdHeader,
-            out requestId);
+        _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue(HeaderConstants.RequestIdHeader, out requestId);
 
         _eventPublisherService.Publish(new EventRequestDto
         {
             EventName = request.EventName,
             Payload = request.Payload,
             Fields = request.Fields,
-            CorrelationId = requestId
+            CorrelationId = requestId,
+            PublishDate = DateTime.UtcNow
         });
 
         return Ok();
-    }
-
-    /// <summary>
-    /// Refresh the event log statistic
-    /// </summary>
-    /// <returns></returns>
-    [HttpPost("statistics/refresh")]
-    public async Task<IActionResult> RefreshEventLogStatistic()
-    {
-        await _logService.RefreshEventLogStatistic();
-        return StatusCode(StatusCodes.Status204NoContent, new { });
     }
 }

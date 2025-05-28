@@ -1,4 +1,4 @@
-namespace EvenTransit.Messaging.Core.Dto;
+﻿namespace EvenTransit.Messaging.Core.Dto;
 
 public class EventRequestDto
 {
@@ -7,6 +7,8 @@ public class EventRequestDto
     public dynamic Payload { get; set; }
 
     public string CorrelationId { get; set; }
+
+    public DateTime? PublishDate { get; set; }
 
     public Dictionary<string, string> Fields { get; set; }
 }

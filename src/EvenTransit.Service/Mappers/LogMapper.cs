@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using EvenTransit.Domain.Entities;
 using EvenTransit.Service.Dto.Log;
 
@@ -15,6 +15,9 @@ public class LogMapper : Profile
         CreateMap<LogDetailResponse, LogItemDetailResponseDto>();
 
         CreateMap<Logs, LogFilterItemDto>()
-            .ForMember(dest => dest.CorrelationId, cfg => cfg.MapFrom(src => src.Details.CorrelationId));
+            .ForMember(dest => dest.CorrelationId, cfg => cfg.MapFrom(src => src.Details.CorrelationId))
+            .ForMember(dest => dest.PublishDate, cfg => cfg.MapFrom(src => src.Details.PublishDate))
+            .ForMember(dest => dest.Retry, cfg => cfg.MapFrom(src => src.Details.Retry));
+
     }
 }

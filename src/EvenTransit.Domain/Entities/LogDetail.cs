@@ -1,4 +1,4 @@
-namespace EvenTransit.Domain.Entities;
+﻿namespace EvenTransit.Domain.Entities;
 
 public class LogDetail
 {
@@ -6,6 +6,8 @@ public class LogDetail
     public LogDetailRequest Request { get; set; }
     public LogDetailResponse Response { get; set; }
     public string CorrelationId { get; set; }
+    public DateTime? PublishDate { get; set; }
+    public long? Retry { get; set; }
 }
 
 public class LogDetailRequest

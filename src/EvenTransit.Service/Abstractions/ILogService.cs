@@ -8,5 +8,4 @@ public interface ILogService
     Task<LogSearchResultDto> SearchAsync(string correlationId);
     Task<LogItemDto> GetByIdAsync(Guid id);
     Task<LogStatisticsDto> GetDashboardStatistics();
-    Task RefreshEventLogStatistic();
 }

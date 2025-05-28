@@ -10,4 +10,6 @@ public class LogSearchResultViewModel
     public string CorrelationId { get; set; }
     public LogType LogType { get; set; }
     public string CreatedOnString { get; set; }
+    public string PublishDateString { get; set; }
+    public long? Retry { get; set; }
 }

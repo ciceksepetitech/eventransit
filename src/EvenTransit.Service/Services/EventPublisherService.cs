@@ -1,4 +1,4 @@
-using EvenTransit.Messaging.Core.Abstractions;
+﻿using EvenTransit.Messaging.Core.Abstractions;
 using EvenTransit.Messaging.Core.Dto;
 using EvenTransit.Service.Abstractions;
 
@@ -16,9 +16,7 @@ public class EventPublisherService : IEventPublisherService
     public void Publish(EventRequestDto requestDto)
     {
         if (string.IsNullOrEmpty(requestDto.CorrelationId))
-        {
             requestDto.CorrelationId = Guid.NewGuid().ToString();
-        }
         
         _eventPublisher.Publish(requestDto);
     }

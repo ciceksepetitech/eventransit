@@ -6,29 +6,78 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <div class="mb-4">
-                    <label for="EventName" class="form-label">Event Name</label>
-                    <input type="text" class="form-control" id="EventName" readonly>
-                    <input type="hidden" class="form-control" id="Id" readonly>
-                    <input type="hidden" class="form-control" id="CreatedOn" readonly>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="EventName" class="form-label">Event Name</label>
+                            <input type="text" class="form-control" id="EventName" readonly>
+                            <input type="hidden" class="form-control" id="Id" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="ServiceName" class="form-label">Service Name</label>
+                            <input type="text" class="form-control" id="ServiceName" readonly>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="ServiceName" class="form-label">Service Name</label>
-                    <input type="text" class="form-control" id="ServiceName" readonly>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-4">
+                            <label for="LogType" class="form-label">Type</label>
+                            <input type="text" class="form-control" id="LogType" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-4">
+                            <label for="LogType" class="form-label">Retry</label>
+                            <input type="text" class="form-control" id="Retry" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="LogType" class="form-label">CorrelationId</label>
+                            <input type="text" class="form-control" id="CorrelationId" readonly>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="LogType" class="form-label">Type</label>
-                    <input type="text" class="form-control" id="LogType" readonly>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="PublishDate" class="form-label">Event Publish Date</label>
+                            <input type="text" class="form-control" id="PublishDate" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="CreatedOn" class="form-label">Log Create Date</label>
+                            <input type="text" class="form-control" id="CreatedOn" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-4">
+                            <label for="Duration" class="form-label">Duration(s)</label>
+                            <input type="text" class="form-control" id="Duration" readonly>
+                        </div>
+                    </div>
                 </div>
+                
                 <div class="border rounded p-3 mb-4">
                     <h6>Request</h6>
-                    <div class="mb-4">
-                        <label for="Url" class="form-label">Url</label>
-                        <input type="text" class="form-control" id="Url" readonly>
-                    </div>
-                    <div class="mb-4">
-                        <label for="Timeout" class="form-label">Timeout</label>
-                        <input type="text" class="form-control" id="Timeout" readonly>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="mb-4">
+                                <label for="Url" class="form-label">Url</label>
+                                <pre class="code-preview"><code class="language-json" id="Url"></code></pre>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="mb-4">
+                                <label for="Timeout" class="form-label">Timeout</label>
+                                <pre class="code-preview"><code class="language-json" id="Timeout"></code></pre>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-0">
                         <label class="form-label">Body</label>
@@ -41,13 +90,19 @@
                 </div>
                 <div class="border rounded p-3">
                     <h6>Response</h6>
-                    <div class="mb-4">
-                        <label for="IsSuccess" class="form-label">Is Success</label>
-                        <input type="text" class="form-control" id="IsSuccess" readonly>
-                    </div>
-                    <div class="mb-4">
-                        <label for="StatusCode" class="form-label">Status Code</label>
-                        <input type="text" class="form-control" id="StatusCode" readonly>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="IsSuccess" class="form-label">Is Success</label>
+                                <input type="text" class="form-control" id="IsSuccess" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="StatusCode" class="form-label">Status Code</label>
+                                <input type="text" class="form-control" id="StatusCode" readonly>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-4">
                         <label for="Message" class="form-label">Message</label>

@@ -20,19 +20,9 @@ public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStat
         return await data.ToListAsync();
     }
 
-    public List<EventLogStatistic> GetAll()
+    public async Task<EventLogStatistic> GetAsync(string name, DateTime date)
     {
-        return Collection.Find(_ => true).ToList();
-    }
-
-    public async Task<EventLogStatistic> GetAsync(Guid eventId)
-    {
-        return await Collection.Find(x => x.EventId == eventId).FirstOrDefaultAsync();
-    }
-
-    public async Task<EventLogStatistic> GetAsync(string name)
-    {
-        return await Collection.Find(x => x.EventName == name).FirstOrDefaultAsync();
+        return await Collection.Find(x => x.EventName == name && x.CreatedOn == date).FirstOrDefaultAsync();
     }
 
     public async Task InsertAsync(EventLogStatistic data)
@@ -42,22 +32,7 @@ public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStat
         await Collection.InsertOneAsync(data);
     }
 
-    public void Update(Guid id, EventLogStatistic data)
-    {
-        Collection.ReplaceOne(x => x.EventId == id, data);
-    }
-
-    public async Task UpdateAsync(Guid id, EventLogStatistic data)
-    {
-        await Collection.ReplaceOneAsync(x => x.EventId == id, data);
-    }
-
-    public async Task DeleteAsync(Guid id)
-    {
-        await Collection.DeleteOneAsync(x => x.EventId == id);
-    }
-
-    public async Task UpdateStatisticAsync(Guid id, long successCount, long failCount)
+    public async Task UpdateAsync(Guid id, long successCount, long failCount)
     {
         var update = Builders<EventLogStatistic>.Update
             .Inc(s => s.FailCount, failCount)

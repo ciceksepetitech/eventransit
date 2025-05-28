@@ -1,6 +1,6 @@
 const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailModal'), {});
 const serviceDropdown = document.querySelector("#ServiceName");
-const dateFormat = "DD-MM-YYYY HH:mm";
+const dateFormat = "DD-MM-YYYY HH:mm:ss";
 
 $('document').ready(function () {
     $('#LogDate').daterangepicker({
@@ -139,19 +139,25 @@ async function getLogDetails(e, idParam) {
 
     const result = await response.json();
 
+    console.log(result);
+
     document.querySelector("#logDetailModal #Id").value = result.id;
     document.querySelector("#logDetailModal #EventName").value = result.eventName;
     document.querySelector("#logDetailModal #ServiceName").value = result.serviceName;
     document.querySelector("#logDetailModal #LogType").value = getLogType(result.logType);
-    document.querySelector("#logDetailModal #Url").value = result.details.request.url;
-    document.querySelector("#logDetailModal #Timeout").value = result.details.request.timeout;
+    document.querySelector("#logDetailModal #Url").innerHTML = result.details.request.url;
+    document.querySelector("#logDetailModal #Timeout").innerHTML = result.details.request.timeout;
     document.querySelector("#logDetailModal #RequestBody").innerHTML = result.details.request.body;
     document.querySelector("#logDetailModal #RequestHeaders").innerHTML = JSON.stringify(result.details.request.headers, null, 2);
     document.querySelector("#logDetailModal #IsSuccess").value = result.details.response?.isSuccess;
     document.querySelector("#logDetailModal #StatusCode").value = result.details.response?.statusCode;
     document.querySelector("#logDetailModal #Message").value = result.details.message;
     document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response?.response;
-    document.querySelector("#logDetailModal #CreatedOn").innerHTML = result.CreatedOn;
+    document.querySelector("#logDetailModal #CreatedOn").value = moment(moment.utc(result.createdOn).toDate()).format(dateFormat) ;
+    document.querySelector("#logDetailModal #PublishDate").value = result.details.publishDate && moment(moment.utc(result.details.publishDate).toDate()).format(dateFormat);
+    document.querySelector("#logDetailModal #CorrelationId").value = result.details.correlationId;
+    document.querySelector("#logDetailModal #Retry").value = result.details.retry;
+    document.querySelector("#logDetailModal #Duration").value = result.duration;
 
     hljs.highlightAll();
 
@@ -257,6 +263,8 @@ function fillLogTableRows(result, tbodyRef, page) {
             let eventNameCell = newRow.insertCell();
             let serviceNameCell = newRow.insertCell();
             let typeCell = newRow.insertCell();
+            let retryCell = newRow.insertCell();
+            let publishedCell = newRow.insertCell();
             let createdOnCell = newRow.insertCell();
             let actionCell = newRow.insertCell();
 
@@ -291,6 +299,8 @@ function fillLogTableRows(result, tbodyRef, page) {
             eventNameCell.innerHTML = item.eventName;
             serviceNameCell.innerHTML = item.serviceName;
             typeCell.innerHTML = getLogType(item.logType);
+            retryCell.innerHTML = item.retry;
+            publishedCell.innerHTML = item.publishDateString && moment(moment.utc(item.publishDateString, dateFormat).toDate()).format(dateFormat);
             createdOnCell.innerHTML = moment(moment.utc(item.createdOnString, dateFormat).toDate()).format(dateFormat);
         });
     }

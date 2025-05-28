@@ -38,7 +38,8 @@ public class EventPublisher : IEventPublisher
         {
             Payload = request.Payload,
             Fields = request.Fields,
-            CorrelationId = request.CorrelationId
+            CorrelationId = request.CorrelationId,
+            PublishDate = request.PublishDate
         };
 
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data));
