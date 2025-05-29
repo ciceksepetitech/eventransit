@@ -17,5 +17,6 @@ public class LogFilterItemDto
     public LogType LogType { get; set; }
     public DateTime CreatedOn { get; set; }
     public DateTime? PublishDate { get; set; }
+    public DateTime? ConsumeDate { get; set; }
     public long? Retry { get; set; }
 }

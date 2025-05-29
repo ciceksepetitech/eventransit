@@ -29,6 +29,8 @@ public class LogItemDetailDto
 
     public DateTime? PublishDate { get; set; }
 
+    public DateTime? ConsumeDate { get; set; }
+
     public long? Retry { get; set; }
 }
 
