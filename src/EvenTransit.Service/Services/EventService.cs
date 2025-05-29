@@ -45,7 +45,7 @@ public class EventService : IEventService
         foreach (var @event in events)
         {
             var dto = new EventDto { Services = new List<ServiceDto>() };
-            var eventStatistics = eventLogStatistics.Where(p => p.EventId == @event.Id).ToList();
+            var eventStatistics = eventLogStatistics.Where(p => p.EventName == @event.Name).ToList();
 
             dto.Id = @event.Id.ToString();
             dto.ServiceCount = @event.ServiceCount;
@@ -139,12 +139,6 @@ public class EventService : IEventService
             return false;
 
         await _eventsRepository.AddEvent(dataModel);
-
-        var eventLogModel = _mapper.Map<EventLogStatistic>(data);
-        eventLogModel.EventId = dataModel.Id;
-
-        await _eventLogStatisticRepository.InsertAsync(eventLogModel);
-
         return true;
     }
 
