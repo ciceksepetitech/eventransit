@@ -1,6 +1,5 @@
 ﻿using EvenTransit.Service.Dto;
 using EvenTransit.Service.Dto.Event;
-using ServiceDto = EvenTransit.Service.Dto.Event.ServiceDto;
 
 namespace EvenTransit.Service.Abstractions;
 
@@ -14,5 +13,4 @@ public interface IEventService
     Task<bool> SaveEventAsync(SaveEventDto data);
     Task<bool> DeleteEventAsync(Guid id);
     Task<bool> DeleteServiceAsync(Guid id, string name);
-    Task<EventDto> GetEventAsync(string eventName);
 }

@@ -18,29 +18,26 @@ public class EventService : IEventService
     private readonly IMapper _mapper;
     private readonly IEventConsumer _eventConsumer;
     private readonly ILogger<EventService> _logger;
-    private readonly ILogsRepository _logsRepository;
 
     public EventService(
         IEventsRepository eventsRepository,
         IEventLogStatisticRepository eventLogStatisticRepository,
         IMapper mapper,
         IEventConsumer eventConsumer,
-        ILogger<EventService> logger,
-        ILogsRepository logsRepository)
+        ILogger<EventService> logger)
     {
         _eventsRepository = eventsRepository;
         _eventLogStatisticRepository = eventLogStatisticRepository;
         _mapper = mapper;
         _eventConsumer = eventConsumer;
         _logger = logger;
-        _logsRepository = logsRepository;
     }
 
     public async Task<List<EventDto>> GetAllAsync()
     {
         var list = new List<EventDto>();
         var events = await _eventsRepository.GetEventsAsync();
-        var eventLogStatistics = await _eventLogStatisticRepository.GetAllAsync();
+        var eventLogStatistics = await _eventLogStatisticRepository.ListAsync();
 
         foreach (var @event in events)
         {
@@ -49,7 +46,7 @@ public class EventService : IEventService
 
             dto.Id = @event.Id.ToString();
             dto.ServiceCount = @event.ServiceCount;
-            dto.FailCount = eventStatistics.Sum(s=>s.FailCount);
+            dto.FailCount = eventStatistics.Sum(s => s.FailCount);
             dto.SuccessCount = eventStatistics.Sum(s => s.SuccessCount);
             dto.Name = @event.Name;
 
@@ -76,11 +73,14 @@ public class EventService : IEventService
         var eventDetails = await _eventsRepository.GetEventAsync(x => x.Id == id);
         var eventDetailDto = _mapper.Map<EventDto>(eventDetails);
 
+        var eventLogStatistics = await _eventLogStatisticRepository.ListAsync(eventDetailDto.Name);
+
         foreach (var service in eventDetailDto.Services)
         {
-            var count = _logsRepository.GetLogsCountByEvent(eventDetailDto.Name, service.Name);
-            service.SuccessCount = count.Item1;
-            service.FailCount = count.Item2;
+            var eventStatistics = eventLogStatistics.Where(p => p.ServiceName == service.Name).ToList();
+
+            service.SuccessCount = eventStatistics.Sum(s => s.SuccessCount);
+            service.FailCount = eventStatistics.Sum(s => s.FailCount);
         }
 
         return eventDetailDto;
@@ -107,6 +107,7 @@ public class EventService : IEventService
         {
             if (string.IsNullOrWhiteSpace(model.HiddenServiceName))
                 return new BaseResponseDto { IsSuccess = false, Message = MessageConstants.ServiceNameAlreadyExist };
+
             await _eventsRepository.UpdateServiceOnEventAsync(model.EventId, serviceData);
         }
 
@@ -187,13 +188,5 @@ public class EventService : IEventService
             _logger.EventApiOperationFailed(e, MessageConstants.ServiceDeleteOperationFailed);
             return false;
         }
-    }
-
-    public async Task<EventDto> GetEventAsync(string eventName)
-    {
-        var @event = await _eventsRepository.GetEventAsync(x => x.Name == eventName);
-        var eventDto = _mapper.Map<EventDto>(@event);
-
-        return eventDto;
     }
 }
