@@ -65,6 +65,7 @@ public class HttpProcessor : IHttpProcessor
                 },
                 CorrelationId = message.CorrelationId,
                 PublishDate = message.PublishDate,
+                ConsumeDate = message.ConsumeDate,
                 Retry = retry
             }
         };

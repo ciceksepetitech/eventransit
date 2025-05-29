@@ -17,5 +17,6 @@ public class EventDetailDto
     public string Message { get; set; }
     public string CorrelationId { get; set; }
     public DateTime? PublishDate { get; set; }
+    public DateTime? ConsumeDate { get; set; }
     public long Retry { get; set; }
 }

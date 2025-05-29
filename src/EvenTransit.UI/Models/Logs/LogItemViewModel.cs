@@ -15,7 +15,9 @@ public class LogItemViewModel
 
     public DateTime CreatedOn { get; set; }
 
-    public string Duration { get => Details.PublishDate.HasValue ? ((long)(CreatedOn - Details.PublishDate.Value).TotalSeconds).ToString(CultureInfo.InvariantCulture) : ""; }
+    public string TotalDuration { get => Details.PublishDate.HasValue ? ((long)(CreatedOn - Details.PublishDate.Value).TotalMilliseconds).ToString(CultureInfo.InvariantCulture) : ""; }
+
+    public string ConsumeDuration { get => Details.ConsumeDate.HasValue ? ((long)(CreatedOn - Details.ConsumeDate.Value).TotalMilliseconds).ToString(CultureInfo.InvariantCulture) : ""; }
 
     public LogItemDetailViewModel Details { get; set; }
 }
@@ -31,6 +33,8 @@ public class LogItemDetailViewModel
     public string CorrelationId { get; set; }
 
     public DateTime? PublishDate { get; set; }
+
+    public DateTime? ConsumeDate { get; set; }
 
     public long? Retry { get; set; }
 }

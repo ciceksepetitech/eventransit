@@ -14,7 +14,8 @@ public class LogMapper : Profile
 
         CreateMap<LogFilterItemDto, LogSearchResultViewModel>()
             .ForMember(s => s.CreatedOnString, m => m.MapFrom(s => s.CreatedOn.ConvertToLocalDateString()))
-            .ForMember(s => s.PublishDateString, m => m.MapFrom(s => s.PublishDate.ConvertToLocalDateString()));
+            .ForMember(s => s.PublishDateString, m => m.MapFrom(s => s.PublishDate.ConvertToLocalDateString()))
+            .ForMember(s => s.ConsumeDateString, m => m.MapFrom(s => s.ConsumeDate.ConvertToLocalDateString()));
 
         CreateMap<LogItemDto, LogItemViewModel>();
         CreateMap<LogItemDetailDto, LogItemDetailViewModel>();

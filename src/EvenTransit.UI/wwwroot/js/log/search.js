@@ -155,9 +155,11 @@ async function getLogDetails(e, idParam) {
     document.querySelector("#logDetailModal #ResponseBody").innerHTML = result.details.response?.response;
     document.querySelector("#logDetailModal #CreatedOn").value = moment(moment.utc(result.createdOn).toDate()).format(dateFormat) ;
     document.querySelector("#logDetailModal #PublishDate").value = result.details.publishDate && moment(moment.utc(result.details.publishDate).toDate()).format(dateFormat);
+    document.querySelector("#logDetailModal #ConsumeDate").value = result.details.consumeDate && moment(moment.utc(result.details.consumeDate).toDate()).format(dateFormat);
     document.querySelector("#logDetailModal #CorrelationId").value = result.details.correlationId;
     document.querySelector("#logDetailModal #Retry").value = result.details.retry;
-    document.querySelector("#logDetailModal #Duration").value = result.duration;
+    document.querySelector("#logDetailModal #TotalDuration").value = result.totalDuration;
+    document.querySelector("#logDetailModal #ConsumeDuration").value = result.consumeDuration;
 
     hljs.highlightAll();
 
@@ -265,6 +267,7 @@ function fillLogTableRows(result, tbodyRef, page) {
             let typeCell = newRow.insertCell();
             let retryCell = newRow.insertCell();
             let publishedCell = newRow.insertCell();
+            let consumedCell = newRow.insertCell();
             let createdOnCell = newRow.insertCell();
             let actionCell = newRow.insertCell();
 
@@ -301,6 +304,7 @@ function fillLogTableRows(result, tbodyRef, page) {
             typeCell.innerHTML = getLogType(item.logType);
             retryCell.innerHTML = item.retry;
             publishedCell.innerHTML = item.publishDateString && moment(moment.utc(item.publishDateString, dateFormat).toDate()).format(dateFormat);
+            consumedCell.innerHTML = item.consumeDateString && moment(moment.utc(item.consumeDateString, dateFormat).toDate()).format(dateFormat);
             createdOnCell.innerHTML = moment(moment.utc(item.createdOnString, dateFormat).toDate()).format(dateFormat);
         });
     }

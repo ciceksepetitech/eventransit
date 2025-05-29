@@ -60,7 +60,7 @@ public class EventConsumer : IEventConsumer
     public async Task ConsumeAsync()
     {
         #region New Service Registration Queue
-        
+
         void BindNewServiceConsumer(IModel c)
         {
             var newServiceConsumer = new AsyncEventingBasicConsumer(c);
@@ -74,7 +74,7 @@ public class EventConsumer : IEventConsumer
             c.QueueBind(queueName, MessagingConstants.NewServiceExchange, string.Empty);
             c.BasicConsume(queueName, false, newServiceConsumer);
         }
-        
+
         var channel = _channelFactory.ChannelForRecover(BindNewServiceConsumer);
         BindNewServiceConsumer(channel);
 
@@ -87,15 +87,15 @@ public class EventConsumer : IEventConsumer
         foreach (var @event in events)
         {
             var eventName = @event.Name;
-            
+
             var ch = _channelFactory.ChannelForRecover(c =>
             {
                 var e = _eventsRepository.GetEvent(x => x.Name == eventName);
-                
+
                 foreach (var s in e.Services)
                     Bind(c, eventName, s);
             });
-            
+
             foreach (var service in @event.Services)
                 Bind(ch, eventName, service);
         }
@@ -108,12 +108,12 @@ public class EventConsumer : IEventConsumer
         var queueName = serviceName.GetQueueName(eventName);
 
         var channel = _channelProvider.Channel();
-        
+
         channel.QueueDelete(queueName, false, false);
 
         var retryQueueName = serviceName.GetRetryQueueName(eventName);
         channel.QueueDelete(retryQueueName, false, false);
-        
+
         var delayQueueName = serviceName.GetDelayQueueName(eventName);
         channel.QueueDelete(delayQueueName, false, false);
     }
@@ -130,6 +130,7 @@ public class EventConsumer : IEventConsumer
     {
         var serviceName = serviceData.Name;
         var bodyArray = ea.Body.ToArray();
+        var consumeDate = DateTime.UtcNow;
 
         if (serviceData.DelaySeconds > 0 && !IsAlreadyDelayed(ea.BasicProperties))
         {
@@ -137,7 +138,7 @@ public class EventConsumer : IEventConsumer
             channel.BasicAck(ea.DeliveryTag, false);
             return;
         }
-        
+
         var body = JsonSerializer.Deserialize<EventPublishDto>(Encoding.UTF8.GetString(bodyArray));
         var retryCount = GetRetryCount(ea.BasicProperties);
 
@@ -151,6 +152,9 @@ public class EventConsumer : IEventConsumer
 
         foreach (var header in requestHeaders)
             requestHeaders[header.Key] = header.Value.ReplaceDynamicFieldValues(body?.Fields);
+
+        if (body != null)
+            body.ConsumeDate = consumeDate;
 
         try
         {
@@ -199,6 +203,7 @@ public class EventConsumer : IEventConsumer
                     Message = e.Message,
                     CorrelationId = body?.CorrelationId,
                     PublishDate = body?.PublishDate,
+                    ConsumeDate = body?.ConsumeDate,
                     Retry = retryCount
                 }
             };
@@ -257,7 +262,7 @@ public class EventConsumer : IEventConsumer
             }
             RabbitMqConsumerTagWrapper._tags.TryRemove(queueName, out _);
         }
-        
+
         var eventConsumer = new AsyncEventingBasicConsumer(channel);
 
         eventConsumer.Received += async (_, ea) =>
@@ -278,7 +283,7 @@ public class EventConsumer : IEventConsumer
         }
 
         var tag = channel.BasicConsume(queueName, false, eventConsumer);
-        
+
         RabbitMqConsumerTagWrapper._tags.TryAdd(queueName, new ConsumerTag
         {
             Value = tag,
@@ -307,7 +312,7 @@ public class EventConsumer : IEventConsumer
 
         channel.QueueBind(retryQueueName, retryExchangeName, retryQueueName);
     }
-    
+
     private static void BindDelayQueues(IModel channel, string eventName, string serviceName)
     {
         var queueName = serviceName.GetQueueName(eventName);
@@ -341,7 +346,7 @@ public class EventConsumer : IEventConsumer
 
         return (long)header;
     }
-    
+
     private static bool IsAlreadyDelayed(IBasicProperties properties)
     {
         if (properties?.Headers == null ||

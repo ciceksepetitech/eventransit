@@ -17,6 +17,7 @@ public class LogMapper : Profile
         CreateMap<Logs, LogFilterItemDto>()
             .ForMember(dest => dest.CorrelationId, cfg => cfg.MapFrom(src => src.Details.CorrelationId))
             .ForMember(dest => dest.PublishDate, cfg => cfg.MapFrom(src => src.Details.PublishDate))
+            .ForMember(dest => dest.ConsumeDate, cfg => cfg.MapFrom(src => src.Details.ConsumeDate))
             .ForMember(dest => dest.Retry, cfg => cfg.MapFrom(src => src.Details.Retry));
 
     }
