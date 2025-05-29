@@ -58,10 +58,10 @@ public class LogsMongoRepository : BaseMongoRepository<Logs>, ILogsRepository
         return await Collection.Find(x => x.Id == id).FirstOrDefaultAsync();
     }
     
-    public (long, long) GetLogsCountByEvent(string eventName, string serviceName, DateTime startDate)
+    public (long, long) GetLogsCountByEvent(string eventName, string serviceName)
     {
-        var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.ServiceName == serviceName && x.LogType == LogType.Success && x.CreatedOn > startDate);
-        var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.ServiceName == serviceName && x.LogType == LogType.Fail && x.CreatedOn > startDate);
+        var successLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.ServiceName == serviceName && x.LogType == LogType.Success);
+        var failLogCount = Collection.CountDocuments(x => x.EventName == eventName && x.ServiceName == serviceName && x.LogType == LogType.Fail);
         return (successLogCount, failLogCount);
     }
 }

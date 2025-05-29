@@ -78,7 +78,7 @@ public class EventService : IEventService
 
         foreach (var service in eventDetailDto.Services)
         {
-            var count = _logsRepository.GetLogsCountByEvent(eventDetailDto.Name, service.Name, DateTime.Now.AddDays(-5));
+            var count = _logsRepository.GetLogsCountByEvent(eventDetailDto.Name, service.Name);
             service.SuccessCount = count.Item1;
             service.FailCount = count.Item2;
         }
