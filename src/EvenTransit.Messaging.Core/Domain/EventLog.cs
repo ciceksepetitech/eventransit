@@ -57,7 +57,7 @@ public class EventLog : IEventLog
     {
         var startDate = DateTime.Today;
         
-        var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName, startDate);
+        var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName, details.ServiceName, startDate);
 
         var successCount = details.LogType == LogType.Success ? 1 : 0;
         var failCount = details.LogType == LogType.Fail ? 1 : 0;
@@ -68,6 +68,7 @@ public class EventLog : IEventLog
             {
                 CreatedOn = startDate,
                 EventName = details.EventName,
+                ServiceName = details.ServiceName,
                 SuccessCount = successCount,
                 FailCount = failCount
             };
@@ -77,6 +78,7 @@ public class EventLog : IEventLog
         {
             eventStatistic.SuccessCount += successCount;
             eventStatistic.FailCount += failCount;
+
             await _eventLogStatisticRepository.UpdateAsync(eventStatistic.Id, successCount, failCount);
         }
     }

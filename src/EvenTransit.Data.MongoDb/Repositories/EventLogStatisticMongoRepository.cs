@@ -14,21 +14,25 @@ public class EventLogStatisticMongoRepository : BaseMongoRepository<EventLogStat
     {
     }
 
-    public async Task<List<EventLogStatistic>> GetAllAsync()
+    public async Task<List<EventLogStatistic>> ListAsync()
     {
         var data = await Collection.FindAsync(_ => true);
         return await data.ToListAsync();
     }
 
-    public async Task<EventLogStatistic> GetAsync(string name, DateTime date)
+    public async Task<List<EventLogStatistic>> ListAsync(string eventName)
     {
-        return await Collection.Find(x => x.EventName == name && x.CreatedOn == date).FirstOrDefaultAsync();
+        return await Collection.Find(x => x.EventName == eventName).ToListAsync();
+    }
+
+    public async Task<EventLogStatistic> GetAsync(string eventName, string serviceName, DateTime date)
+    {
+        return await Collection.Find(x => x.EventName == eventName && x.ServiceName == serviceName && x.CreatedOn == date).FirstOrDefaultAsync();
     }
 
     public async Task InsertAsync(EventLogStatistic data)
     {
         data.Id = Guid.NewGuid();
-
         await Collection.InsertOneAsync(data);
     }
 
