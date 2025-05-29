@@ -56,6 +56,7 @@ public class EventLog : IEventLog
     private async Task UpdateEventStatisticsAsync(Logs details)
     {
         var startDate = DateTime.Today;
+        
         var eventStatistic = await _eventLogStatisticRepository.GetAsync(details.EventName, startDate);
 
         var successCount = details.LogType == LogType.Success ? 1 : 0;
@@ -67,10 +68,8 @@ public class EventLog : IEventLog
             {
                 CreatedOn = startDate,
                 EventName = details.EventName,
-                EventId = details.Id,
                 SuccessCount = successCount,
-                FailCount = failCount,
-                Id = Guid.NewGuid()
+                FailCount = failCount
             };
             await _eventLogStatisticRepository.InsertAsync(eventStatistic);
         }

@@ -77,6 +77,8 @@ void App()
 {
     var app = builder.Build();
 
+    ConfigureMinThreads();
+
     app.ConfigureSerilogLogger();
 
     app.UseDeveloperExceptionPage();
@@ -104,8 +106,6 @@ void App()
     {
         app.MapControllers();
     }
-
-    ConfigureMinThreads();
 
     app.Run();
 }
