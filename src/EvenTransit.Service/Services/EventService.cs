@@ -46,8 +46,8 @@ public class EventService : IEventService
 
             dto.Id = @event.Id.ToString();
             dto.ServiceCount = @event.ServiceCount;
-            dto.FailCount = eventStatistics.Max(s => s.FailCount);
-            dto.SuccessCount = eventStatistics.Max(s => s.SuccessCount);
+            dto.FailCount = eventStatistics.Count == 0 ? 0 : eventStatistics.Max(s => s.FailCount);
+            dto.SuccessCount = eventStatistics.Count == 0 ? 0 : eventStatistics.Max(s => s.SuccessCount);
             dto.Name = @event.Name;
 
             foreach (var service in @event.Services)
@@ -79,8 +79,8 @@ public class EventService : IEventService
         {
             var eventStatistics = eventLogStatistics.Where(p => p.ServiceName == service.Name).ToList();
 
-            service.SuccessCount = eventStatistics.Max(s => s.SuccessCount);
-            service.FailCount = eventStatistics.Max(s => s.FailCount);
+            service.SuccessCount = eventStatistics.Count == 0 ? 0 : eventStatistics.Max(s => s.SuccessCount);
+            service.FailCount = eventStatistics.Count == 0 ? 0 : eventStatistics.Max(s => s.FailCount);
         }
 
         return eventDetailDto;
