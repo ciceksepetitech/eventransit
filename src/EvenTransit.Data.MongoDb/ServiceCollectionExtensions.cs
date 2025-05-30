@@ -1,4 +1,4 @@
-using EvenTransit.Data.MongoDb.Abstractions;
+﻿using EvenTransit.Data.MongoDb.Abstractions;
 using EvenTransit.Data.MongoDb.Repositories;
 using EvenTransit.Data.MongoDb.Settings;
 using EvenTransit.Domain.Abstractions;
@@ -28,8 +28,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<MongoDbConnectionStringBuilder>();
 
-        services.AddHealthChecks()
-            .AddCheck<MongoDbHealthCheck>("mongodb");
+        services.AddHealthChecks().AddCheck<MongoDbHealthCheck>("mongodb");
 
         return services;
     }
