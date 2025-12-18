@@ -17,6 +17,7 @@ public class LogDetailRequest
     public int Timeout { get; set; }
     public int DelaySeconds { get; set; }
     public string Body { get; set; }
+    public string Method { get; set; }
     public Dictionary<string, string> Headers { get; set; }
 }
 

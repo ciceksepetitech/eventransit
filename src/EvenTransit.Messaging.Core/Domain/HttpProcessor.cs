@@ -55,7 +55,8 @@ public class HttpProcessor : IHttpProcessor
                     Timeout = request.Timeout,
                     DelaySeconds = request.DelaySeconds,
                     Body = body,
-                    Headers = request.Headers
+                    Headers = request.Headers,
+                    Method = request.Method
                 },
                 Response = new LogDetailResponse
                 {

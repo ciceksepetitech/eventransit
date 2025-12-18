@@ -1,6 +1,7 @@
 const logDetailModal = new bootstrap.Modal(document.getElementById('logDetailModal'), {});
 const serviceDropdown = document.querySelector("#ServiceName");
 const dateFormat = "DD-MM-YYYY HH:mm:ss";
+let currentLogResult = null;
 
 $('document').ready(function () {
     $('#LogDate').daterangepicker({
@@ -138,7 +139,14 @@ async function getLogDetails(e, idParam) {
     }
 
     const result = await response.json();
+    const btnCopyCurl = document.getElementById("btn-copy-curl");
+    if (result.details && result.details.request && result.details.request.method) {
+        btnCopyCurl.style.display = "block";
+    } else {
+        btnCopyCurl.style.display = "none";
+    }
 
+    currentLogResult = result;
     console.log(result);
 
     document.querySelector("#logDetailModal #Id").value = result.id;
@@ -522,5 +530,54 @@ async function copyToClipboard(content) {
         } finally {
             textArea.remove();
         }
+    }
+}
+
+async function copyAsCurl() {
+    if (!currentLogResult || !currentLogResult.details || !currentLogResult.details.request) {
+        toastr.warning("No log details available to copy!");
+        return;
+    }
+
+    const request = currentLogResult.details.request;
+    const method = (request.method || 'GET').toUpperCase();
+    const url = request.url;
+    const body = request.body;
+    const headers = request.headers;
+
+    let curlCommand = `curl -X ${method} "${url}"`;
+
+    let hasContentType = false;
+    if (headers) {
+        for (const [key, value] of Object.entries(headers)) {
+            if (key.toLowerCase() !== 'content-length') {
+                curlCommand += ` -H "${key}: ${value}"`;
+                if (key.toLowerCase() === 'content-type') {
+                    hasContentType = true;
+                }
+            }
+        }
+    }
+
+    if (body) {
+        if (!hasContentType) {
+            curlCommand += ` -H "Content-Type: application/json"`;
+        }
+        
+        let content = body;
+        if (typeof body === 'object') {
+            content = JSON.stringify(body);
+        }
+
+        const escapedBody = content.replace(/'/g, "'\\''");
+        curlCommand += ` --data-raw '${escapedBody}'`;
+    }
+
+    try {
+        await copyToClipboard(curlCommand);
+        toastr.success('cURL command copied to clipboard!');
+    } catch (err) {
+        toastr.warning('Unable to copy cURL command!');
+        console.error(err);
     }
 }
