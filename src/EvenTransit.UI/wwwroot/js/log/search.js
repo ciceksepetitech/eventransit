@@ -465,6 +465,12 @@ function getLogTypeAsInt(logType) {
     if (logType === "Fail") return 2;
 }
 
+function decodeUnicodeEscapes(str) {
+    return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, hex) => {
+        return String.fromCharCode(parseInt(hex, 16));
+    });
+}
+
 async function copySearchFilter() {
     let logDatePicker = $("#LogDate").data('daterangepicker');
     
@@ -547,19 +553,24 @@ async function copyAsCurl() {
 
     let curlCommand = `curl -X ${method} "${url}"`;
 
+    const methodsWithoutBody = ['GET', 'HEAD', 'OPTIONS'];
+    const hasBody = body && body !== 'null' && body !== null;
+    const shouldIncludeBody = hasBody && !methodsWithoutBody.includes(method);
+
     let hasContentType = false;
     if (headers) {
         for (const [key, value] of Object.entries(headers)) {
-            if (key.toLowerCase() !== 'content-length') {
-                curlCommand += ` -H "${key}: ${value}"`;
-                if (key.toLowerCase() === 'content-type') {
-                    hasContentType = true;
-                }
+            if (key.toLowerCase() === 'content-length') continue;
+            if (key.toLowerCase() === 'content-type' && !shouldIncludeBody) continue;
+            
+            curlCommand += ` -H "${key}: ${value}"`;
+            if (key.toLowerCase() === 'content-type') {
+                hasContentType = true;
             }
         }
     }
 
-    if (body) {
+    if (shouldIncludeBody) {
         if (!hasContentType) {
             curlCommand += ` -H "Content-Type: application/json"`;
         }
@@ -568,6 +579,8 @@ async function copyAsCurl() {
         if (typeof body === 'object') {
             content = JSON.stringify(body);
         }
+        
+        content = decodeUnicodeEscapes(content);
 
         const escapedBody = content.replace(/'/g, "'\\''");
         curlCommand += ` --data-raw '${escapedBody}'`;
