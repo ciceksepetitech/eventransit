@@ -574,13 +574,18 @@ async function copyAsCurl() {
         if (!hasContentType) {
             curlCommand += ` -H "Content-Type: application/json"`;
         }
-        
+
         let content = body;
         if (typeof body === 'object') {
             content = JSON.stringify(body);
+        } else {
+            try {
+                const parsed = JSON.parse(body);
+                content = JSON.stringify(parsed);
+            } catch {
+                content = body;
+            }
         }
-        
-        content = decodeUnicodeEscapes(content);
 
         const escapedBody = content.replace(/'/g, "'\\''");
         curlCommand += ` --data-raw '${escapedBody}'`;
