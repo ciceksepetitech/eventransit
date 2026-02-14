@@ -466,9 +466,13 @@ function getLogTypeAsInt(logType) {
 }
 
 function decodeUnicodeEscapes(str) {
-    return str.replace(/\\u([0-9a-fA-F]{4})/g, (match, hex) => {
+    str = str.replace(/\\\\u([0-9a-fA-F]{4})/g, (match, hex) => {
         return String.fromCharCode(parseInt(hex, 16));
     });
+    str = str.replace(/\\u([0-9a-fA-F]{4})/g, (match, hex) => {
+        return String.fromCharCode(parseInt(hex, 16));
+    });
+    return str;
 }
 
 async function copySearchFilter() {
@@ -578,17 +582,19 @@ async function copyAsCurl() {
         let content = body;
         if (typeof body === 'object') {
             content = JSON.stringify(body);
-        } else {
-            try {
-                const parsed = JSON.parse(body);
-                content = JSON.stringify(parsed);
-            } catch {
-                content = body;
-            }
         }
 
-        const escapedBody = content.replace(/'/g, "'\\''");
-        curlCommand += ` --data-raw '${escapedBody}'`;
+        content = decodeUnicodeEscapes(content);
+
+        const escapedBody = content
+            .replace(/\\/g, '\\\\')   // Backslash -> \\
+            .replace(/"/g, '\\"')      // Double quote -> \"
+            .replace(/\$/g, '\\$')     // Dollar sign -> \$
+            .replace(/`/g, '\\`')      // Backtick -> \`
+            .replace(/\n/g, '\\n')     // Newline -> \n
+            .replace(/\r/g, '\\r');    // Carriage return -> \r
+
+        curlCommand += ` --data-raw "${escapedBody}"`;
     }
 
     try {
